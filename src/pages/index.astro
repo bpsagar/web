@@ -17,7 +17,7 @@ const sortedApps = allApps.sort((a, b) => a.data.order - b.data.order);
 		<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Savate:ital,wght@1,200..900&display=swap" rel="stylesheet">
 		<title>Sagar Chakravarthy</title>
 	</head>
-	<body class="bg-black text-white min-h-screen p-[5vw] md:p-[8vw] flex flex-col gap-[15vw]">
+	<body class="bg-black text-white min-h-screen py-[5vw] pr-[5vw] md:py-[8vw] md:pr-[8vw] flex flex-col gap-[15vw]">
 		<header class="w-full">
 			<h1 class="font-savate italic font-extralight text-white text-[10vw] leading-[0.85] mb-[6vw]">
 				Sagar Chakravarthy
@@ -29,12 +29,14 @@ const sortedApps = allApps.sort((a, b) => a.data.order - b.data.order);
 
 		<main class="w-full">
 			<section>
-				<h2 class="font-host font-normal text-[3vw] md:text-[1.5vw] uppercase tracking-widest text-gray-500 mb-2">Apps</h2>
-				<p class="font-host font-light text-[4vw] md:text-[2vw] text-gray-300 mb-8">
-					These are my personal projects, both past and ongoing:
-				</p>
+				<div>
+					<h2 class="font-host font-normal text-[3vw] md:text-[1.5vw] uppercase tracking-widest text-gray-500 mb-2">Apps</h2>
+					<p class="font-host font-light text-[4vw] md:text-[2vw] text-gray-300 mb-8">
+						These are my personal projects, both past and ongoing:
+					</p>
+				</div>
 
-				<div class="flex overflow-x-auto no-scrollbar gap-6 snap-x snap-mandatory -mx-[5vw] px-[5vw] md:-mx-[8vw] md:px-[8vw]">
+				<div class="flex overflow-x-auto no-scrollbar gap-6 snap-x snap-mandatory pr-[5vw] md:pr-[8vw]">
 					{sortedApps.map((app) => (
 						<a
 							href={app.data.url}
