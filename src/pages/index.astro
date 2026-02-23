@@ -14,20 +14,19 @@ const sortedApps = allApps.sort((a, b) => a.data.order - b.data.order);
 		<meta name="generator" content={Astro.generator} />
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Savate:ital,wght@1,200..900&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Savate:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 		<title>Sagar Chakravarthy</title>
 	</head>
-	<body class="bg-white text-zinc-900 min-h-screen py-[10vw] px-[5vw] flex flex-col items-center text-center gap-[15vw]">
-		<header class="w-full flex flex-col items-center">
-			<h1 class="font-savate italic font-extralight text-zinc-900 text-[18vw] md:text-[12vw] leading-[0.9] mb-[6vw]">
-				Sagar Chakravarthy
+	<body class="bg-white text-zinc-900 min-h-screen py-[10vw] px-[5vw] flex flex-col items-start text-left gap-[15vw]">
+		<header class="w-full">
+			<h1 class="font-savate font-thin text-zinc-900 text-[10vw] md:text-[7vw] leading-[1.1] mb-[6vw] w-full">
+				<span class="block whitespace-nowrap">I'm <span class="italic">Sagar Chakravarthy</span></span>
+				<span class="block whitespace-nowrap">a <span class="italic">Software Engineer</span></span>
+				<span class="block whitespace-nowrap">based in <span class="italic">Singapore</span>.</span>
 			</h1>
-			<p class="font-host font-light text-[7vw] md:text-[3.5vw] leading-[1.2] max-w-[15ch] text-zinc-600">
-				Building apps and sketching faces.
-			</p>
 		</header>
 
-		<main class="w-full flex flex-col items-center">
+		<main class="w-full">
 			<section class="w-full">
 				<div class="mb-16">
 					<h2 class="font-host font-medium text-[4vw] md:text-[1.2vw] uppercase tracking-widest text-primary mb-4">Apps</h2>
