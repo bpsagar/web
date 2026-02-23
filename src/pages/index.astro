@@ -17,32 +17,32 @@ const sortedApps = allApps.sort((a, b) => a.data.order - b.data.order);
 		<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Savate:ital,wght@1,200..900&display=swap" rel="stylesheet">
 		<title>Sagar Chakravarthy</title>
 	</head>
-	<body class="bg-black text-white min-h-screen py-[5vw] pr-[5vw] md:py-[8vw] md:pr-[8vw] flex flex-col gap-[15vw]">
-		<header class="w-full">
-			<h1 class="font-savate italic font-extralight text-white text-[10vw] leading-[0.85] mb-[6vw]">
+	<body class="bg-black text-white min-h-screen py-[10vw] px-[5vw] flex flex-col items-center text-center gap-[15vw]">
+		<header class="w-full flex flex-col items-center">
+			<h1 class="font-savate italic font-extralight text-white text-[18vw] md:text-[12vw] leading-[0.9] mb-[6vw]">
 				Sagar Chakravarthy
 			</h1>
-			<p class="font-host font-light text-[5vw] leading-[1.1] max-w-[15ch] md:max-w-[12ch]">
+			<p class="font-host font-light text-[7vw] md:text-[3.5vw] leading-[1.2] max-w-[15ch]">
 				Building apps and sketching faces.
 			</p>
 		</header>
 
-		<main class="w-full">
-			<section>
-				<div>
-					<h2 class="font-host font-normal text-[3vw] md:text-[1.5vw] uppercase tracking-widest text-gray-500 mb-2">Apps</h2>
-					<p class="font-host font-light text-[4vw] md:text-[2vw] text-gray-300 mb-8">
-						These are my personal projects, both past and ongoing:
+		<main class="w-full flex flex-col items-center">
+			<section class="w-full">
+				<div class="mb-16">
+					<h2 class="font-host font-medium text-[4vw] md:text-[1.2vw] uppercase tracking-widest text-primary mb-4">Apps</h2>
+					<p class="font-host font-light text-[6vw] md:text-[2.5vw] text-white/80">
+						These are my personal projects,<br class="md:hidden" /> both past and ongoing:
 					</p>
 				</div>
 
-				<div class="flex overflow-x-auto no-scrollbar gap-6 snap-x snap-mandatory pr-[5vw] md:pr-[8vw]">
+				<div class="flex overflow-x-auto no-scrollbar gap-8 snap-x snap-mandatory px-[5vw] -mx-[5vw]">
 					{sortedApps.map((app) => (
 						<a
 							href={app.data.url}
 							target="_blank"
 							rel="noopener noreferrer"
-							class="flex-none w-[66vw] md:w-[25.7vw] snap-start group border border-transparent hover:border-primary transition-colors duration-300 p-6 bg-zinc-900/50 rounded-xl"
+							class="flex-none w-[80vw] md:w-[35vw] snap-center group border border-white/10 hover:border-primary/50 transition-all duration-500 p-10 bg-white/[0.02] hover:bg-white/[0.04] rounded-[2rem] text-left"
 						>
 							<div class="mb-4">
 								<img src={app.data.logo} alt={app.data.name} class="w-12 h-12 rounded-lg" />
