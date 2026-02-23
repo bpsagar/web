@@ -1,5 +1,9 @@
 ---
+import { getCollection } from 'astro:content';
 import '../styles/global.css';
+
+const allApps = await getCollection('apps');
+const sortedApps = allApps.sort((a, b) => a.data.order - b.data.order);
 ---
 
 <html lang="en">
@@ -8,9 +12,48 @@ import '../styles/global.css';
 		<link rel="icon" type="image/svg+xml" href={import.meta.env.BASE_URL + "favicon.svg"} />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Savate:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
 		<title>Sagar Chakravarthy</title>
 	</head>
-	<body class="bg-slate-900 text-white flex items-center justify-center min-h-screen">
-		<h1 class="text-5xl font-bold">Sagar Chakravarthy</h1>
+	<body class="bg-white text-zinc-900 min-h-screen py-[10vw] px-[5vw] flex flex-col items-center text-center gap-[15vw]">
+		<header class="w-full">
+			<h1 class="font-savate font-extralight text-zinc-900 text-[10vw] md:text-[7vw] leading-[1.1] mb-[6vw] w-full">
+				<span class="block">I'm <span class="italic">Sagar Chakravarthy</span></span>
+				<span class="block">a <span class="italic">Software Engineer</span></span>
+				<span class="block">based in <span class="italic">Singapore</span>.</span>
+			</h1>
+		</header>
+
+		<main class="w-full">
+			<section class="w-full">
+				<div class="mb-16">
+					<h2 class="font-host font-medium text-[4vw] md:text-[1.2vw] uppercase tracking-widest text-primary mb-4">Apps</h2>
+					<p class="font-host font-light text-[6vw] md:text-[2.5vw] text-zinc-500">
+						These are my personal projects,<br class="md:hidden" /> both past and ongoing:
+					</p>
+				</div>
+
+				<div class="flex overflow-x-auto no-scrollbar gap-8 snap-x snap-mandatory px-[5vw] -mx-[5vw]">
+					{sortedApps.map((app) => (
+						<a
+							href={app.data.url}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="flex-none w-[80vw] md:w-[35vw] snap-center group border border-zinc-100 hover:border-primary/30 transition-all duration-500 p-10 bg-zinc-50/50 hover:bg-white hover:shadow-xl hover:shadow-primary/5 rounded-[2rem] text-left"
+						>
+							<div class="mb-4">
+								<img src={app.data.logo} alt={app.data.name} class="w-12 h-12 rounded-lg grayscale group-hover:grayscale-0 transition-all duration-500" />
+							</div>
+							<h3 class="font-host font-bold text-[5vw] md:text-[2vw] mb-2 text-zinc-900 group-hover:text-primary transition-colors duration-300">{app.data.name}</h3>
+							<p class="font-host font-light text-[3.5vw] md:text-[1.2vw] text-zinc-500">
+								{app.data.description}
+							</p>
+						</a>
+					))}
+				</div>
+			</section>
+		</main>
 	</body>
 </html>
