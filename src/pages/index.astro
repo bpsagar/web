@@ -8,9 +8,19 @@ import '../styles/global.css';
 		<link rel="icon" type="image/svg+xml" href={import.meta.env.BASE_URL + "favicon.svg"} />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Savate:ital,wght@1,200..900&display=swap" rel="stylesheet">
 		<title>Sagar Chakravarthy</title>
 	</head>
-	<body class="bg-slate-900 text-white flex items-center justify-center min-h-screen">
-		<h1 class="text-5xl font-bold">Sagar Chakravarthy</h1>
+	<body class="bg-black text-white min-h-screen p-[5vw] md:p-[8vw] flex flex-col justify-center">
+		<main class="w-full">
+			<h1 class="font-savate italic font-extralight text-primary text-[10vw] leading-[0.85] mb-[6vw]">
+				Sagar Chakravarthy
+			</h1>
+			<p class="font-host font-light text-[5vw] leading-[1.1] max-w-[15ch] md:max-w-[12ch]">
+				Building apps and sketching faces.
+			</p>
+		</main>
 	</body>
 </html>
