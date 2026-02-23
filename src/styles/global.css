@@ -5,3 +5,11 @@
   --font-host: "Host Grotesk", sans-serif;
   --color-primary: #ff5f1f;
 }
+
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
