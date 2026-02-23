@@ -1,0 +1,15 @@
+
+> web@0.0.1 dev
+> astro dev --host --base /web
+
+13:56:22 [types] Generated 1ms
+13:56:23 [content] Syncing content
+13:56:23 [content] Synced content
+
+ astro  v5.17.3 ready in 1145 ms
+
+┃ Local    http://localhost:4321/web
+┃ Network  http://192.168.0.2:4321/web
+
+13:56:23 watching for file changes...
+13:56:32 [200] / 237ms

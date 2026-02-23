@@ -17,12 +17,12 @@ const sortedApps = allApps.sort((a, b) => a.data.order - b.data.order);
 		<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Savate:ital,wght@1,200..900&display=swap" rel="stylesheet">
 		<title>Sagar Chakravarthy</title>
 	</head>
-	<body class="bg-black text-white min-h-screen py-[10vw] px-[5vw] flex flex-col items-center text-center gap-[15vw]">
+	<body class="bg-white text-zinc-900 min-h-screen py-[10vw] px-[5vw] flex flex-col items-center text-center gap-[15vw]">
 		<header class="w-full flex flex-col items-center">
-			<h1 class="font-savate italic font-extralight text-white text-[18vw] md:text-[12vw] leading-[0.9] mb-[6vw]">
+			<h1 class="font-savate italic font-extralight text-zinc-900 text-[18vw] md:text-[12vw] leading-[0.9] mb-[6vw]">
 				Sagar Chakravarthy
 			</h1>
-			<p class="font-host font-light text-[7vw] md:text-[3.5vw] leading-[1.2] max-w-[15ch]">
+			<p class="font-host font-light text-[7vw] md:text-[3.5vw] leading-[1.2] max-w-[15ch] text-zinc-600">
 				Building apps and sketching faces.
 			</p>
 		</header>
@@ -31,7 +31,7 @@ const sortedApps = allApps.sort((a, b) => a.data.order - b.data.order);
 			<section class="w-full">
 				<div class="mb-16">
 					<h2 class="font-host font-medium text-[4vw] md:text-[1.2vw] uppercase tracking-widest text-primary mb-4">Apps</h2>
-					<p class="font-host font-light text-[6vw] md:text-[2.5vw] text-white/80">
+					<p class="font-host font-light text-[6vw] md:text-[2.5vw] text-zinc-500">
 						These are my personal projects,<br class="md:hidden" /> both past and ongoing:
 					</p>
 				</div>
@@ -42,13 +42,13 @@ const sortedApps = allApps.sort((a, b) => a.data.order - b.data.order);
 							href={app.data.url}
 							target="_blank"
 							rel="noopener noreferrer"
-							class="flex-none w-[80vw] md:w-[35vw] snap-center group border border-white/10 hover:border-primary/50 transition-all duration-500 p-10 bg-white/[0.02] hover:bg-white/[0.04] rounded-[2rem] text-left"
+							class="flex-none w-[80vw] md:w-[35vw] snap-center group border border-zinc-100 hover:border-primary/30 transition-all duration-500 p-10 bg-zinc-50/50 hover:bg-white hover:shadow-xl hover:shadow-primary/5 rounded-[2rem] text-left"
 						>
 							<div class="mb-4">
-								<img src={app.data.logo} alt={app.data.name} class="w-12 h-12 rounded-lg" />
+								<img src={app.data.logo} alt={app.data.name} class="w-12 h-12 rounded-lg grayscale group-hover:grayscale-0 transition-all duration-500" />
 							</div>
-							<h3 class="font-host font-bold text-[5vw] md:text-[2vw] mb-2">{app.data.name}</h3>
-							<p class="font-host font-light text-[3.5vw] md:text-[1.2vw] text-gray-400">
+							<h3 class="font-host font-bold text-[5vw] md:text-[2vw] mb-2 text-zinc-900 group-hover:text-primary transition-colors duration-300">{app.data.name}</h3>
+							<p class="font-host font-light text-[3.5vw] md:text-[1.2vw] text-zinc-500">
 								{app.data.description}
 							</p>
 						</a>
