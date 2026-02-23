@@ -6,7 +6,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "take-screenshots": "node scripts/take-screenshots.mjs",
+    "prepare": "husky"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.0",
@@ -15,6 +17,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
+    "husky": "^9.1.7",
     "playwright": "^1.58.2"
   }
 }
