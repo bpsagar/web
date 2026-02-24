@@ -19,21 +19,6 @@ const sortedApps = allApps.sort((a, b) => a.data.order - b.data.order);
 	</head>
 	<body class="bg-white text-zinc-900 min-h-screen flex flex-col items-center text-center">
 		<section class="relative w-full min-h-screen flex flex-col items-center justify-center py-20 px-[5vw] overflow-hidden">
-			<!-- Badge -->
-			<div class="absolute top-[10%] right-[5%] md:right-[10%] w-32 h-32 hidden md:block">
-				<div class="relative w-full h-full animate-[spin_10s_linear_infinite]">
-					<svg viewBox="0 0 100 100" class="w-full h-full overflow-visible">
-						<path id="circlePath" d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" fill="none" />
-						<text class="font-host text-[9px] uppercase tracking-[0.25em] fill-zinc-300 font-medium">
-							<textPath href="#circlePath">Open for projects • Open for projects • </textPath>
-						</text>
-					</svg>
-				</div>
-				<div class="absolute inset-0 flex items-center justify-center">
-					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-400"><path d="M7 17l10-10M17 17V7H7" /></svg>
-				</div>
-			</div>
-
 			<!-- Avatar -->
 			<div class="mb-12 relative">
 				<div class="w-24 h-24 md:w-32 md:h-32 rounded-full bg-[#ff5f1f]/10 flex items-center justify-center border border-[#ff5f1f]/20 shadow-sm overflow-hidden">
@@ -42,12 +27,60 @@ const sortedApps = allApps.sort((a, b) => a.data.order - b.data.order);
 			</div>
 
 			<!-- Heading -->
-			<h1 class="font-savate font-thin text-zinc-900 text-[9vw] md:text-[7.5vw] leading-[1.05] mb-10 text-center tracking-tight">
-				<span class="block whitespace-nowrap">I'm <span class="italic">Sagar</span>,</span>
-				<span class="block whitespace-nowrap">a <span class="italic">Software Engineer</span></span>
-				<span class="block whitespace-nowrap">based in <span class="italic">Singapore</span>.</span>
+			<h1 class="font-host font-light text-zinc-700 text-[9vw] md:text-[7.5vw] leading-[1.05] mb-10 text-center tracking-tight">
+				<span class="block whitespace-nowrap">I'm <span class="italic font-savate font-thin text-zinc-900">Sagar</span>,</span>
+				<span class="block whitespace-nowrap">a <span id="typing-text" class="italic font-savate font-thin text-zinc-900">Software Engineer</span><span class="cursor inline-block w-[3px] h-[0.8em] bg-[#ff5f1f] ml-1 align-middle mb-1"></span></span>
+				<span class="block whitespace-nowrap">based in <span class="italic font-savate font-thin text-zinc-900">Singapore</span>.</span>
 			</h1>
 		</section>
+
+		<style>
+			@keyframes blink {
+				0%, 100% { opacity: 1; }
+				50% { opacity: 0; }
+			}
+			.cursor {
+				animation: blink 1s infinite;
+			}
+		</style>
+
+		<script>
+			const textElement = document.getElementById('typing-text');
+			const phrases = ['Software Engineer', 'Portrait Artist'];
+			let phraseIndex = 0;
+			let charIndex = phrases[phraseIndex].length;
+			let isDeleting = false;
+			let typingSpeed = 100;
+
+			function type() {
+				const currentPhrase = phrases[phraseIndex];
+
+				if (isDeleting) {
+					charIndex--;
+					typingSpeed = 50;
+				} else {
+					charIndex++;
+					typingSpeed = 150;
+				}
+
+				textElement.textContent = currentPhrase.substring(0, charIndex);
+
+				if (!isDeleting && charIndex === currentPhrase.length) {
+					isDeleting = true;
+					typingSpeed = 2500;
+				} else if (isDeleting && charIndex === 0) {
+					isDeleting = false;
+					phraseIndex = (phraseIndex + 1) % phrases.length;
+					typingSpeed = 500;
+				}
+
+				setTimeout(type, typingSpeed);
+			}
+
+			// Initial state is full text, so start by waiting then deleting
+			isDeleting = true;
+			setTimeout(type, 2500);
+		</script>
 
 		<main class="w-full mt-[15vw] mb-20 px-[5vw]">
 			<section class="w-full">
