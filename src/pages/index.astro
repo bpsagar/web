@@ -44,10 +44,58 @@ const sortedApps = allApps.sort((a, b) => a.data.order - b.data.order);
 			<!-- Heading -->
 			<h1 class="font-host font-light text-zinc-700 text-[9vw] md:text-[7.5vw] leading-[1.05] mb-10 text-center tracking-tight">
 				<span class="block whitespace-nowrap">I'm <span class="italic font-savate font-thin text-zinc-900">Sagar</span>,</span>
-				<span class="block whitespace-nowrap">a <span class="italic font-savate font-thin text-zinc-900">Software Engineer</span></span>
+				<span class="block whitespace-nowrap">a <span id="typing-text" class="italic font-savate font-thin text-zinc-900">Software Engineer</span><span class="cursor inline-block w-[3px] h-[0.8em] bg-[#ff5f1f] ml-1 align-middle mb-1"></span></span>
 				<span class="block whitespace-nowrap">based in <span class="italic font-savate font-thin text-zinc-900">Singapore</span>.</span>
 			</h1>
 		</section>
+
+		<style>
+			@keyframes blink {
+				0%, 100% { opacity: 1; }
+				50% { opacity: 0; }
+			}
+			.cursor {
+				animation: blink 1s infinite;
+			}
+		</style>
+
+		<script>
+			const textElement = document.getElementById('typing-text');
+			const phrases = ['Software Engineer', 'Portrait Artist'];
+			let phraseIndex = 0;
+			let charIndex = phrases[phraseIndex].length;
+			let isDeleting = false;
+			let typingSpeed = 100;
+
+			function type() {
+				const currentPhrase = phrases[phraseIndex];
+
+				if (isDeleting) {
+					charIndex--;
+					typingSpeed = 50;
+				} else {
+					charIndex++;
+					typingSpeed = 150;
+				}
+
+				textElement.textContent = currentPhrase.substring(0, charIndex);
+
+				if (!isDeleting && charIndex === currentPhrase.length) {
+					isDeleting = true;
+					typingSpeed = 2500;
+				} else if (isDeleting && charIndex === 0) {
+					isDeleting = false;
+					phraseIndex = (phraseIndex + 1) % phrases.length;
+					typingSpeed = 500;
+				}
+
+				setTimeout(type, typingSpeed);
+			}
+
+			// Initial state is full text, so start by waiting then deleting
+			isDeleting = true;
+			setTimeout(type, 2500);
+		</script>
 
 		<main class="w-full mt-[15vw] mb-20 px-[5vw]">
 			<section class="w-full">
