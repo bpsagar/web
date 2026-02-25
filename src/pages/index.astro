@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import RolePill from '../components/RolePill.astro';
 import '../styles/global.css';
 
 const allApps = await getCollection('apps');
@@ -17,33 +18,34 @@ const sortedApps = allApps.sort((a, b) => a.data.order - b.data.order);
 		<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@300..800&family=Instrument+Serif&display=swap" rel="stylesheet">
 		<title>Sagar Chakravarthy</title>
 	</head>
-	<body class="bg-white text-zinc-900 min-h-screen flex flex-col items-center text-center">
-		<nav class="sticky top-0 w-full z-50 flex items-center h-20 px-[5vw] font-host font-medium text-lg bg-transparent">
-			<span>sagar.im</span>
-		</nav>
-		<section class="relative w-full min-h-screen flex flex-col items-center justify-center py-20 px-[5vw] overflow-hidden">
-			<!-- Heading -->
-			<h1 class="font-instrument text-zinc-900 text-[8vw] md:text-[3vw] leading-[1.6] mb-10 text-center tracking-tight max-w-[95vw] md:max-w-[80vw]">
-				I'm Sagar, a <span class="inline-flex items-center gap-[0.3em] px-[0.5em] py-[0.1em] rounded-full border border-zinc-200 bg-zinc-50 align-baseline">💻 Software Engineer</span>, <span class="inline-flex items-center gap-[0.3em] px-[0.5em] py-[0.1em] rounded-full border border-zinc-200 bg-zinc-50 align-baseline">🛠️ Maker</span> and <span class="inline-flex items-center gap-[0.3em] px-[0.5em] py-[0.1em] rounded-full border border-zinc-200 bg-zinc-50 align-baseline">✍️ Portrait Artist</span>, based in Singapore.
-			</h1>
-		</section>
+	<body class="bg-white text-zinc-900 min-h-screen">
+		<div class="max-w-[500px] mx-auto px-6">
+			<nav class="sticky top-0 z-50 flex items-center h-20 font-host font-medium text-lg bg-transparent">
+				<span>sagar.im</span>
+			</nav>
+			<section class="relative min-h-screen flex flex-col justify-center py-20 overflow-hidden">
+				<!-- Heading -->
+				<h1 class="font-instrument text-zinc-900 text-[8vw] md:text-[3vw] leading-[1.6] mb-10 tracking-tight">
+					I'm Sagar, a <span class="inline-block whitespace-nowrap"><RolePill role="Software Engineer" emoji="💻" />,</span> <span class="inline-block whitespace-nowrap"><RolePill role="Maker" emoji="🛠️" /> and</span> <span class="inline-block whitespace-nowrap"><RolePill role="Portrait Artist" emoji="✍️" />,</span> based in Singapore.
+				</h1>
+			</section>
 
-		<main class="w-full mt-[15vw] mb-20 px-[5vw]">
-			<section class="w-full">
-				<div class="mb-16">
-					<h2 class="font-host font-medium text-[4vw] md:text-[1.2vw] uppercase tracking-widest text-primary mb-4">Apps</h2>
-					<p class="font-host font-light text-[6vw] md:text-[2.5vw] text-zinc-500">
-						These are my personal projects,<br class="md:hidden" /> both past and ongoing:
-					</p>
-				</div>
+			<main class="mt-[15vw] mb-20">
+				<section class="w-full">
+					<div class="mb-16">
+						<h2 class="font-host font-medium text-[4vw] md:text-[1.2vw] uppercase tracking-widest text-primary mb-4">Apps</h2>
+						<p class="font-host font-light text-[6vw] md:text-[2.5vw] text-zinc-500">
+							These are my personal projects,<br class="md:hidden" /> both past and ongoing:
+						</p>
+					</div>
 
-				<div class="flex overflow-x-auto no-scrollbar gap-8 snap-x snap-mandatory px-[5vw] -mx-[5vw]">
+					<div class="flex overflow-x-auto no-scrollbar gap-8 snap-x snap-mandatory -mx-6 px-6">
 					{sortedApps.map((app) => (
 						<a
 							href={app.data.url}
 							target="_blank"
 							rel="noopener noreferrer"
-							class="flex-none w-[80vw] md:w-[35vw] snap-center group border border-zinc-100 hover:border-primary/30 transition-all duration-500 p-10 bg-zinc-50/50 hover:bg-white hover:shadow-xl hover:shadow-primary/5 rounded-[2rem] text-left"
+							class="flex-none w-[80vw] md:w-[400px] snap-center group border border-zinc-100 hover:border-primary/30 transition-all duration-500 p-10 bg-zinc-50/50 hover:bg-white hover:shadow-xl hover:shadow-primary/5 rounded-[2rem] text-left"
 						>
 							<div class="mb-4">
 								<img src={app.data.logo} alt={app.data.name} class="w-12 h-12 rounded-lg grayscale group-hover:grayscale-0 transition-all duration-500" />
@@ -56,6 +58,7 @@ const sortedApps = allApps.sort((a, b) => a.data.order - b.data.order);
 					))}
 				</div>
 			</section>
-		</main>
+			</main>
+		</div>
 	</body>
 </html>
