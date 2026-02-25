@@ -1,0 +1,11 @@
+---
+interface Props {
+  role: string;
+  emoji: string;
+}
+
+const { role, emoji } = Astro.props;
+---
+<span class="inline-flex items-center px-2.5 py-1 border border-zinc-200 bg-zinc-50/50 rounded-full text-[0.8em] font-instrument leading-none align-baseline">
+  <span class="mr-1.5 leading-none">{emoji}</span><span class="leading-none">{role}</span>
+</span>
