@@ -22,16 +22,14 @@ const labelClass = "inline-block leading-none";
 		<title>Sagar Chakravarthy</title>
 	</head>
 	<body class="bg-white text-zinc-900 min-h-screen">
-		<div class="max-w-5xl mx-auto px-6">
-			<div class="max-w-[500px]">
-				<nav class="sticky top-0 z-50 flex items-center h-20 font-host font-medium text-lg bg-transparent">
-					<span>sagar.im</span>
-				</nav>
-				<section class="relative pt-32 pb-16 overflow-hidden">
-					<!-- Heading -->
-					<h1 class="font-instrument text-zinc-900 text-[8vw] md:text-[3vw] leading-relaxed tracking-tight">I'm Sagar, a <span class="whitespace-nowrap"><span class={pillClass}><span class={emojiClass}>💻</span><span class={labelClass}>Software Engineer</span></span>,</span> <span class={pillClass}><span class={emojiClass}>🛠️</span><span class={labelClass}>Maker</span></span> and <span class="whitespace-nowrap"><span class={pillClass}><span class={emojiClass}>🎨</span><span class={labelClass}>Portrait Artist</span></span>,</span> based in Singapore.</h1>
-				</section>
-			</div>
+		<div class="max-w-[500px] mx-auto px-6">
+			<nav class="sticky top-0 z-50 flex items-center h-20 font-host font-medium text-lg bg-transparent">
+				<span>sagar.im</span>
+			</nav>
+			<section class="relative pt-32 pb-16 overflow-hidden">
+				<!-- Heading -->
+				<h1 class="font-instrument font-thin text-zinc-900 text-[8vw] md:text-[3vw] leading-relaxed tracking-tight">I'm Sagar, a <span class="whitespace-nowrap"><span class={pillClass}><span class={emojiClass}>💻</span><span class={labelClass}>Software Engineer</span></span>,</span> <span class={pillClass}><span class={emojiClass}>🛠️</span><span class={labelClass}>Maker</span></span> and <span class="whitespace-nowrap"><span class={pillClass}><span class={emojiClass}>✍️</span><span class={labelClass}>Portrait Artist</span></span>,</span> based in Singapore.</h1>
+			</section>
 
 			<main class="mt-16 mb-20">
 				<section class="w-full">
@@ -42,7 +40,7 @@ const labelClass = "inline-block leading-none";
 						</p>
 					</div>
 
-					<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+					<div class="grid grid-cols-1 gap-8">
 					{sortedApps.map((app) => (
 						<a
 							href={app.data.url}
