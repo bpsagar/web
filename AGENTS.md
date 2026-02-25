@@ -14,7 +14,7 @@ This document contains key information and instructions for agents working on th
   - Headings: 'Instrument Serif' (No italics, font-thin).
   - Body: 'Host Grotesk'.
 - **Responsive Design:** Uses fluid typography with `vw` units.
-- **Hero Section:** Minimalist design, `min-h-screen`, and left-aligned hero title.
+- **Hero Section:** Minimalist design, left-aligned hero title with vertical spacing.
 
 ## Content Management
 - **Content Collections:** Located in `src/content/`. Apps are managed as individual Markdown files in `src/content/apps/`.
