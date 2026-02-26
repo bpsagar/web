@@ -1,7 +1,7 @@
 ---
-name: "Delta Draw"
-description: "A vector-based sketching tool for precise and fluid digital art."
-logo: "https://placehold.co/64x64/orange/white?text=D"
-url: "https://example.com/delta"
+name: "TimeTime"
+description: "Desktop app that meticulously tracks multiple projects without interrupting your focused work."
+logo: "https://timetime.gitlab.io/assets/images/logo.svg"
+url: "https://timetime.gitlab.io"
 order: 4
 ---

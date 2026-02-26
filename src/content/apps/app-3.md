@@ -1,7 +1,7 @@
 ---
-name: "Gamma Gallery"
-description: "Showcase your sketches in a beautiful, minimal grid designed for artists."
-logo: "https://placehold.co/64x64/orange/white?text=G"
-url: "https://example.com/gamma"
+name: "MeatyMeets"
+description: "Hassle-free way to join, prep and engage in Google Meet meetings."
+logo: "https://meatymeets.github.io/icons/icon.svg"
+url: "https://meatymeets.github.io"
 order: 3
 ---
