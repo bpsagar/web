@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --font-instrument: "Instrument Serif", serif;
+  --font-plus: "Plus Jakarta Sans", sans-serif;
   --font-host: "Geist Mono", monospace;
   --color-primary: #ff5f1f;
 }
