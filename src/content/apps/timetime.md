@@ -4,4 +4,5 @@ description: "Desktop app that meticulously tracks multiple projects without int
 logo: "https://timetime.gitlab.io/assets/images/logo.svg"
 url: "https://timetime.gitlab.io"
 order: 4
+year: "2020"
 ---

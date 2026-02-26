@@ -4,4 +4,5 @@ description: "Create professional Markdown resumes that make you stand out from 
 logo: "https://resumey.pro/static/images/logos/logo.ef6a16d52e07.svg"
 url: "https://resumey.pro"
 order: 2
+year: "2020"
 ---
