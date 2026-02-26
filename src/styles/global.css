@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --font-savate: "Savate", sans-serif;
+  --font-instrument: "Instrument Serif", serif;
   --font-host: "Host Grotesk", sans-serif;
   --color-primary: #ff5f1f;
 }

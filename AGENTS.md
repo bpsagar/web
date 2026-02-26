@@ -11,10 +11,10 @@ This document contains key information and instructions for agents working on th
 ## Design & Typography
 - **Primary Theme:** Light mode only (white background, dark zinc-900 text) with bright orange brand color (`#ff5f1f`).
 - **Typography:**
-  - Headings: 'Savate' (Thin/100 weight, selective italics).
+  - Headings: 'Instrument Serif' (No italics, font-thin).
   - Body: 'Host Grotesk'.
 - **Responsive Design:** Uses fluid typography with `vw` units.
-- **Hero Section:** Minimalist design, `min-h-screen`, centered avatar, and a rotating 'Open for projects' badge.
+- **Hero Section:** Minimalist design, left-aligned hero title with vertical spacing.
 
 ## Content Management
 - **Content Collections:** Located in `src/content/`. Apps are managed as individual Markdown files in `src/content/apps/`.

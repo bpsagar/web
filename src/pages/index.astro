@@ -4,6 +4,10 @@ import '../styles/global.css';
 
 const allApps = await getCollection('apps');
 const sortedApps = allApps.sort((a, b) => a.data.order - b.data.order);
+
+const pillClass = "inline-flex items-center px-2.5 py-1 border border-zinc-200 bg-zinc-50/50 rounded-full text-[0.8em] font-instrument leading-none ml-1.5";
+const emojiClass = "mr-1.5 leading-none";
+const labelClass = "leading-none";
 ---
 
 <html lang="en">
@@ -14,47 +18,47 @@ const sortedApps = allApps.sort((a, b) => a.data.order - b.data.order);
 		<meta name="generator" content={Astro.generator} />
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Savate:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@300..800&family=Instrument+Serif&display=swap" rel="stylesheet">
 		<title>Sagar Chakravarthy</title>
 	</head>
-	<body class="bg-white text-zinc-900 min-h-screen flex flex-col items-center text-center">
-		<section class="relative w-full min-h-screen flex flex-col items-center justify-center py-20 px-[5vw] overflow-hidden">
-			<!-- Heading -->
-			<h1 class="font-host font-thin text-zinc-700 text-[9vw] md:text-[3vw] leading-[1.2] mb-10 text-center tracking-tight">
-				<span class="block whitespace-nowrap">I'm <span class="italic font-savate font-thin text-zinc-900">Sagar</span>,</span>
-				<span class="block whitespace-nowrap">a <span class="italic font-savate font-thin text-zinc-900">Software Engineer</span></span>
-				<span class="block whitespace-nowrap">based in <span class="italic font-savate font-thin text-zinc-900">Singapore</span>.</span>
-			</h1>
-		</section>
+	<body class="bg-white text-zinc-900 min-h-screen">
+		<div class="max-w-[500px] mx-auto px-6">
+			<nav class="sticky top-0 z-50 flex items-center h-20 font-host font-medium text-lg bg-transparent">
+				<span>sagar.im</span>
+			</nav>
+			<section class="relative pt-32 pb-16 overflow-hidden">
+				<!-- Heading -->
+				<h1 class="font-instrument font-thin text-zinc-900 text-[8vw] md:text-[3vw] leading-relaxed tracking-tight">I'm Sagar, a<span class="whitespace-nowrap"><span class={pillClass}><span class={emojiClass}>💻</span><span class={labelClass}>Software Engineer</span></span>,</span> <span class={pillClass}><span class={emojiClass}>🛠️</span><span class={labelClass}>Maker</span></span> and <span class="whitespace-nowrap"><span class={pillClass}><span class={emojiClass}>✍️</span><span class={labelClass}>Portrait Artist</span></span>,</span> based in Singapore.</h1>
+			</section>
 
-		<main class="w-full mt-[15vw] mb-20 px-[5vw]">
-			<section class="w-full">
-				<div class="mb-16">
-					<h2 class="font-host font-medium text-[4vw] md:text-[1.2vw] uppercase tracking-widest text-primary mb-4">Apps</h2>
-					<p class="font-host font-light text-[6vw] md:text-[2.5vw] text-zinc-500">
-						These are my personal projects,<br class="md:hidden" /> both past and ongoing:
-					</p>
-				</div>
+			<main class="mt-16 mb-20">
+				<section class="w-full">
+					<div class="mb-8">
+						<h2 class="font-host font-bold text-sm uppercase tracking-widest text-zinc-500 mb-4">Apps</h2>
+					</div>
 
-				<div class="flex overflow-x-auto no-scrollbar gap-8 snap-x snap-mandatory px-[5vw] -mx-[5vw]">
+					<div class="grid grid-cols-1 gap-3">
 					{sortedApps.map((app) => (
 						<a
 							href={app.data.url}
 							target="_blank"
 							rel="noopener noreferrer"
-							class="flex-none w-[80vw] md:w-[35vw] snap-center group border border-zinc-100 hover:border-primary/30 transition-all duration-500 p-10 bg-zinc-50/50 hover:bg-white hover:shadow-xl hover:shadow-primary/5 rounded-[2rem] text-left"
+							class="group flex items-center gap-3 border border-zinc-200 transition-all duration-300 p-2.5 bg-zinc-50/50 hover:bg-zinc-100 rounded-2xl text-left"
 						>
-							<div class="mb-4">
-								<img src={app.data.logo} alt={app.data.name} class="w-12 h-12 rounded-lg grayscale group-hover:grayscale-0 transition-all duration-500" />
+							<div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-zinc-50 rounded-xl overflow-hidden">
+								<img src={app.data.logo} alt={app.data.name} class="w-6 h-6 grayscale group-hover:grayscale-0 transition-all duration-500" />
 							</div>
-							<h3 class="font-host font-bold text-[5vw] md:text-[2vw] mb-2 text-zinc-900 group-hover:text-primary transition-colors duration-300">{app.data.name}</h3>
-							<p class="font-host font-light text-[3.5vw] md:text-[1.2vw] text-zinc-500">
-								{app.data.description}
-							</p>
+							<div class="flex-1 min-w-0">
+								<h3 class="font-host font-bold text-base text-zinc-900 transition-colors duration-300 leading-tight">{app.data.name}</h3>
+								<p class="font-host font-light text-sm text-zinc-500 leading-tight truncate">
+									{app.data.description}
+								</p>
+							</div>
 						</a>
 					))}
-				</div>
-			</section>
-		</main>
+					</div>
+				</section>
+			</main>
+		</div>
 	</body>
 </html>
