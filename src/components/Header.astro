@@ -6,12 +6,12 @@ interface Props {
 const { title } = Astro.props;
 ---
 
-<div class="flex items-center font-host font-medium text-lg py-4">
-	<span>sagar.im</span>
+<div class="flex items-center font-host font-medium text-sm py-4 uppercase tracking-widest">
+	<span class="text-zinc-400">sagar.im</span>
 	{title && (
 		<>
-			<span class="text-zinc-400 mx-3">/</span>
-			<span class="text-zinc-500">{title}</span>
+			<span class="text-zinc-900 mx-2">/</span>
+			<span class="text-zinc-900">{title}</span>
 		</>
 	)}
 </div>
