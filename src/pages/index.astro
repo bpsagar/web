@@ -23,7 +23,7 @@ const sortedApps = allApps.sort((a, b) => a.data.order - b.data.order);
 			<Header />
 			<section class="relative pt-2 pb-8 overflow-hidden">
 				<!-- Heading -->
-				<h1 class="font-host font-medium text-zinc-900 text-[8vw] md:text-[3vw]">A Software Engineer, Maker and Portrait Artist, based in Singapore.</h1>
+				<h1 class="font-plus font-semibold tracking-tight text-zinc-900 text-[8vw] md:text-[3vw]">A Software Engineer, Maker and Portrait Artist, based in Singapore.</h1>
 			</section>
 
 			<main class="mt-4 mb-20">
@@ -42,8 +42,8 @@ const sortedApps = allApps.sort((a, b) => a.data.order - b.data.order);
 								<img src={app.data.logo} alt={app.data.name} class="w-6 h-6 grayscale group-hover:grayscale-0 transition-all duration-500" />
 							</div>
 							<div class="flex-1 min-w-0">
-								<h3 class="font-plus font-bold text-base text-zinc-900 transition-colors duration-300 leading-tight">{app.data.name}</h3>
-								<p class="font-plus font-light text-sm text-zinc-500 leading-tight truncate">
+								<h3 class="font-host font-bold text-base text-zinc-900 transition-colors duration-300 leading-tight">{app.data.name}</h3>
+								<p class="font-host font-light text-sm text-zinc-500 leading-tight truncate">
 									{app.data.description}
 								</p>
 							</div>
