@@ -1,13 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
+import Header from '../components/Header.astro';
 import '../styles/global.css';
 
 const allApps = await getCollection('apps');
 const sortedApps = allApps.sort((a, b) => a.data.order - b.data.order);
-
-const pillClass = "inline-flex items-center px-2.5 py-1 border border-zinc-200 bg-zinc-50/50 rounded-full text-[0.8em] font-instrument leading-none ml-1.5";
-const emojiClass = "mr-1.5 leading-none";
-const labelClass = "leading-none";
 ---
 
 <html lang="en">
@@ -18,24 +15,20 @@ const labelClass = "leading-none";
 		<meta name="generator" content={Astro.generator} />
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@300..800&family=Instrument+Serif&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
 		<title>Sagar Chakravarthy</title>
 	</head>
 	<body class="bg-white text-zinc-900 min-h-screen">
 		<div class="max-w-[500px] mx-auto px-6">
-			<nav class="sticky top-0 z-50 flex items-center h-20 font-host font-medium text-lg bg-transparent">
-				<span>sagar.im</span>
-			</nav>
-			<section class="relative pt-32 pb-16 overflow-hidden">
+			<Header />
+			<section class="relative pt-2 pb-8 overflow-hidden">
 				<!-- Heading -->
-				<h1 class="font-instrument font-thin text-zinc-900 text-[8vw] md:text-[3vw] leading-relaxed tracking-tight">I'm Sagar, a<span class="whitespace-nowrap"><span class={pillClass}><span class={emojiClass}>💻</span><span class={labelClass}>Software Engineer</span></span>,</span> <span class={pillClass}><span class={emojiClass}>🛠️</span><span class={labelClass}>Maker</span></span> and <span class="whitespace-nowrap"><span class={pillClass}><span class={emojiClass}>✍️</span><span class={labelClass}>Portrait Artist</span></span>,</span> based in Singapore.</h1>
+				<h1 class="font-plus font-semibold tracking-tight text-zinc-400 text-[8vw] md:text-[3vw]">A <span class="text-zinc-900">software engineer</span>, <span class="text-zinc-900">maker</span> and <span class="text-zinc-900">portrait artist</span>, based in Singapore.</h1>
 			</section>
 
-			<main class="mt-16 mb-20">
+			<main class="mt-4 mb-20">
 				<section class="w-full">
-					<div class="mb-8">
-						<h2 class="font-host font-bold text-sm uppercase tracking-widest text-zinc-500 mb-4">Apps</h2>
-					</div>
+					<Header title="a maker" />
 
 					<div class="grid grid-cols-1 gap-3">
 					{sortedApps.map((app) => (

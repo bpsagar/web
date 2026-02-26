@@ -1,0 +1,17 @@
+---
+interface Props {
+	title?: string;
+}
+
+const { title } = Astro.props;
+---
+
+<div class="flex items-center font-host font-medium text-sm py-4 uppercase tracking-widest">
+	<span class="text-zinc-400">sagar.im</span>
+	{title && (
+		<>
+			<span class="text-zinc-900 mx-2">/</span>
+			<span class="text-zinc-900">{title}</span>
+		</>
+	)}
+</div>
