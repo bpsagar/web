@@ -36,14 +36,21 @@ const sortedApps = allApps.sort((a, b) => a.data.order - b.data.order);
 							href={app.data.url}
 							target="_blank"
 							rel="noopener noreferrer"
-							class="group flex items-center gap-3 border border-zinc-200 transition-all duration-300 p-2.5 bg-zinc-50/50 hover:bg-zinc-100 rounded-2xl text-left"
+							class="group flex items-start gap-4 border border-zinc-200 transition-all duration-300 p-4 bg-zinc-50/50 hover:bg-zinc-100 hover:border-zinc-300 rounded-2xl text-left"
 						>
-							<div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-zinc-50 rounded-xl overflow-hidden">
-								<img src={app.data.logo} alt={app.data.name} class="w-6 h-6 grayscale group-hover:grayscale-0 transition-all duration-500" />
+							<div class="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-zinc-50 border border-zinc-100 rounded-xl overflow-hidden mt-0.5">
+								<img src={app.data.logo} alt={app.data.name} class="w-7 h-7 grayscale group-hover:grayscale-0 transition-all duration-500" />
 							</div>
-							<div class="flex-1 min-w-0">
-								<h3 class="font-host font-bold text-base text-zinc-900 transition-colors duration-300 leading-tight">{app.data.name}</h3>
-								<p class="font-host font-light text-sm text-zinc-500 leading-tight truncate">
+							<div class="flex-1 min-w-0 py-0.5">
+								<div class="flex items-center justify-between mb-1">
+									<h3 class="font-host font-bold text-base text-zinc-900 group-hover:text-primary transition-colors duration-300 leading-tight">
+										{app.data.name}
+									</h3>
+									<span class="text-zinc-400 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300">
+										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+									</span>
+								</div>
+								<p class="font-host font-light text-sm text-zinc-500 leading-relaxed">
 									{app.data.description}
 								</p>
 							</div>
