@@ -5,6 +5,9 @@ import '../styles/global.css';
 
 const allApps = await getCollection('apps');
 const sortedApps = allApps.sort((a, b) => a.data.order - b.data.order);
+
+const allPortraits = await getCollection('portraits');
+const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order);
 ---
 
 <html lang="en">
@@ -18,7 +21,7 @@ const sortedApps = allApps.sort((a, b) => a.data.order - b.data.order);
 		<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
 		<title>Sagar Chakravarthy</title>
 	</head>
-	<body class="bg-white text-zinc-900 min-h-screen">
+	<body class="bg-white text-zinc-900 min-h-screen overflow-x-hidden">
 		<div class="max-w-[500px] mx-auto px-6">
 			<Header />
 			<section class="relative pt-2 pb-8 overflow-hidden">
@@ -97,6 +100,30 @@ const sortedApps = allApps.sort((a, b) => a.data.order - b.data.order);
 							</div>
 						</div>
 					))}
+					</div>
+				</section>
+
+				<section class="w-full mt-12">
+					<Header title="a portrait artist" />
+					<div class="-mr-6 md:-mr-[calc(50vw-226px)]">
+						<div class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar gap-6 pb-4 pr-6 md:pr-[calc(50vw-226px)]">
+							{sortedPortraits.map((portrait) => (
+								<div class="flex-none w-[280px] snap-start">
+									<div class="aspect-[3/4] overflow-hidden border border-zinc-200 bg-zinc-50">
+										<img
+											src={portrait.data.image}
+											alt={portrait.data.title}
+											class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+										/>
+									</div>
+									<div class="mt-3 h-6 flex items-center">
+										<h3 class="font-host font-bold text-xs text-zinc-900 uppercase tracking-[0.2em] leading-none">
+											{portrait.data.title}
+										</h3>
+									</div>
+								</div>
+							))}
+						</div>
 					</div>
 				</section>
 			</main>

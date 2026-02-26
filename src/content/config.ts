@@ -11,6 +11,16 @@ const apps = defineCollection({
   }),
 });
 
+const portraits = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    image: z.string().url(),
+    order: z.number(),
+  }),
+});
+
 export const collections = {
   'apps': apps,
+  'portraits': portraits,
 };
