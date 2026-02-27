@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 import Header from '../components/Header.astro';
+import Comment from '../components/Comment.astro';
 import '../styles/global.css';
 import profileImage from '../assets/profile.png';
 
@@ -41,7 +42,7 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 				<!-- Heading -->
 				<h1 class="font-plus font-semibold tracking-tight text-zinc-400 text-[5vw] md:text-[1.5vw]">
 					A <span class="text-zinc-900">software engineer</span>, <span class="text-zinc-900">maker</span> and <span class="text-zinc-900">portrait artist</span>, based in Singapore.
-					<span class="block mt-4">On a lifelong pursuit of the perfect masala chai, which is a convenient excuse to drink it every day.</span>
+					<span class="block mt-4">On a lifelong pursuit of the perfect <span data-comment="Milk tea with spices">masala chai</span>, which is a convenient excuse to drink it every day.</span>
 					<span class="block mt-4">Otherwise, you’ll find me at the gym or on a tennis court. Only places my brain hits 'quiet mode'.</span>
 				</h1>
 			</section>
@@ -52,13 +53,13 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 
 					<div class="flex flex-col border-t border-zinc-200 overflow-visible">
 					{sortedApps.map((app) => (
-						<div class="group border-b border-x border-zinc-200 transition-colors duration-300 hover:bg-zinc-50/50">
+						<div class="group relative border-b border-x border-zinc-200 transition-colors duration-300 hover:bg-zinc-50/50">
 							<input
 								type="checkbox"
 								id={`app-${app.data.name.toLowerCase().replace(/\s+/g, '-')}`}
 								class="peer hidden"
 							/>
-							<div class="relative flex items-start gap-4 py-4 px-4 peer-checked:[&_.logo]:w-12 peer-checked:[&_.logo]:h-12 peer-checked:[&_.desc-grid]:grid-rows-[1fr] peer-checked:[&_.desc-text]:opacity-100 peer-checked:[&_label]:z-0 peer-checked:[&_.desc-inner]:overflow-visible">
+							<div class="relative flex items-start gap-4 py-4 px-4 peer-checked:[&_.logo]:w-12 peer-checked:[&_.logo]:h-12 peer-checked:[&_.desc-grid]:grid-rows-[1fr] peer-checked:[&_.desc-text]:opacity-100 peer-checked:[&_.desc-inner]:overflow-visible">
 								<!-- Label for toggle -->
 								<label
 									for={`app-${app.data.name.toLowerCase().replace(/\s+/g, '-')}`}
@@ -66,7 +67,7 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 								></label>
 
 								<!-- Logo -->
-								<div class="flex-shrink-0 z-20 transition-all duration-500 logo w-6 h-6">
+								<div class="flex-shrink-0 z-10 transition-all duration-500 logo w-6 h-6">
 									<img
 										src={app.data.logo}
 										alt={app.data.name}
@@ -75,7 +76,7 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 								</div>
 
 								<!-- Content (Title + Description) -->
-								<div class="flex-1 z-20">
+								<div class="flex-1">
 									<div class="h-6 flex items-center">
 										<h3 class="font-host font-bold text-xs text-zinc-900 uppercase tracking-[0.2em] leading-none">
 											{app.data.name}
@@ -144,6 +145,7 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 						</div>
 					</div>
 				</section>
+				<Comment />
 			</main>
 		</div>
 
@@ -151,50 +153,18 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 			// Page Comment Logic
 			document.addEventListener('click', (e) => {
 				const target = e.target as HTMLElement;
-				const commentTrigger = target.closest('[data-comment]');
+				const closeBtn = target.closest('.page-comment-close');
+				const backdrop = target.closest('.page-comment-backdrop');
+				const trigger = target.closest('[data-comment]') as HTMLElement;
 
-				if (commentTrigger) {
-					e.preventDefault();
-					const commentText = (commentTrigger as HTMLElement).dataset.comment;
-					const triggerText = commentTrigger.textContent || '';
-					const blockParent = commentTrigger.closest('p, h1, h2, h3, div');
-					const container = blockParent?.parentElement;
+				if (closeBtn || backdrop) return; // Handled by SideComment custom element internally
+				
+				if (!trigger) return;
 
-					if (!blockParent || !container || !commentText) return;
-
-					// Check if comment already exists for this trigger (as a sibling of blockParent)
-					const existingComments = container.querySelectorAll('.page-comment');
-					let isSameComment = false;
-					existingComments.forEach(c => {
-						if ((c as HTMLElement).dataset.for === triggerText) {
-							isSameComment = true;
-						}
-						c.remove();
-					});
-
-					if (isSameComment) return;
-
-					const commentEl = document.createElement('div');
-					commentEl.className = 'page-comment';
-					commentEl.dataset.for = triggerText;
-					commentEl.innerHTML = `
-						<div class="page-comment-header">
-							<img src="/profile.png" class="page-comment-avatar" />
-							<span class="page-comment-author">Sagar Chakravarthy</span>
-						</div>
-						<div class="page-comment-body">
-							${commentText}
-						</div>
-						<span class="page-comment-close">✕</span>
-					`;
-
-					commentEl.querySelector('.page-comment-close')?.addEventListener('click', (e) => {
-						e.stopPropagation();
-						commentEl.remove();
-					});
-
-					// Insert before the block parent
-					container.insertBefore(commentEl, blockParent);
+				e.preventDefault();
+				const sideComment = document.querySelector('side-comment') as any;
+				if (sideComment) {
+					sideComment.show(trigger, trigger.dataset.comment || '');
 				}
 			});
 

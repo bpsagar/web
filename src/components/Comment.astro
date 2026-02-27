@@ -1,0 +1,105 @@
+---
+
+---
+
+<side-comment class="hidden contents">
+    <div
+        class="page-comment-container fixed inset-0 z-[999] pointer-events-none"
+    >
+        <!-- Backdrop -->
+        <div
+            class="page-comment-backdrop fixed inset-0 bg-black/40 opacity-0 transition-opacity duration-300 pointer-events-auto"
+        >
+        </div>
+
+        <!-- Drawer / Sticky Note -->
+        <div
+            class="page-comment fixed bottom-8 left-1/2 -translate-x-1/2 z-[1000] translate-y-full transition-transform duration-300 ease-out bg-white p-5 w-[calc(100%-48px)] max-w-[400px] rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] pointer-events-auto border border-zinc-200"
+            data-for=""
+        >
+            <div class="page-comment-header flex items-center gap-2 mb-2">
+                <span
+                    class="page-comment-author font-plus font-semibold text-sm text-zinc-900"
+                    >Comment</span
+                >
+            </div>
+
+            <div
+                class="page-comment-body leading-relaxed text-zinc-900 text-sm"
+            >
+            </div>
+
+            <span
+                class="page-comment-close absolute top-4 right-4 cursor-pointer text-[14px] text-zinc-400 opacity-50 p-1 leading-none hover:opacity-100"
+                >✕</span
+            >
+        </div>
+    </div>
+</side-comment>
+
+<script>
+    class SideComment extends HTMLElement {
+        private comment: HTMLElement | null = null;
+        private backdrop: HTMLElement | null = null;
+        private body: HTMLElement | null = null;
+        private currentTrigger: string | null = null;
+
+        connectedCallback() {
+            this.comment = this.querySelector(".page-comment");
+            this.backdrop = this.querySelector(".page-comment-backdrop");
+            this.body = this.querySelector(".page-comment-body");
+
+            this.addEventListener("click", (e) => {
+                const target = e.target as HTMLElement;
+                if (
+                    target.closest(".page-comment-close") ||
+                    target.closest(".page-comment-backdrop")
+                ) {
+                    this.hide();
+                }
+            });
+        }
+
+        show(trigger: HTMLElement, text: string) {
+            const id = (trigger.textContent || "").trim();
+
+            if (
+                this.currentTrigger === id &&
+                !this.classList.contains("hidden")
+            ) {
+                return this.hide();
+            }
+
+            this.currentTrigger = id;
+            if (this.body) this.body.textContent = text;
+            if (this.comment) this.comment.dataset.for = id;
+
+            // Simple placement at root to avoid style inheritance issues
+            if (this.parentElement !== document.body) {
+                document.body.appendChild(this);
+            }
+
+            this.classList.remove("hidden");
+
+            // Trigger animations
+            requestAnimationFrame(() => {
+                this.comment?.classList.remove("translate-y-full");
+                this.backdrop?.classList.remove("opacity-0");
+            });
+        }
+
+        hide() {
+            this.currentTrigger = null;
+            this.comment?.classList.add("translate-y-full");
+            this.backdrop?.classList.add("opacity-0");
+
+            setTimeout(() => {
+                this.classList.add("hidden");
+            }, 300);
+        }
+    }
+
+    if (!customElements.get("side-comment")) {
+        customElements.define("side-comment", SideComment);
+    }
+</script>
