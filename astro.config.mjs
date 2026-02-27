@@ -5,8 +5,8 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://bpsagar.github.io',
-  base: '/web',
+  site: 'https://sagar.im',
+  base: '/',
   vite: {
     plugins: [tailwindcss()]
   }
