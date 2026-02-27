@@ -13,3 +13,56 @@
     display: none;
   }
 }
+
+[data-comment] {
+  border-bottom: 2px solid var(--color-primary);
+  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  border-radius: 2px;
+  padding: 0 2px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+[data-comment]:hover {
+  background-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
+}
+
+.page-comment {
+  font-family: var(--font-host);
+  font-size: 13px;
+  color: #a1a1aa;
+  background-color: white;
+  padding: 12px;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 100;
+  display: block;
+  font-style: italic;
+}
+
+@media (min-width: 1200px) {
+  .page-comment {
+    position: absolute;
+    left: calc(100% + 40px);
+    width: 300px;
+    margin-bottom: 0;
+  }
+}
+
+.page-comment::before {
+  content: "// ";
+}
+
+.page-comment-close {
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  cursor: pointer;
+  font-size: 10px;
+  opacity: 0.5;
+  padding: 4px;
+}
+
+.page-comment-close:hover {
+  opacity: 1;
+}

@@ -50,7 +50,7 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 				<section class="w-full">
 					<Header title="a maker" showAvatar={true} />
 
-					<div class="flex flex-col border-t border-zinc-200">
+					<div class="flex flex-col border-t border-zinc-200 overflow-visible">
 					{sortedApps.map((app) => (
 						<div class="group border-b border-x border-zinc-200 transition-colors duration-300 hover:bg-zinc-50/50">
 							<input
@@ -58,7 +58,7 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 								id={`app-${app.data.name.toLowerCase().replace(/\s+/g, '-')}`}
 								class="peer hidden"
 							/>
-							<div class="relative flex items-start gap-4 py-4 px-4 peer-checked:[&_.logo]:w-12 peer-checked:[&_.logo]:h-12 peer-checked:[&_.desc-grid]:grid-rows-[1fr] peer-checked:[&_.desc-text]:opacity-100">
+							<div class="relative flex items-start gap-4 py-4 px-4 peer-checked:[&_.logo]:w-12 peer-checked:[&_.logo]:h-12 peer-checked:[&_.desc-grid]:grid-rows-[1fr] peer-checked:[&_.desc-text]:opacity-100 peer-checked:[&_label]:z-0 peer-checked:[&_.desc-inner]:overflow-visible">
 								<!-- Label for toggle -->
 								<label
 									for={`app-${app.data.name.toLowerCase().replace(/\s+/g, '-')}`}
@@ -82,10 +82,11 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 										</h3>
 									</div>
 									<div class="grid grid-rows-[0fr] transition-all duration-500 ease-in-out desc-grid">
-										<div class="overflow-hidden">
-											<p class="font-plus text-[12px] text-zinc-500 leading-relaxed mt-2 opacity-0 transition-opacity duration-500 desc-text">
-												{app.data.description}
-											</p>
+										<div class="overflow-hidden desc-inner">
+											<p
+												class="font-plus text-[12px] text-zinc-500 leading-relaxed mt-2 opacity-0 transition-opacity duration-500 desc-text"
+												set:html={app.data.description}
+											/>
 										</div>
 									</div>
 								</div>
@@ -147,6 +148,48 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 		</div>
 
 		<script>
+			// Page Comment Logic
+			document.addEventListener('click', (e) => {
+				const target = e.target as HTMLElement;
+				const commentTrigger = target.closest('[data-comment]');
+
+				if (commentTrigger) {
+					e.preventDefault();
+					const commentText = (commentTrigger as HTMLElement).dataset.comment;
+					const triggerText = commentTrigger.textContent || '';
+					const blockParent = commentTrigger.closest('p, h1, h2, h3, div');
+					const container = blockParent?.parentElement;
+
+					if (!blockParent || !container || !commentText) return;
+
+					// Check if comment already exists for this trigger (as a sibling of blockParent)
+					const existingComment = container.querySelector(`.page-comment[data-for="${triggerText}"]`);
+					if (existingComment) {
+						existingComment.remove();
+						return;
+					}
+
+					// Remove other comments in the same container to avoid clutter
+					container.querySelectorAll('.page-comment').forEach(c => c.remove());
+
+					const commentEl = document.createElement('div');
+					commentEl.className = 'page-comment';
+					commentEl.dataset.for = triggerText;
+					commentEl.innerHTML = `
+						${commentText}
+						<span class="page-comment-close">✕</span>
+					`;
+
+					commentEl.querySelector('.page-comment-close')?.addEventListener('click', (e) => {
+						e.stopPropagation();
+						commentEl.remove();
+					});
+
+					// Insert before the block parent
+					container.insertBefore(commentEl, blockParent);
+				}
+			});
+
 			const heroProfilePic = document.getElementById('hero-profile-pic');
 			const headerAvatars = document.querySelectorAll('.header-avatar');
 
