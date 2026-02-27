@@ -44,7 +44,7 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 
 			<main class="mt-4 mb-20">
 				<section class="w-full">
-					<Header title="a maker" />
+					<Header title="a maker" showAvatar={true} />
 
 					<div class="flex flex-col border-t border-zinc-200">
 					{sortedApps.map((app) => (
@@ -117,7 +117,7 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 				</section>
 
 				<section class="w-full mt-12">
-					<Header title="a portrait artist" />
+					<Header title="a portrait artist" showAvatar={true} />
 					<div class="-mr-6 md:-mr-[calc(50vw-226px)]">
 						<div class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar gap-6 pb-4 pr-6 md:pr-[calc(50vw-226px)]">
 							{sortedPortraits.map((portrait) => (
@@ -144,20 +144,22 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 
 		<script>
 			const heroProfilePic = document.getElementById('hero-profile-pic');
-			const headerAvatar = document.getElementById('header-avatar');
+			const headerAvatars = document.querySelectorAll('.header-avatar');
 
-			if (heroProfilePic && headerAvatar) {
+			if (heroProfilePic && headerAvatars.length > 0) {
 				const observer = new IntersectionObserver(
 					([entry]) => {
-						if (!entry.isIntersecting) {
-							// Hero pic is out of view, show header avatar
-							headerAvatar.classList.remove('opacity-0', '-translate-x-4', 'w-0');
-							headerAvatar.classList.add('opacity-100', 'translate-x-0', 'w-5', 'mr-3');
-						} else {
-							// Hero pic is in view, hide header avatar
-							headerAvatar.classList.add('opacity-0', '-translate-x-4', 'w-0');
-							headerAvatar.classList.remove('opacity-100', 'translate-x-0', 'w-5', 'mr-3');
-						}
+						headerAvatars.forEach((avatar) => {
+							if (!entry.isIntersecting) {
+								// Hero pic is out of view, show header avatars
+								avatar.classList.remove('opacity-0', '-translate-x-4', 'w-0');
+								avatar.classList.add('opacity-100', 'translate-x-0', 'w-5', 'mr-3');
+							} else {
+								// Hero pic is in view, hide header avatars
+								avatar.classList.add('opacity-0', '-translate-x-4', 'w-0');
+								avatar.classList.remove('opacity-100', 'translate-x-0', 'w-5', 'mr-3');
+							}
+						});
 					},
 					{ threshold: 0 }
 				);
