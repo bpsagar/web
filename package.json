@@ -11,9 +11,11 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@astrojs/check": "^0.9.6",
     "@tailwindcss/vite": "^4.2.0",
     "astro": "^5.17.1",
-    "tailwindcss": "^4.2.0"
+    "tailwindcss": "^4.2.0",
+    "typescript": "^5.9.3"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",

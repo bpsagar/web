@@ -6,10 +6,38 @@
   --color-primary: #ff5f1f;
 }
 
+body {
+  @apply font-plus;
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+
 @utility no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+
   &::-webkit-scrollbar {
     display: none;
   }
+}
+
+[data-comment] {
+  border-bottom: 2px solid var(--color-primary);
+  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  border-radius: 2px;
+  padding: 0 2px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  position: relative;
+  z-index: 50;
+}
+
+[data-comment]::before {
+  content: "💬\00a0";
+  font-size: 0.7em;
+  vertical-align: middle;
+}
+
+[data-comment]:hover {
+  background-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
 }

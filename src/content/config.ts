@@ -16,6 +16,7 @@ const portraits = defineCollection({
   schema: z.object({
     title: z.string(),
     image: z.string().url(),
+    titleComment: z.string().optional(),
     order: z.number(),
   }),
 });
