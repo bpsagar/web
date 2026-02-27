@@ -163,20 +163,28 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 					if (!blockParent || !container || !commentText) return;
 
 					// Check if comment already exists for this trigger (as a sibling of blockParent)
-					const existingComment = container.querySelector(`.page-comment[data-for="${triggerText}"]`);
-					if (existingComment) {
-						existingComment.remove();
-						return;
-					}
+					const existingComments = container.querySelectorAll('.page-comment');
+					let isSameComment = false;
+					existingComments.forEach(c => {
+						if ((c as HTMLElement).dataset.for === triggerText) {
+							isSameComment = true;
+						}
+						c.remove();
+					});
 
-					// Remove other comments in the same container to avoid clutter
-					container.querySelectorAll('.page-comment').forEach(c => c.remove());
+					if (isSameComment) return;
 
 					const commentEl = document.createElement('div');
 					commentEl.className = 'page-comment';
 					commentEl.dataset.for = triggerText;
 					commentEl.innerHTML = `
-						${commentText}
+						<div class="page-comment-header">
+							<img src="/profile.png" class="page-comment-avatar" />
+							<span class="page-comment-author">Sagar Chakravarthy</span>
+						</div>
+						<div class="page-comment-body">
+							${commentText}
+						</div>
 						<span class="page-comment-close">✕</span>
 					`;
 
