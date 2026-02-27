@@ -1,12 +1,29 @@
 ---
+import { Image } from 'astro:assets';
+import profileImage from '../assets/profile.png';
+
 interface Props {
 	title?: string;
+	showAvatar?: boolean;
 }
 
-const { title } = Astro.props;
+const { title, showAvatar = false } = Astro.props;
 ---
 
 <div class="flex items-center font-host font-medium text-sm py-4 uppercase tracking-widest">
+	{showAvatar && (
+		<div class="header-avatar opacity-0 -translate-x-4 w-0 overflow-hidden transition-all duration-500 ease-in-out">
+			<div class="w-5 h-5 rounded-full overflow-hidden border border-zinc-200">
+				<Image
+					src={profileImage}
+					alt="Sagar Chakravarthy"
+					width={20}
+					height={20}
+					class="w-full h-full object-cover"
+				/>
+			</div>
+		</div>
+	)}
 	<span class="text-zinc-400">sagar.im</span>
 	{title && (
 		<>

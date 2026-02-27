@@ -1,7 +1,9 @@
 ---
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 import Header from '../components/Header.astro';
 import '../styles/global.css';
+import profileImage from '../assets/profile.png';
 
 const allApps = await getCollection('apps');
 const sortedApps = allApps.sort((a, b) => a.data.order - b.data.order);
@@ -13,7 +15,7 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href={import.meta.env.BASE_URL + "favicon.svg"} />
+		<link rel="icon" type="image/png" href={import.meta.env.BASE_URL + "profile.png"} />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
 		<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,15 +25,26 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 	</head>
 	<body class="bg-white text-zinc-900 min-h-screen overflow-x-hidden">
 		<div class="max-w-[500px] mx-auto px-6">
-			<Header />
+			<Header showAvatar={true} />
 			<section class="relative pt-2 pb-8 overflow-hidden">
+				<!-- Profile Picture -->
+				<div id="hero-profile-pic" class="mb-6 w-24 h-24 rounded-full overflow-hidden border border-zinc-200">
+					<Image
+						src={profileImage}
+						alt="Sagar Chakravarthy"
+						width={96}
+						height={96}
+						class="w-full h-full object-cover"
+						loading="eager"
+					/>
+				</div>
 				<!-- Heading -->
 				<h1 class="font-plus font-semibold tracking-tight text-zinc-400 text-[8vw] md:text-[3vw]">A <span class="text-zinc-900">software engineer</span>, <span class="text-zinc-900">maker</span> and <span class="text-zinc-900">portrait artist</span>, based in Singapore.</h1>
 			</section>
 
 			<main class="mt-4 mb-20">
 				<section class="w-full">
-					<Header title="a maker" />
+					<Header title="a maker" showAvatar={true} />
 
 					<div class="flex flex-col border-t border-zinc-200">
 					{sortedApps.map((app) => (
@@ -104,7 +117,7 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 				</section>
 
 				<section class="w-full mt-12">
-					<Header title="a portrait artist" />
+					<Header title="a portrait artist" showAvatar={true} />
 					<div class="-mr-6 md:-mr-[calc(50vw-226px)]">
 						<div class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar gap-6 pb-4 pr-6 md:pr-[calc(50vw-226px)]">
 							{sortedPortraits.map((portrait) => (
@@ -128,5 +141,31 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 				</section>
 			</main>
 		</div>
+
+		<script>
+			const heroProfilePic = document.getElementById('hero-profile-pic');
+			const headerAvatars = document.querySelectorAll('.header-avatar');
+
+			if (heroProfilePic && headerAvatars.length > 0) {
+				const observer = new IntersectionObserver(
+					([entry]) => {
+						headerAvatars.forEach((avatar) => {
+							if (!entry.isIntersecting) {
+								// Hero pic is out of view, show header avatars
+								avatar.classList.remove('opacity-0', '-translate-x-4', 'w-0');
+								avatar.classList.add('opacity-100', 'translate-x-0', 'w-5', 'mr-3');
+							} else {
+								// Hero pic is in view, hide header avatars
+								avatar.classList.add('opacity-0', '-translate-x-4', 'w-0');
+								avatar.classList.remove('opacity-100', 'translate-x-0', 'w-5', 'mr-3');
+							}
+						});
+					},
+					{ threshold: 0 }
+				);
+
+				observer.observe(heroProfilePic);
+			}
+		</script>
 	</body>
 </html>
