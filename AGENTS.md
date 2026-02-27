@@ -5,8 +5,8 @@ This document contains key information and instructions for agents working on th
 ## Project Overview
 - **Framework:** [Astro](https://astro.build/) (v5+) with TypeScript in strict mode.
 - **Styling:** [Tailwind CSS v4](https://tailwindcss.com/) integrated as a Vite plugin.
-- **Deployment:** GitHub Pages at `https://bpsagar.github.io/web/`.
-- **Base Path:** `/web/` (configured in `astro.config.mjs`).
+- **Deployment:** GitHub Pages at `https://sagar.im/`.
+- **Base Path:** `/` (configured in `astro.config.mjs`).
 
 ## Design & Typography
 - **Primary Theme:** Light mode only (white background, dark zinc-900 text) with bright orange brand color (`#ff5f1f`).
@@ -27,7 +27,7 @@ This document contains key information and instructions for agents working on th
   - Commands: `npm run take-screenshots`.
   - Artifacts: `screenshots/desktop.png` and `screenshots/mobile.png`.
 - **UI Verification:** Playwright is used for UI testing.
-  - To run tests locally: `npm run dev -- --host --base /web > dev_server.log 2>&1 & sleep 5 && npx playwright test`.
+  - To run tests locally: `npm run dev -- --host > dev_server.log 2>&1 & sleep 5 && npx playwright test`.
 
 ## Coding Guidelines
 - **CSS:** Use Tailwind v4 theme variables defined in `src/styles/global.css`.

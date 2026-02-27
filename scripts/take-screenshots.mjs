@@ -7,7 +7,7 @@ import http from 'http';
 // Configuration
 const PORT = 4321;
 // Note: This matches the 'base' in astro.config.mjs
-const BASE_PATH = '/web/';
+const BASE_PATH = '/';
 const BASE_URL = `http://localhost:${PORT}${BASE_PATH}`;
 const SCREENSHOTS_DIR = path.join(process.cwd(), 'screenshots');
 
