@@ -41,3 +41,30 @@ body {
   background-color: color-mix(in srgb, currentColor 8%, transparent);
   text-decoration-color: currentColor;
 }
+
+[data-comment]::after {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 6px;
+  vertical-align: middle;
+  background-color: var(--color-primary);
+  border-radius: 50%;
+  position: relative;
+  top: -1px;
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-primary) 40%, transparent);
+  animation: comment-pulse 2s infinite;
+}
+
+@keyframes comment-pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-primary) 60%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 6px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
