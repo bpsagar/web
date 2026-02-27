@@ -25,15 +25,15 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 	</head>
 	<body class="bg-white text-zinc-900 min-h-screen overflow-x-hidden">
 		<div class="max-w-[500px] mx-auto px-6">
-			<Header />
+			<Header showAvatar={true} />
 			<section class="relative pt-2 pb-8 overflow-hidden">
 				<!-- Profile Picture -->
-				<div class="mb-6 w-16 h-16 rounded-full overflow-hidden border border-zinc-200">
+				<div id="hero-profile-pic" class="mb-6 w-24 h-24 rounded-full overflow-hidden border border-zinc-200">
 					<Image
 						src={profileImage}
 						alt="Sagar Chakravarthy"
-						width={64}
-						height={64}
+						width={96}
+						height={96}
 						class="w-full h-full object-cover"
 						loading="eager"
 					/>
@@ -141,5 +141,29 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 				</section>
 			</main>
 		</div>
+
+		<script>
+			const heroProfilePic = document.getElementById('hero-profile-pic');
+			const headerAvatar = document.getElementById('header-avatar');
+
+			if (heroProfilePic && headerAvatar) {
+				const observer = new IntersectionObserver(
+					([entry]) => {
+						if (!entry.isIntersecting) {
+							// Hero pic is out of view, show header avatar
+							headerAvatar.classList.remove('opacity-0', '-translate-x-4', 'w-0');
+							headerAvatar.classList.add('opacity-100', 'translate-x-0', 'w-5', 'mr-3');
+						} else {
+							// Hero pic is in view, hide header avatar
+							headerAvatar.classList.add('opacity-0', '-translate-x-4', 'w-0');
+							headerAvatar.classList.remove('opacity-100', 'translate-x-0', 'w-5', 'mr-3');
+						}
+					},
+					{ threshold: 0 }
+				);
+
+				observer.observe(heroProfilePic);
+			}
+		</script>
 	</body>
 </html>
