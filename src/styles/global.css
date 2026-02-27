@@ -8,6 +8,8 @@
 
 body {
   @apply font-plus;
+  font-size: 1.125rem;
+  line-height: 1.6;
 }
 
 @utility no-scrollbar {
@@ -28,6 +30,12 @@ body {
   transition: background-color 0.2s;
   position: relative;
   z-index: 50;
+}
+
+[data-comment]::before {
+  content: "💬\00a0";
+  font-size: 0.7em;
+  vertical-align: middle;
 }
 
 [data-comment]:hover {

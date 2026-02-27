@@ -17,20 +17,32 @@
             class="page-comment fixed bottom-8 left-1/2 -translate-x-1/2 z-[1000] translate-y-full transition-transform duration-300 ease-out bg-white p-5 w-[calc(100%-48px)] max-w-[400px] rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] pointer-events-auto border border-zinc-200"
             data-for=""
         >
-            <div class="page-comment-header flex items-center gap-2 mb-2">
-                <span
-                    class="page-comment-author font-plus font-semibold text-sm text-zinc-900"
-                    >Comment</span
+            <div
+                class="page-comment-header flex items-center mb-6 font-host text-sm font-semibold uppercase tracking-widest"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="mr-2 text-zinc-900"
                 >
+                    <path
+                        d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                    ></path>
+                </svg>
+                <span class="page-comment-author text-zinc-900">Comment</span>
             </div>
 
-            <div
-                class="page-comment-body leading-relaxed text-zinc-900 text-sm"
-            >
-            </div>
+            <div class="page-comment-body leading-relaxed text-zinc-900"></div>
 
             <span
-                class="page-comment-close absolute top-4 right-4 cursor-pointer text-[14px] text-zinc-400 opacity-50 p-1 leading-none hover:opacity-100"
+                class="page-comment-close absolute top-4 right-4 cursor-pointer text-zinc-400 opacity-50 p-1 leading-none hover:opacity-100"
                 >✕</span
             >
         </div>
