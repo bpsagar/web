@@ -1,5 +1,5 @@
 ---
 title: "Bryan Cranston"
-image: "https://bpsagar.github.io/sketch/img/sketch/bryancranston.jpg"
+image: "../../assets/portraits/bryan-cranston.jpg"
 order: 5
 ---

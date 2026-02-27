@@ -68,9 +68,11 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 
 								<!-- Logo -->
 								<div class="flex-shrink-0 z-10 transition-all duration-500 logo w-6 h-6">
-									<img
+									<Image
 										src={app.data.logo}
 										alt={app.data.name}
+										width={48}
+										height={48}
 										class="w-full h-full object-contain"
 									/>
 								</div>
@@ -129,9 +131,12 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 							{sortedPortraits.map((portrait, index) => (
 								<div class="flex-none w-[280px] snap-start">
 									<div class={`aspect-[3/4] overflow-hidden border-y border-l border-zinc-200 bg-zinc-50 ${index === sortedPortraits.length - 1 ? 'border-r' : ''}`}>
-										<img
+										<Image
 											src={portrait.data.image}
 											alt={portrait.data.title}
+											width={560}
+											height={747}
+											quality="high"
 											class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
 										/>
 									</div>

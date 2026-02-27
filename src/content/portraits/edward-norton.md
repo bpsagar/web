@@ -1,5 +1,5 @@
 ---
 title: "Edward Norton"
-image: "https://bpsagar.github.io/sketch/img/sketch/edwardnorton.jpg"
+image: "../../assets/portraits/edward-norton.jpg"
 order: 3
 ---

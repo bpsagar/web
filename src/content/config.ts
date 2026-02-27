@@ -2,10 +2,10 @@ import { defineCollection, z } from 'astro:content';
 
 const apps = defineCollection({
   type: 'content',
-  schema: z.object({
+  schema: ({ image }) => z.object({
     name: z.string(),
     description: z.string(),
-    logo: z.string(),
+    logo: image(),
     url: z.string().url(),
     order: z.number(),
   }),
@@ -13,9 +13,9 @@ const apps = defineCollection({
 
 const portraits = defineCollection({
   type: 'content',
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
-    image: z.string().url(),
+    image: image(),
     titleComment: z.string().optional(),
     order: z.number(),
   }),
