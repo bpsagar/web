@@ -4,4 +4,7 @@ description: 'AI resume writer that turns your work experiences into a compellin
 logo: "../../assets/apps/story-cv.svg"
 url: "https://story.cv"
 order: 1
+tag: "SaaS"
+year: "2026"
+color: "#EE4E34"
 ---
