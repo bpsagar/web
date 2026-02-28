@@ -8,6 +8,9 @@ const apps = defineCollection({
     logo: image(),
     url: z.string().url(),
     order: z.number(),
+    tag: z.string(),
+    year: z.string(),
+    color: z.string(),
   }),
 });
 

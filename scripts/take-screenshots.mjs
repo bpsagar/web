@@ -6,14 +6,10 @@ import http from 'http';
 
 // Configuration
 const PORT = 4321;
-// Note: This matches the 'base' in astro.config.mjs
 const BASE_PATH = '/';
 const BASE_URL = `http://localhost:${PORT}${BASE_PATH}`;
 const SCREENSHOTS_DIR = path.join(process.cwd(), 'screenshots');
 
-/**
- * Checks if the dev server is responding with a 200 OK.
- */
 async function isServerReady() {
   return new Promise((resolve) => {
     const req = http.get(BASE_URL, (res) => {
@@ -27,9 +23,6 @@ async function isServerReady() {
   });
 }
 
-/**
- * Polls the server until it's ready or times out.
- */
 async function waitForServer() {
   console.log(`Waiting for server to be ready at ${BASE_URL}...`);
   for (let i = 0; i < 60; i++) {
@@ -47,7 +40,6 @@ async function main() {
   }
 
   console.log('Starting dev server...');
-  // Use detached: true so we can kill the entire process group later
   const server = spawn('npx', ['astro', 'dev', '--port', PORT], {
     shell: true,
     stdio: 'ignore',
@@ -68,8 +60,15 @@ async function main() {
       const desktopContext = await browser.newContext(devices['Desktop Chrome']);
       const desktopPage = await desktopContext.newPage();
       await desktopPage.goto(BASE_URL, { waitUntil: 'networkidle', timeout: 30000 });
-      await desktopPage.waitForTimeout(1000); // Wait for potential animations
+      await desktopPage.waitForTimeout(1000);
       await desktopPage.screenshot({ path: path.join(SCREENSHOTS_DIR, 'desktop.png'), fullPage: true });
+
+      // Expanded State Screenshot
+      console.log('Taking expanded app screenshot...');
+      // Click the label associated with story.cv
+      await desktopPage.click('label[for="app-story.cv"]');
+      await desktopPage.waitForTimeout(1000); // Wait for transition
+      await desktopPage.screenshot({ path: path.join(SCREENSHOTS_DIR, 'desktop-expanded.png'), fullPage: true });
 
       // Mobile Screenshot
       console.log('Taking mobile screenshot...');
@@ -87,10 +86,8 @@ async function main() {
     console.log('Stopping dev server...');
     if (server.pid) {
       if (process.platform === 'win32') {
-        // Windows: use taskkill to kill the process tree
         spawn('taskkill', ['/pid', server.pid.toString(), '/f', '/t'], { stdio: 'ignore' });
       } else {
-        // Linux/macOS: kill the process group
         try {
           process.kill(-server.pid, 'SIGKILL');
         } catch (e) {
