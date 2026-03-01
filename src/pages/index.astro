@@ -262,7 +262,7 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 					<div class="flex flex-col gap-1">
 						${careerData.map((entry, index) => `
 							<div class="cursor-pointer flex items-start gap-2 role-option transition-colors duration-200 hover:text-[#61afef] ${index === selectedIndex ? 'text-[#61afef]' : 'text-zinc-400'}" data-index="${index}">
-								<span class="w-4">${index === selectedIndex ? '>' : ' '}</span>
+								<span class="w-4">${index === selectedIndex ? '●' : ' '}</span>
 								<span>${index + 1}. ${entry.data.company} (${entry.data.role})</span>
 							</div>
 						`).join('')}
@@ -412,7 +412,7 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 					if (idx === selectedIndex) {
 						opt.classList.remove('text-zinc-400');
 						opt.classList.add('text-[#61afef]');
-						opt.querySelector('span:first-child').textContent = '>';
+						opt.querySelector('span:first-child').textContent = '●';
 					} else {
 						opt.classList.add('text-zinc-400');
 						opt.classList.remove('text-[#61afef]');
