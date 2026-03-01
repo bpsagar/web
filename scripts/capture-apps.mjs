@@ -1,6 +1,6 @@
-import { chromium } from 'playwright';
-import { promises as fs } from 'fs';
+import { chromium, devices } from 'playwright';
 import path from 'path';
+import fs from 'fs';
 
 const apps = [
   { name: 'story-cv', url: 'https://story.cv' },
@@ -9,28 +9,51 @@ const apps = [
   { name: 'timetime', url: 'https://www.timetime.in/' },
 ];
 
+const OUTPUT_DIR = 'src/assets/apps';
+
 async function capture() {
+  if (!fs.existsSync(OUTPUT_DIR)) {
+    fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+  }
+
   const browser = await chromium.launch();
-  const context = await browser.newContext({
-    viewport: { width: 1280, height: 800 },
-    deviceScaleFactor: 2,
-  });
 
   for (const app of apps) {
-    const page = await context.newPage();
-    console.log(`Capturing ${app.name} at ${app.url}...`);
+    console.log(`Processing ${app.name}...`);
+
+    // Desktop
+    const desktopContext = await browser.newContext({
+      viewport: { width: 1280, height: 800 },
+      deviceScaleFactor: 2,
+    });
+    const desktopPage = await desktopContext.newPage();
     try {
-      await page.goto(app.url, { waitUntil: 'networkidle', timeout: 60000 });
-      // Wait a bit more for animations/dynamic content
-      await page.waitForTimeout(2000);
-      const screenshotPath = path.join('src/assets/apps', `${app.name}.png`);
-      await page.screenshot({ path: screenshotPath });
-      console.log(`Saved to ${screenshotPath}`);
-    } catch (error) {
-      console.error(`Failed to capture ${app.name}:`, error);
-    } finally {
-      await page.close();
-    }
+      console.log(`  Capturing desktop ${app.url}...`);
+      await desktopPage.goto(app.url, { waitUntil: 'networkidle', timeout: 60000 });
+      await desktopPage.waitForTimeout(2000);
+      const desktopPath = path.join(OUTPUT_DIR, `${app.name}-desktop.png`);
+      await desktopPage.screenshot({ path: desktopPath });
+      console.log(`  Saved to ${desktopPath}`);
+    } catch (e) { console.error(`  Failed desktop: ${e.message}`); }
+    await desktopPage.close();
+    await desktopContext.close();
+
+    // Mobile
+    const mobileContext = await browser.newContext({
+      ...devices['iPhone 13'],
+      deviceScaleFactor: 2,
+    });
+    const mobilePage = await mobileContext.newPage();
+    try {
+      console.log(`  Capturing mobile ${app.url}...`);
+      await mobilePage.goto(app.url, { waitUntil: 'networkidle', timeout: 60000 });
+      await mobilePage.waitForTimeout(2000);
+      const mobilePath = path.join(OUTPUT_DIR, `${app.name}-mobile.png`);
+      await mobilePage.screenshot({ path: mobilePath });
+      console.log(`  Saved to ${mobilePath}`);
+    } catch (e) { console.error(`  Failed mobile: ${e.message}`); }
+    await mobilePage.close();
+    await mobileContext.close();
   }
 
   await browser.close();

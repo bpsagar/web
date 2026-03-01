@@ -96,62 +96,70 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 						</div>
 
 						<!-- Browser Content Area -->
-						<div class="relative overflow-hidden bg-white min-h-[240px] transition-colors duration-500" id="browser-content-area" style={`--app-color: ${sortedApps[0].data.color};`}>
+						<div class="relative overflow-hidden bg-white min-h-[400px] transition-colors duration-500" id="browser-content-area" style={`--app-color: ${sortedApps[0].data.color};`}>
 							<!-- Spotlight Gradient -->
 							<div class="absolute inset-0 opacity-0 group-hover/browser:opacity-100 transition-opacity duration-500 pointer-events-none z-0 spotlight" id="browser-spotlight" style="background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), color-mix(in srgb, var(--app-color) 12%, transparent), transparent 40%);"></div>
 
 							<!-- Glassmorphism Background -->
 							<div id="browser-glass" class="absolute inset-0 transition-all duration-700 pointer-events-none z-0 backdrop-blur-2xl" style={`background: linear-gradient(135deg, color-mix(in srgb, ${sortedApps[0].data.color} 8%, transparent), color-mix(in srgb, ${sortedApps[0].data.color} 2%, transparent));`}></div>
 
-							<div class="relative z-10 p-8">
+							<div class="relative z-10">
 								{sortedApps.map((app, index) => (
 									<div id={`content-${app.data.name.toLowerCase().replace(/\s+/g, '-')}`} class={`app-content transition-all duration-500 ${index === 0 ? 'block opacity-100 translate-y-0' : 'hidden opacity-0 translate-y-4'}`}>
-										<div class="flex items-start gap-6">
-											<!-- Logo -->
-											<div class="flex-shrink-0 w-14 h-14">
+										<!-- Banner -->
+										<div class="px-5 py-4 border-b border-zinc-200/50 flex items-center gap-4 bg-white/40 backdrop-blur-md">
+											<div class="flex-shrink-0 w-10 h-10">
 												<Image
 													src={app.data.logo}
 													alt={app.data.name}
-													width={56}
-													height={56}
+													width={40}
+													height={40}
 													class="w-full h-full object-contain"
 												/>
 											</div>
-
-											<!-- Content -->
 											<div class="flex-1 min-w-0">
-												<div class="flex flex-col gap-2">
-													<div class="flex items-center justify-between">
-														<h3 class="font-host font-bold text-[14px] uppercase tracking-wider text-zinc-900 truncate">
-															{app.data.name}
-														</h3>
-														<span class="text-[10px] font-host text-zinc-400">
-															{app.data.year}
-														</span>
-													</div>
-													<div>
-														<span class="text-[9px] px-2 py-0.5 rounded-full border border-zinc-200 text-zinc-500 font-bold uppercase tracking-[0.1em] bg-white/50 backdrop-blur-sm whitespace-nowrap">
-															{app.data.tag}
-														</span>
-													</div>
+												<div class="flex items-center gap-2 mb-0.5">
+													<h3 class="font-host font-bold text-[12px] uppercase tracking-wider text-zinc-900 truncate">
+														{app.data.name}
+													</h3>
+													<span class="text-[8px] px-2 py-0.5 rounded-full border border-zinc-200 text-zinc-500 font-bold uppercase tracking-[0.1em] bg-white/50 whitespace-nowrap">
+														{app.data.tag}
+													</span>
 												</div>
-												<p
-													class="font-plus text-zinc-600 leading-relaxed mt-4 text-[13px] desc-inner"
-													set:html={app.data.description}
-												/>
+												<p class="font-plus text-zinc-600 text-[11px] truncate leading-tight">
+													{app.data.description}
+												</p>
+											</div>
+											<div class="text-[10px] font-host text-zinc-400 font-medium">
+												{app.data.year}
 											</div>
 										</div>
-										{app.data.screenshot && (
-											<div class="mt-8 rounded-lg border border-zinc-200 overflow-hidden shadow-sm bg-white">
-												<Image
-													src={app.data.screenshot}
-													alt={`${app.data.name} screenshot`}
-													width={1000}
-													height={600}
-													class="w-full h-auto"
-												/>
-											</div>
-										)}
+
+										<!-- Screenshot -->
+										<div class="w-full bg-zinc-50 flex items-center justify-center overflow-hidden">
+											{app.data.screenshot_desktop && (
+												<div class="hidden md:block w-full">
+													<Image
+														src={app.data.screenshot_desktop}
+														alt={`${app.data.name} desktop screenshot`}
+														width={1280}
+														height={800}
+														class="w-full h-auto block object-top"
+													/>
+												</div>
+											)}
+											{app.data.screenshot_mobile && (
+												<div class="block md:hidden w-full">
+													<Image
+														src={app.data.screenshot_mobile}
+														alt={`${app.data.name} mobile screenshot`}
+														width={780}
+														height={1688}
+														class="w-full h-auto block object-top"
+													/>
+												</div>
+											)}
+										</div>
 									</div>
 								))}
 							</div>

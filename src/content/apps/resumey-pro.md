@@ -8,4 +8,6 @@ tag: "SaaS"
 year: "2020"
 color: "#4B76F1"
 screenshot: "../../assets/apps/resumey-pro.png"
+screenshot_desktop: "../../assets/apps/resumey-pro-desktop.png"
+screenshot_mobile: "../../assets/apps/resumey-pro-mobile.png"
 ---
