@@ -7,4 +7,5 @@ order: 2
 tag: "SaaS"
 year: "2020"
 color: "#4B76F1"
+screenshot: "../../assets/apps/resumey-pro.png"
 ---

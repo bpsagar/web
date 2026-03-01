@@ -96,7 +96,7 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 						</div>
 
 						<!-- Browser Content Area -->
-						<div class="relative overflow-hidden bg-white min-h-[300px] transition-colors duration-500" id="browser-content-area" style={`--app-color: ${sortedApps[0].data.color};`}>
+						<div class="relative overflow-hidden bg-white min-h-[240px] transition-colors duration-500" id="browser-content-area" style={`--app-color: ${sortedApps[0].data.color};`}>
 							<!-- Spotlight Gradient -->
 							<div class="absolute inset-0 opacity-0 group-hover/browser:opacity-100 transition-opacity duration-500 pointer-events-none z-0 spotlight" id="browser-spotlight" style="background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), color-mix(in srgb, var(--app-color) 12%, transparent), transparent 40%);"></div>
 
@@ -120,21 +120,18 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 
 											<!-- Content -->
 											<div class="flex-1 min-w-0">
-												<div class="flex flex-col md:flex-row md:items-center gap-1.5 md:gap-3">
-													<div class="flex items-center gap-2">
+												<div class="flex flex-col gap-2">
+													<div class="flex items-center justify-between">
 														<h3 class="font-host font-bold text-[14px] uppercase tracking-wider text-zinc-900 truncate">
 															{app.data.name}
 														</h3>
-														<span class="md:hidden text-[10px] font-host text-zinc-400 ml-auto">
+														<span class="text-[10px] font-host text-zinc-400">
 															{app.data.year}
 														</span>
 													</div>
-													<div class="flex items-center gap-2">
+													<div>
 														<span class="text-[9px] px-2 py-0.5 rounded-full border border-zinc-200 text-zinc-500 font-bold uppercase tracking-[0.1em] bg-white/50 backdrop-blur-sm whitespace-nowrap">
 															{app.data.tag}
-														</span>
-														<span class="hidden md:block text-[10px] font-host text-zinc-400 ml-auto mr-1">
-															{app.data.year}
 														</span>
 													</div>
 												</div>
@@ -144,6 +141,17 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 												/>
 											</div>
 										</div>
+										{app.data.screenshot && (
+											<div class="mt-8 rounded-lg border border-zinc-200 overflow-hidden shadow-sm bg-white">
+												<Image
+													src={app.data.screenshot}
+													alt={`${app.data.name} screenshot`}
+													width={1000}
+													height={600}
+													class="w-full h-auto"
+												/>
+											</div>
+										)}
 									</div>
 								))}
 							</div>

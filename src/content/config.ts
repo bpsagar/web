@@ -11,6 +11,7 @@ const apps = defineCollection({
     tag: z.string(),
     year: z.string(),
     color: z.string(),
+    screenshot: image().optional(),
   }),
 });
 

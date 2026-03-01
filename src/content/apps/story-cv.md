@@ -7,4 +7,5 @@ order: 1
 tag: "SaaS"
 year: "2026"
 color: "#EE4E34"
+screenshot: "../../assets/apps/story-cv.png"
 ---

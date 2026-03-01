@@ -7,4 +7,5 @@ order: 3
 tag: "Chrome Extension"
 year: "2023"
 color: "#0D45CD"
+screenshot: "../../assets/apps/meatymeets.png"
 ---
