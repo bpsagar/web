@@ -11,6 +11,9 @@ const sortedApps = allApps.sort((a, b) => a.data.order - b.data.order);
 
 const allPortraits = await getCollection('portraits');
 const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order);
+
+const allCareer = await getCollection('career');
+const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 ---
 
 <html lang="en">
@@ -62,99 +65,16 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 							<div class="flex-1 text-center text-zinc-500 text-[11px] font-medium mr-12 uppercase tracking-widest">zsh — 80x24</div>
 						</div>
 						<!-- Terminal Body -->
-						<div class="p-6 overflow-x-auto no-scrollbar">
+						<div class="p-6 overflow-x-auto no-scrollbar min-h-[400px]" id="terminal-body">
 							<div class="flex gap-2">
 								<span class="text-[#5af78e]">sagar@work</span>
-								<span class="text-white">$ career --changelog</span>
+								<span class="text-white">$ career ls</span>
 							</div>
 
-							<div class="mt-4 space-y-6">
-								<!-- v1.0 -->
-								<div class="space-y-1">
-									<div class="flex flex-wrap gap-2">
-										<span class="text-[#61afef]">[v1.0]</span>
-										<span class="text-[#abb2bf]">2014-07-14 • SMERGERS & Wealthrox (Bangalore)</span>
-									</div>
-									<div class="text-white ml-4">○ Role: Founding Engineer; architected the 0-to-1 journey from UI/UX to deployment.</div>
-									<div class="ml-4 flex flex-wrap gap-x-2">
-										<span class="text-[#e5c07b]">⚡ Stack:</span>
-										<span class="text-[#abb2bf]">Python, Django, React, jQuery, Google Maps API</span>
-									</div>
-								</div>
-
-								<!-- v2.0 -->
-								<div class="space-y-1">
-									<div class="flex flex-wrap gap-2">
-										<span class="text-[#61afef]">[v2.0]</span>
-										<span class="text-[#abb2bf]">2017-07-15 • Leadbook (Singapore)</span>
-									</div>
-									<div class="text-white ml-4">○ Role: Lead Software Engineer; re-architected the core system for global scalability.</div>
-									<div class="ml-4 flex flex-wrap gap-x-2">
-										<span class="text-[#e5c07b]">⚡ Stack:</span>
-										<span class="text-[#abb2bf]">Python, Django, Elasticsearch, React, Terraform, Ansible</span>
-									</div>
-								</div>
-
-								<!-- v3.0 -->
-								<div class="space-y-1">
-									<div class="flex flex-wrap gap-2">
-										<span class="text-[#61afef]">[v3.0]</span>
-										<span class="text-[#abb2bf]">2019-03-10 • Funding Societies: Software Engineer</span>
-									</div>
-									<div class="text-white ml-4">○ Role: Built seamless automated application journeys to digitize customer financing.</div>
-									<div class="ml-4 flex flex-wrap gap-x-2">
-										<span class="text-[#e5c07b]">⚡ Stack:</span>
-										<span class="text-[#abb2bf]">Typescript, Python, Golang, Microservices, Angular, Serverless</span>
-									</div>
-								</div>
-
-								<!-- v3.1 -->
-								<div class="space-y-1">
-									<div class="flex flex-wrap gap-2">
-										<span class="text-[#61afef]">[v3.1]</span>
-										<span class="text-[#abb2bf]">2021-10-01 • Funding Societies: Engineering Manager</span>
-									</div>
-									<div class="text-white ml-4">○ Role: Led a team of 11 (SWE/QA) through hyper-growth and regional expansion.</div>
-									<div class="ml-4 flex flex-wrap gap-x-2">
-										<span class="text-[#e5c07b]">⚡ Stack:</span>
-										<span class="text-[#abb2bf]">SCRUM, Stakeholder Mgmt, Technical Roadmap, Performance Mentorship</span>
-									</div>
-								</div>
-
-								<!-- v3.2 -->
-								<div class="space-y-1">
-									<div class="flex flex-wrap gap-2">
-										<span class="text-[#61afef]">[v3.2]</span>
-										<span class="text-[#abb2bf]">2023-07-01 • Funding Societies: Senior Software Engineer</span>
-									</div>
-									<div class="text-white ml-4">○ Role: Returned to IC to lead major core data model redesigns across 10+ services.</div>
-									<div class="ml-4 flex flex-wrap gap-x-2">
-										<span class="text-[#e5c07b]">⚡ Stack:</span>
-										<span class="text-[#abb2bf]">Node.js, Typescript, AWS Serverless, Document Automation</span>
-									</div>
-								</div>
-
-								<!-- v3.3 -->
-								<div class="space-y-1">
-									<div class="flex flex-wrap gap-2">
-										<span class="text-[#61afef]">[v3.3]</span>
-										<span class="text-[#abb2bf]">2025-01-01 • Funding Societies: Staff Software Engineer</span>
-									</div>
-									<div class="text-white ml-4">○ Role: Driving engineering productivity via RAG-based AI agents and L1 automation.</div>
-									<div class="ml-4 flex flex-wrap gap-x-2">
-										<span class="text-[#e5c07b]">⚡ Stack:</span>
-										<span class="text-[#abb2bf]">Claude Code, RAG Models, GitHub CI, Advanced Query Optimization</span>
-									</div>
-								</div>
-
-								<div class="pt-2">
-									<div class="text-[#98c379]">✔ Career history fetch complete.</div>
-									<div class="flex gap-2">
-										<span class="text-[#5af78e]">sagar@work</span>
-										<span class="text-white">$<span class="animate-pulse ml-1 inline-block w-2 h-4 bg-white align-middle"></span></span>
-									</div>
-								</div>
+							<div id="terminal-content" class="mt-4 space-y-4">
+								<!-- Wizard will be injected here -->
 							</div>
+							<script id="career-data" type="application/json" is:inline set:html={JSON.stringify(sortedCareer)}></script>
 						</div>
 					</div>
 				</section>
@@ -325,11 +245,146 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 		</div>
 
 		<script>
+			// Terminal Wizard Logic
+			const terminalContent = document.getElementById('terminal-content');
+			const careerDataJson = document.getElementById('career-data')?.textContent;
+			const careerData = careerDataJson ? JSON.parse(careerDataJson) : [];
+			let selectedIndex = 0;
+			let isInteractive = true;
+
+			function renderWizard() {
+				if (!terminalContent) return;
+
+				const wizardHtml = `
+					<div class="space-y-2">
+						<div class="text-white">? Which role would you like to inspect? <span class="text-zinc-500">(Use arrow keys or click)</span></div>
+						<div class="flex flex-col gap-1">
+							${careerData.map((entry, index) => `
+								<div class="cursor-pointer flex items-start gap-2 role-option ${index === selectedIndex ? 'text-[#61afef]' : 'text-zinc-400'}" data-index="${index}">
+									<span class="w-4">${index === selectedIndex ? '>' : ' '}</span>
+									<span>${index + 1}. ${entry.data.company} (${entry.data.role})</span>
+								</div>
+							`).join('')}
+						</div>
+					</div>
+				`;
+
+				terminalContent.insertAdjacentHTML('beforeend', wizardHtml);
+
+				// Add click listeners
+				const options = terminalContent.querySelectorAll('.role-option');
+				options.forEach(opt => {
+					opt.addEventListener('click', () => {
+						if (!isInteractive) return;
+						const index = parseInt(opt.getAttribute('data-index') || '0');
+						selectedIndex = index;
+						handleSelection();
+					});
+				});
+			}
+
+			function handleSelection() {
+				isInteractive = false;
+				const entry = careerData[selectedIndex];
+
+				// Remove the prompt guide from the previous menu
+				const promptGuides = terminalContent.querySelectorAll('.text-zinc-500');
+				promptGuides.forEach(g => g.remove());
+
+				// Highlight the final selection in the menu and remove other options
+				const menus = terminalContent.querySelectorAll('.space-y-2');
+				const lastMenu = menus[menus.length - 1];
+				const options = lastMenu.querySelectorAll('.role-option');
+				options.forEach((opt, idx) => {
+					if (idx !== selectedIndex) {
+						opt.remove();
+					} else {
+						opt.classList.remove('text-[#61afef]');
+						opt.classList.add('text-[#5af78e]');
+						opt.querySelector('span:first-child').textContent = '✔';
+					}
+				});
+
+				const detailHtml = `
+					<div class="mt-4 space-y-1 pl-4 border-l border-zinc-800 ml-2">
+						<div class="flex flex-wrap gap-2">
+							<span class="text-[#61afef]">[${entry.data.version}]</span>
+							<span class="text-[#abb2bf]">${entry.data.date} • ${entry.data.company} (${entry.data.location})</span>
+						</div>
+						<div class="text-white ml-4">○ Role: ${entry.data.role}; ${entry.data.description}</div>
+						<div class="ml-4 flex flex-wrap gap-x-2">
+							<span class="text-[#e5c07b]">⚡ Stack:</span>
+							<span class="text-[#abb2bf]">${entry.data.stack.join(', ')}</span>
+						</div>
+					</div>
+					<div class="mt-4 flex gap-2 pt-2">
+						<span class="text-[#5af78e]">sagar@work</span>
+						<span class="text-white">$ career ls</span>
+					</div>
+				`;
+
+				terminalContent.insertAdjacentHTML('beforeend', detailHtml);
+
+				// Scroll terminal to bottom
+				const terminalBody = document.getElementById('terminal-body');
+				if (terminalBody) {
+					terminalBody.scrollTop = terminalBody.scrollHeight;
+				}
+
+				// Re-render wizard
+				isInteractive = true;
+				selectedIndex = 0;
+				renderWizard();
+
+				// Scroll terminal to bottom again after menu appears
+				if (terminalBody) {
+					setTimeout(() => {
+						terminalBody.scrollTop = terminalBody.scrollHeight;
+					}, 10);
+				}
+			}
+
+			window.addEventListener('keydown', (e) => {
+				if (!isInteractive) return;
+
+				if (e.key === 'ArrowUp') {
+					e.preventDefault();
+					selectedIndex = (selectedIndex - 1 + careerData.length) % careerData.length;
+					updateWizardSelection();
+				} else if (e.key === 'ArrowDown') {
+					e.preventDefault();
+					selectedIndex = (selectedIndex + 1) % careerData.length;
+					updateWizardSelection();
+				} else if (e.key === 'Enter') {
+					e.preventDefault();
+					handleSelection();
+				}
+			});
+
+			function updateWizardSelection() {
+				const menus = terminalContent.querySelectorAll('.space-y-2');
+				const lastMenu = menus[menus.length - 1];
+				const options = lastMenu.querySelectorAll('.role-option');
+				options.forEach((opt, idx) => {
+					if (idx === selectedIndex) {
+						opt.classList.remove('text-zinc-400');
+						opt.classList.add('text-[#61afef]');
+						opt.querySelector('span:first-child').textContent = '>';
+					} else {
+						opt.classList.add('text-zinc-400');
+						opt.classList.remove('text-[#61afef]');
+						opt.querySelector('span:first-child').textContent = ' ';
+					}
+				});
+			}
+
+			renderWizard();
+
 			// Browser Logic
 			const browserContainer = document.getElementById('browser-container');
 			const browserContentArea = document.getElementById('browser-content-area');
 			const browserGlass = document.getElementById('browser-glass');
-			const browserUrlBar = document.getElementById('browser-url-bar') as HTMLAnchorElement;
+			const browserUrlBar = document.getElementById('browser-url-bar');
 			const browserUrlText = document.getElementById('browser-url-text');
 			const tabs = document.querySelectorAll('.browser-tab');
 			const contents = document.querySelectorAll('.app-content');
