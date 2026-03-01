@@ -64,11 +64,11 @@ async function main() {
       await desktopPage.screenshot({ path: path.join(SCREENSHOTS_DIR, 'desktop.png'), fullPage: true });
 
       // Expanded State Screenshot
-      console.log('Taking expanded app screenshot...');
-      // Click the label associated with story.cv
-      await desktopPage.click('label[for="app-story.cv"]');
+      console.log('Taking second tab screenshot...');
+      // Click the second tab (Resumey.Pro)
+      await desktopPage.click('button[data-app-id="resumey.pro"]');
       await desktopPage.waitForTimeout(1000); // Wait for transition
-      await desktopPage.screenshot({ path: path.join(SCREENSHOTS_DIR, 'desktop-expanded.png'), fullPage: true });
+      await desktopPage.screenshot({ path: path.join(SCREENSHOTS_DIR, 'desktop-tab-2.png'), fullPage: true });
 
       // Mobile Screenshot
       console.log('Taking mobile screenshot...');

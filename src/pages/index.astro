@@ -51,105 +51,100 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 				<section class="w-full">
 					<Header title="a maker" showAvatar={true} />
 
-					<div class="flex flex-col border-t border-zinc-200 overflow-visible maker-list">
-					{sortedApps.map((app) => (
-						<div
-							class="group relative border-b border-x border-zinc-200 transition-all duration-500 app-card overflow-hidden hover:z-20 peer-checked:z-30"
-							style={`--app-color: ${app.data.color};`}
-						>
-							<input
-								type="checkbox"
-								id={`app-${app.data.name.toLowerCase().replace(/\s+/g, '-')}`}
-								class="peer hidden"
-							/>
-
-							<!-- Interactive Border Glow -->
-							<div class="absolute inset-0 opacity-0 peer-checked:opacity-100 transition-opacity duration-700 pointer-events-none z-0">
-								<div class="absolute inset-[1px] border border-white/20 rounded-[inherit]"></div>
-								<div class="absolute inset-0 border border-transparent [border-image:linear-gradient(to_bottom,var(--app-color),transparent)_1] opacity-20"></div>
+					<div class="browser-container border border-zinc-200 rounded-xl overflow-hidden shadow-sm bg-white group/browser" id="browser-container">
+						<!-- Browser Header -->
+						<div class="bg-zinc-100 border-b border-zinc-200 px-4 pt-3 flex items-end gap-2">
+							<!-- Traffic Lights -->
+							<div class="flex gap-1.5 mb-3.5 mr-2">
+								<div class="w-3 h-3 rounded-full bg-[#ff5f57]"></div>
+								<div class="w-3 h-3 rounded-full bg-[#febc2e]"></div>
+								<div class="w-3 h-3 rounded-full bg-[#28c840]"></div>
 							</div>
-
-							<!-- Spotlight Gradient -->
-							<div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0 spotlight" style="background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), color-mix(in srgb, var(--app-color) 12%, transparent), transparent 40%);"></div>
-
-							<!-- Glassmorphism Background -->
-							<div class="absolute inset-0 opacity-0 peer-checked:opacity-100 transition-all duration-700 pointer-events-none z-0 backdrop-blur-2xl" style={`background: linear-gradient(135deg, color-mix(in srgb, ${app.data.color} 8%, transparent), color-mix(in srgb, ${app.data.color} 2%, transparent));`}></div>
-
-							<div class="relative flex items-start gap-4 py-5 px-4 peer-checked:py-8 transition-all duration-500 peer-checked:[&_.logo]:w-14 peer-checked:[&_.logo]:h-14 peer-checked:[&_.desc-grid]:grid-rows-[1fr] peer-checked:[&_.desc-text]:opacity-100 peer-checked:[&_.desc-inner]:overflow-visible z-10">
-								<!-- Label for toggle -->
-								<label
-									for={`app-${app.data.name.toLowerCase().replace(/\s+/g, '-')}`}
-									class="absolute inset-0 z-30 cursor-pointer"
-								></label>
-
-								<!-- Logo -->
-								<div class="flex-shrink-0 z-10 transition-all duration-500 logo w-6 h-6">
-									<Image
-										src={app.data.logo}
-										alt={app.data.name}
-										width={56}
-										height={56}
-										class="w-full h-full object-contain"
-									/>
-								</div>
-
-								<!-- Content (Title + Description) -->
-								<div class="flex-1 min-w-0">
-									<div class="flex flex-col md:flex-row md:items-center gap-1.5 md:gap-3">
-										<div class="flex items-center gap-2">
-											<h3 class="font-host font-bold text-[14px] uppercase tracking-wider text-zinc-900 truncate">
-												{app.data.name}
-											</h3>
-											<span class="md:hidden text-[10px] font-host text-zinc-400 ml-auto">
-												{app.data.year}
-											</span>
-										</div>
-										<div class="flex items-center gap-2">
-											<span class="text-[9px] px-2 py-0.5 rounded-full border border-zinc-200 text-zinc-500 font-bold uppercase tracking-[0.1em] bg-white/50 backdrop-blur-sm whitespace-nowrap">
-												{app.data.tag}
-											</span>
-											<span class="hidden md:block text-[10px] font-host text-zinc-400 ml-auto mr-1">
-												{app.data.year}
-											</span>
-										</div>
-									</div>
-									<div class="grid grid-rows-[0fr] transition-all duration-500 ease-in-out desc-grid">
-										<div class="overflow-hidden desc-inner">
-											<p
-												class="font-plus text-zinc-600 leading-relaxed mt-4 opacity-0 transition-opacity duration-500 desc-text text-[13px]"
-												set:html={app.data.description}
-											/>
-										</div>
-									</div>
-								</div>
-
-								<!-- Link -->
-								<div class="z-40 relative h-6 flex items-center md:mt-0.5">
-									<a
-										href={app.data.url}
-										target="_blank"
-										rel="noopener noreferrer"
-										class="text-zinc-300 hover:text-zinc-900 transition-all duration-300 p-1 block hover:scale-110 active:scale-95"
+							<!-- Tabs -->
+							<div class="flex overflow-x-auto no-scrollbar gap-1 flex-1">
+								{sortedApps.map((app, index) => (
+									<button
+										class={`browser-tab flex items-center gap-2 px-4 py-2 rounded-t-lg text-[11px] font-host font-bold uppercase tracking-wider transition-all duration-300 whitespace-nowrap cursor-pointer ${index === 0 ? 'bg-white text-zinc-900 border-x border-t border-zinc-200' : 'text-zinc-400 hover:bg-zinc-200/50'}`}
+										data-app-id={app.data.name.toLowerCase().replace(/\s+/g, '-')}
+										data-app-url={app.data.url}
+										data-app-color={app.data.color}
 									>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											width="14"
-											height="14"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											stroke-width="2.5"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-										>
-											<line x1="7" y1="17" x2="17" y2="7"></line>
-											<polyline points="7 7 17 7 17 17"></polyline>
-										</svg>
-									</a>
-								</div>
+										<div class="w-3.5 h-3.5">
+											<Image src={app.data.logo} alt={app.data.name} width={28} height={28} class="w-full h-full object-contain" />
+										</div>
+										{app.data.name}
+									</button>
+								))}
 							</div>
 						</div>
-					))}
+
+						<!-- Browser Toolbar -->
+						<div class="flex items-center gap-4 px-4 py-2 border-b border-zinc-200 bg-white">
+							<div class="flex gap-3 text-zinc-300">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-50"><polyline points="15 18 9 12 15 6"></polyline></svg>
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-50"><polyline points="9 18 15 12 9 6"></polyline></svg>
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-400"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path><polyline points="21 3 21 8 16 8"></polyline></svg>
+							</div>
+							<a id="browser-url-bar" href={sortedApps[0].data.url} target="_blank" rel="noopener noreferrer" class="flex-1 bg-zinc-100 rounded-md px-3 py-1.5 text-[11px] font-host text-zinc-500 flex items-center gap-2 truncate hover:bg-zinc-200/70 transition-colors">
+								<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-400"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+								<span id="browser-url-text" class="truncate flex-1">{sortedApps[0].data.url}</span>
+								<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-300"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+							</a>
+						</div>
+
+						<!-- Browser Content Area -->
+						<div class="relative overflow-hidden bg-white min-h-[300px] transition-colors duration-500" id="browser-content-area" style={`--app-color: ${sortedApps[0].data.color};`}>
+							<!-- Spotlight Gradient -->
+							<div class="absolute inset-0 opacity-0 group-hover/browser:opacity-100 transition-opacity duration-500 pointer-events-none z-0 spotlight" id="browser-spotlight" style="background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), color-mix(in srgb, var(--app-color) 12%, transparent), transparent 40%);"></div>
+
+							<!-- Glassmorphism Background -->
+							<div id="browser-glass" class="absolute inset-0 transition-all duration-700 pointer-events-none z-0 backdrop-blur-2xl" style={`background: linear-gradient(135deg, color-mix(in srgb, ${sortedApps[0].data.color} 8%, transparent), color-mix(in srgb, ${sortedApps[0].data.color} 2%, transparent));`}></div>
+
+							<div class="relative z-10 p-8">
+								{sortedApps.map((app, index) => (
+									<div id={`content-${app.data.name.toLowerCase().replace(/\s+/g, '-')}`} class={`app-content transition-all duration-500 ${index === 0 ? 'block opacity-100 translate-y-0' : 'hidden opacity-0 translate-y-4'}`}>
+										<div class="flex items-start gap-6">
+											<!-- Logo -->
+											<div class="flex-shrink-0 w-14 h-14">
+												<Image
+													src={app.data.logo}
+													alt={app.data.name}
+													width={56}
+													height={56}
+													class="w-full h-full object-contain"
+												/>
+											</div>
+
+											<!-- Content -->
+											<div class="flex-1 min-w-0">
+												<div class="flex flex-col md:flex-row md:items-center gap-1.5 md:gap-3">
+													<div class="flex items-center gap-2">
+														<h3 class="font-host font-bold text-[14px] uppercase tracking-wider text-zinc-900 truncate">
+															{app.data.name}
+														</h3>
+														<span class="md:hidden text-[10px] font-host text-zinc-400 ml-auto">
+															{app.data.year}
+														</span>
+													</div>
+													<div class="flex items-center gap-2">
+														<span class="text-[9px] px-2 py-0.5 rounded-full border border-zinc-200 text-zinc-500 font-bold uppercase tracking-[0.1em] bg-white/50 backdrop-blur-sm whitespace-nowrap">
+															{app.data.tag}
+														</span>
+														<span class="hidden md:block text-[10px] font-host text-zinc-400 ml-auto mr-1">
+															{app.data.year}
+														</span>
+													</div>
+												</div>
+												<p
+													class="font-plus text-zinc-600 leading-relaxed mt-4 text-[13px] desc-inner"
+													set:html={app.data.description}
+												/>
+											</div>
+										</div>
+									</div>
+								))}
+							</div>
+						</div>
 					</div>
 				</section>
 
@@ -184,17 +179,71 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 		</div>
 
 		<script>
-			// Spotlight effect
-			const appCards = document.querySelectorAll('.app-card');
-			appCards.forEach(card => {
-				card.addEventListener('mousemove', (e) => {
-					const rect = (card as HTMLElement).getBoundingClientRect();
-					const x = (e as MouseEvent).clientX - rect.left;
-					const y = (e as MouseEvent).clientY - rect.top;
-					(card as HTMLElement).style.setProperty('--mouse-x', `${x}px`);
-					(card as HTMLElement).style.setProperty('--mouse-y', `${y}px`);
+			// Browser Logic
+			const browserContainer = document.getElementById('browser-container');
+			const browserContentArea = document.getElementById('browser-content-area');
+			const browserGlass = document.getElementById('browser-glass');
+			const browserUrlBar = document.getElementById('browser-url-bar') as HTMLAnchorElement;
+			const browserUrlText = document.getElementById('browser-url-text');
+			const tabs = document.querySelectorAll('.browser-tab');
+			const contents = document.querySelectorAll('.app-content');
+
+			tabs.forEach(tab => {
+				tab.addEventListener('click', () => {
+					const appId = (tab as HTMLElement).dataset.appId;
+					const appUrl = (tab as HTMLElement).dataset.appUrl;
+					const appColor = (tab as HTMLElement).dataset.appColor;
+
+					// Update tabs
+					tabs.forEach(t => {
+						t.classList.remove('bg-white', 'text-zinc-900', 'border-x', 'border-t', 'border-zinc-200');
+						t.classList.add('text-zinc-400', 'hover:bg-zinc-200/50');
+					});
+					tab.classList.add('bg-white', 'text-zinc-900', 'border-x', 'border-t', 'border-zinc-200');
+					tab.classList.remove('text-zinc-400', 'hover:bg-zinc-200/50');
+
+					// Update URL bar
+					if (browserUrlBar && appUrl) {
+						browserUrlBar.href = appUrl;
+					}
+					if (browserUrlText && appUrl) {
+						browserUrlText.textContent = appUrl;
+					}
+
+					// Update Content Area
+					if (browserContentArea && appColor) {
+						browserContentArea.style.setProperty('--app-color', appColor);
+						if (browserGlass) {
+							browserGlass.style.background = `linear-gradient(135deg, color-mix(in srgb, ${appColor} 8%, transparent), color-mix(in srgb, ${appColor} 2%, transparent))`;
+						}
+					}
+
+					// Toggle contents
+					contents.forEach(content => {
+						if (content.id === `content-${appId}`) {
+							content.classList.remove('hidden');
+							setTimeout(() => {
+								content.classList.add('opacity-100', 'translate-y-0');
+								content.classList.remove('opacity-0', 'translate-y-4');
+							}, 10);
+						} else {
+							content.classList.add('hidden', 'opacity-0', 'translate-y-4');
+							content.classList.remove('opacity-100', 'translate-y-0');
+						}
+					});
 				});
 			});
+
+			// Spotlight effect
+			if (browserContentArea) {
+				browserContentArea.addEventListener('mousemove', (e) => {
+					const rect = browserContentArea.getBoundingClientRect();
+					const x = (e as MouseEvent).clientX - rect.left;
+					const y = (e as MouseEvent).clientY - rect.top;
+					browserContentArea.style.setProperty('--mouse-x', `${x}px`);
+					browserContentArea.style.setProperty('--mouse-y', `${y}px`);
+				});
+			}
 
 			// Page Comment Logic
 			document.addEventListener('click', (e) => {
