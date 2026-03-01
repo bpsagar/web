@@ -448,7 +448,13 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 				tab.classList.remove('text-zinc-400', 'hover:bg-zinc-200/50');
 
 				// Scroll tab into view (leftmost possible)
-				tab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+				const tabContainer = tab.closest('.overflow-x-auto');
+				if (tabContainer) {
+					tabContainer.scrollTo({
+						left: tab.offsetLeft,
+						behavior: 'smooth'
+					});
+				}
 
 				// Update URL bar
 				if (browserUrlBar && appUrl) {
