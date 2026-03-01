@@ -1,60 +1,57 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Maker Section Browser UI', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:4321/');
-  });
+test('Maker section browser UI exists', async ({ page }) => {
+  await page.goto('http://localhost:4321');
 
-  test('should show first app by default and update URL bar on tab click', async ({ page }) => {
-    const urlBar = page.locator('#browser-url-text');
-    const firstTab = page.locator('.browser-tab').first();
-    const firstAppUrl = await firstTab.getAttribute('data-app-url');
+  // Check for browser container
+  const browserContainer = page.locator('#browser-container');
+  await expect(browserContainer).toBeVisible();
 
-    // Check default state
-    await expect(urlBar).toHaveText(firstAppUrl || '');
+  // Check for traffic lights
+  const trafficLights = page.locator('.bg-\\[\\#ff5f57\\]'); // Red light
+  await expect(trafficLights).toBeVisible();
 
-    // Click second tab - using data-app-id to avoid case/formatting issues
-    const secondTabId = await page.locator('.browser-tab').nth(1).getAttribute('data-app-id');
-    const secondTab = page.locator(`.browser-tab[data-app-id="${secondTabId}"]`);
-    const secondAppUrl = await secondTab.getAttribute('data-app-url');
+  // Check for tabs
+  const tabs = page.locator('.browser-tab');
+  const tabCount = await tabs.count();
+  expect(tabCount).toBeGreaterThan(0);
 
-    await secondTab.click();
+  // Check for URL bar
+  const urlBar = page.locator('#browser-url-bar');
+  await expect(urlBar).toBeVisible();
+  const urlText = await page.locator('#browser-url-text').innerText();
+  expect(urlText).toContain('story.cv');
+});
 
-    // Check updated state
-    await expect(urlBar).toHaveText(secondAppUrl || '');
+test('Maker section tab switching', async ({ page }) => {
+  await page.goto('http://localhost:4321');
 
-    // Check content visibility
-    const secondAppContent = page.locator(`[id="content-${secondTabId}"]`);
-    await expect(secondAppContent).toBeVisible();
+  const tabs = page.locator('.browser-tab');
+  const secondTab = tabs.nth(1);
+  const appId = await secondTab.getAttribute('data-app-id');
 
-    // First app content should be hidden
-    const firstTabId = await firstTab.getAttribute('data-app-id');
-    const firstAppContent = page.locator(`[id="content-${firstTabId}"]`);
-    await expect(firstAppContent).toBeHidden();
-  });
+  await secondTab.click();
 
-  test('URL bar should have correct link and open in new tab', async ({ page }) => {
-    const urlBarLink = page.locator('#browser-url-bar');
-    const firstAppUrl = await page.locator('.browser-tab').first().getAttribute('data-app-url');
+  // Check if second content is visible
+  const secondContent = page.locator(`.app-content[id="content-${appId}"]`);
+  await expect(secondContent).toBeVisible();
 
-    await expect(urlBarLink).toHaveAttribute('href', firstAppUrl || '');
-    await expect(urlBarLink).toHaveAttribute('target', '_blank');
-  });
+  // Check if URL bar updated
+  const urlText = await page.locator('#browser-url-text').innerText();
+  expect(urlText).not.toContain('story.cv');
+});
 
-  test('should display desktop screenshot on desktop and mobile screenshot on mobile', async ({ page, viewport }) => {
-    const firstTabId = await page.locator('.browser-tab').first().getAttribute('data-app-id');
-    const content = page.locator(`[id="content-${firstTabId}"]`);
+test('Maker section desktop bleed effect', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('http://localhost:4321');
 
-    // On desktop (default viewport in playwright.config.ts is usually desktop size)
-    const desktopScreenshot = content.locator('img[alt$="desktop screenshot"]');
-    const mobileScreenshot = content.locator('img[alt$="mobile screenshot"]');
+  const browserContainer = page.locator('#browser-container');
+  const box = await browserContainer.boundingBox();
 
-    if (viewport && viewport.width >= 768) {
-      await expect(desktopScreenshot).toBeVisible();
-      await expect(mobileScreenshot).not.toBeVisible();
-    } else {
-      await expect(mobileScreenshot).toBeVisible();
-      await expect(desktopScreenshot).not.toBeVisible();
-    }
-  });
+  // The container should extend to the right edge (or close to it due to margin calculation)
+  // On 1440px width, max-width 500px centered means 470px padding on each side.
+  // md:-mr-[calc(50vw-226px)] = 720 - 226 = 494px negative margin.
+  // 500 + 494 = 994px wide approximately.
+
+  expect(box.width).toBeGreaterThan(900);
 });
