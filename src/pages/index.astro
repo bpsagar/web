@@ -116,30 +116,54 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 											</span>
 										</div>
 
-										<!-- Screenshot -->
-										<div class="w-full bg-zinc-50 flex items-center justify-center overflow-hidden">
-											{app.data.screenshot_desktop && (
-												<div class="hidden md:block w-full">
-													<Image
-														src={app.data.screenshot_desktop}
-														alt={`${app.data.name} desktop screenshot`}
-														width={1280}
-														height={800}
-														class="w-full h-auto block object-top"
-													/>
-												</div>
-											)}
-											{app.data.screenshot_mobile && (
-												<div class="block md:hidden w-full">
-													<Image
-														src={app.data.screenshot_mobile}
-														alt={`${app.data.name} mobile screenshot`}
-														width={780}
-														height={1688}
-														class="w-full h-auto block object-top"
-													/>
-												</div>
-											)}
+										<!-- Screenshot Wrapper -->
+										<div class="relative group/screenshot overflow-hidden max-h-[400px]">
+											<!-- Screenshot Content -->
+											<div class="w-full bg-zinc-50 flex items-center justify-center overflow-hidden transition-all duration-500 group-hover/screenshot:blur-sm">
+												{app.data.screenshot_desktop && (
+													<div class="hidden md:block w-full">
+														<Image
+															src={app.data.screenshot_desktop}
+															alt={`${app.data.name} desktop screenshot`}
+															width={1280}
+															height={800}
+															class="w-full h-auto block object-top"
+														/>
+													</div>
+												)}
+												{app.data.screenshot_mobile && (
+													<div class="block md:hidden w-full">
+														<Image
+															src={app.data.screenshot_mobile}
+															alt={`${app.data.name} mobile screenshot`}
+															width={780}
+															height={1688}
+															class="w-full h-auto block object-top"
+														/>
+													</div>
+												)}
+											</div>
+
+											<!-- Fade Out Overlay -->
+											<div class="absolute bottom-0 left-0 right-0 h-[20%] bg-gradient-to-t from-white to-transparent pointer-events-none z-10"></div>
+
+											<!-- CTA Button -->
+											<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover/screenshot:opacity-100 transition-opacity duration-300 z-20">
+												<a
+													href={app.data.url}
+													target="_blank"
+													rel="noopener noreferrer"
+													class="px-6 py-3 rounded-full font-host font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl"
+													style={`
+														background: color-mix(in srgb, ${app.data.color} 20%, rgba(255, 255, 255, 0.7));
+														border: 1px solid color-mix(in srgb, ${app.data.color} 40%, rgba(255, 255, 255, 0.8));
+														color: color-mix(in srgb, ${app.data.color} 80%, black);
+													`}
+												>
+													Check it out
+													<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+												</a>
+											</div>
 										</div>
 									</div>
 								))}
