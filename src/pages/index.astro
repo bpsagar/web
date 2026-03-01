@@ -251,9 +251,13 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 			const careerData = careerDataJson ? JSON.parse(careerDataJson) : [];
 			let selectedIndex = 0;
 			let isInteractive = true;
+			let wizardMode = 'selection';
+			const confirmationOptions = ['Yes', 'No'];
 
 			function renderWizard() {
 				if (!terminalContent) return;
+				wizardMode = 'selection';
+				selectedIndex = 0;
 
 				const wizardContainer = document.createElement('div');
 				wizardContainer.className = "space-y-2 wizard-menu";
@@ -263,7 +267,7 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 						${careerData.map((entry, index) => `
 							<div class="cursor-pointer flex items-start gap-2 role-option transition-colors duration-200 hover:text-[#61afef] ${index === selectedIndex ? 'text-[#61afef]' : 'text-zinc-400'}" data-index="${index}">
 								<span class="w-4">${index === selectedIndex ? '●' : ' '}</span>
-								<span>${index + 1}. ${entry.data.company} (${entry.data.role})</span>
+								<span>${entry.data.version}: ${entry.data.company} · ${entry.data.role}</span>
 							</div>
 						`).join('')}
 					</div>
@@ -275,12 +279,42 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 				const options = wizardContainer.querySelectorAll('.role-option');
 				options.forEach(opt => {
 					opt.addEventListener('click', () => {
-						if (!isInteractive) return;
-						const index = parseInt(opt.getAttribute('data-index') || '0');
-						selectedIndex = index;
+						if (!isInteractive || wizardMode !== 'selection') return;
+						selectedIndex = parseInt(opt.getAttribute('data-index') || '0');
 						handleSelection();
 					});
 				});
+			}
+
+			function renderConfirmation() {
+				if (!terminalContent) return;
+				wizardMode = 'confirmation';
+				selectedIndex = 0;
+
+				const confirmContainer = document.createElement('div');
+				confirmContainer.className = "space-y-2 confirm-menu";
+				confirmContainer.innerHTML = `
+					<div class="text-white">? Inspect another role? <span class="text-zinc-500">(Use arrow keys or click)</span></div>
+					<div class="flex flex-col gap-1">
+						${confirmationOptions.map((opt, index) => `
+							<div class="cursor-pointer flex items-start gap-2 confirm-option transition-colors duration-200 hover:text-[#61afef] ${index === selectedIndex ? 'text-[#61afef]' : 'text-zinc-400'}" data-index="${index}">
+								<span class="w-4">${index === selectedIndex ? '●' : ' '}</span>
+								<span>${opt}</span>
+							</div>
+						`).join('')}
+					</div>
+				`;
+				terminalContent.appendChild(confirmContainer);
+
+				const options = confirmContainer.querySelectorAll('.confirm-option');
+				options.forEach(opt => {
+					opt.addEventListener('click', () => {
+						if (!isInteractive || wizardMode !== 'confirmation') return;
+						selectedIndex = parseInt(opt.getAttribute('data-index') || '0');
+						handleConfirmation();
+					});
+				});
+				scrollToBottom();
 			}
 
 			async function typeText(element, text) {
@@ -371,11 +405,46 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 				await new Promise(r => setTimeout(r, 1500));
 				loader.remove();
 
-				// Re-render wizard
+				// Render confirmation
 				isInteractive = true;
-				selectedIndex = 0;
-				renderWizard();
+				renderConfirmation();
 				scrollToBottom();
+			}
+
+			async function handleConfirmation() {
+				isInteractive = false;
+				const choice = confirmationOptions[selectedIndex];
+
+				// Cleanup
+				const lastMenu = terminalContent.querySelector('.confirm-menu:last-child');
+				if (lastMenu) {
+					const promptGuides = lastMenu.querySelectorAll('.text-zinc-500');
+					promptGuides.forEach(g => g.remove());
+
+					const options = lastMenu.querySelectorAll('.confirm-option');
+					options.forEach((opt, idx) => {
+						if (idx !== selectedIndex) {
+							opt.remove();
+						} else {
+							opt.classList.remove('text-[#61afef]', 'hover:text-[#61afef]', 'text-zinc-400');
+							opt.classList.add('text-[#98c379]');
+							opt.querySelector('span:first-child').textContent = '✔';
+						}
+					});
+				}
+
+				if (choice === 'Yes') {
+					isInteractive = true;
+					renderWizard();
+					scrollToBottom();
+				} else {
+					const thankYou = document.createElement('div');
+					thankYou.className = "mt-4 text-[#abb2bf] italic";
+					thankYou.textContent = "Thank you! Refresh the browser to inspect roles again.";
+					terminalContent.appendChild(thankYou);
+					scrollToBottom();
+					// Session ends
+				}
 			}
 
 			window.addEventListener('keydown', (e) => {
@@ -389,25 +458,33 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 					if (!isVisible) return;
 				}
 
+				const maxIndex = wizardMode === 'selection' ? careerData.length : confirmationOptions.length;
+
 				if (e.key === 'ArrowUp') {
 					e.preventDefault();
-					selectedIndex = (selectedIndex - 1 + careerData.length) % careerData.length;
+					selectedIndex = (selectedIndex - 1 + maxIndex) % maxIndex;
 					updateWizardSelection();
 				} else if (e.key === 'ArrowDown') {
 					e.preventDefault();
-					selectedIndex = (selectedIndex + 1) % careerData.length;
+					selectedIndex = (selectedIndex + 1) % maxIndex;
 					updateWizardSelection();
 				} else if (e.key === 'Enter') {
 					e.preventDefault();
-					handleSelection();
+					if (wizardMode === 'selection') {
+						handleSelection();
+					} else {
+						handleConfirmation();
+					}
 				}
 			});
 
 			function updateWizardSelection() {
-				const menus = terminalContent.querySelectorAll('.wizard-menu');
+				const selector = wizardMode === 'selection' ? '.wizard-menu' : '.confirm-menu';
+				const menus = terminalContent.querySelectorAll(selector);
 				const lastMenu = menus[menus.length - 1];
 				if (!lastMenu) return;
-				const options = lastMenu.querySelectorAll('.role-option');
+				const optionSelector = wizardMode === 'selection' ? '.role-option' : '.confirm-option';
+				const options = lastMenu.querySelectorAll(optionSelector);
 				options.forEach((opt, idx) => {
 					if (idx === selectedIndex) {
 						opt.classList.remove('text-zinc-400');
