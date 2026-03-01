@@ -118,10 +118,15 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 												/>
 											</div>
 											<div class="flex-1 min-w-0">
-												<div class="mb-1.5">
-													<h3 class="font-host font-bold text-[12px] uppercase tracking-wider text-zinc-900 truncate mb-1">
-														{app.data.name}
-													</h3>
+												<div class="mb-1">
+													<div class="flex items-center justify-between mb-0.5">
+														<h3 class="font-host font-bold text-[12px] uppercase tracking-wider text-zinc-900 truncate">
+															{app.data.name}
+														</h3>
+														<div class="text-[10px] font-host text-zinc-400 font-medium">
+															{app.data.year}
+														</div>
+													</div>
 													<span class="text-[8px] px-2 py-0.5 rounded-full border border-zinc-200 text-zinc-500 font-bold uppercase tracking-[0.1em] bg-white/50 whitespace-nowrap inline-block">
 														{app.data.tag}
 													</span>
@@ -129,9 +134,6 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 												<p class="font-plus text-zinc-600 text-[11px] truncate leading-tight">
 													{app.data.description}
 												</p>
-											</div>
-											<div class="text-[10px] font-host text-zinc-400 font-medium">
-												{app.data.year}
 											</div>
 										</div>
 
@@ -206,52 +208,87 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 			const browserUrlText = document.getElementById('browser-url-text');
 			const tabs = document.querySelectorAll('.browser-tab');
 			const contents = document.querySelectorAll('.app-content');
+			let cycleInterval: ReturnType<typeof setInterval> | null = null;
+			let activeTabIndex = 0;
 
-			tabs.forEach(tab => {
+			function switchTab(tab: HTMLElement) {
+				const appId = tab.dataset.appId;
+				const appUrl = tab.dataset.appUrl;
+				const appColor = tab.dataset.appColor;
+
+				// Update tabs
+				tabs.forEach(t => {
+					t.classList.remove('bg-white', 'text-zinc-900', 'border-x', 'border-t', 'border-zinc-200');
+					t.classList.add('text-zinc-400', 'hover:bg-zinc-200/50');
+				});
+				tab.classList.add('bg-white', 'text-zinc-900', 'border-x', 'border-t', 'border-zinc-200');
+				tab.classList.remove('text-zinc-400', 'hover:bg-zinc-200/50');
+
+				// Scroll tab into view (leftmost possible)
+				tab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+
+				// Update URL bar
+				if (browserUrlBar && appUrl) {
+					browserUrlBar.href = appUrl;
+				}
+				if (browserUrlText && appUrl) {
+					browserUrlText.textContent = appUrl;
+				}
+
+				// Update Content Area
+				if (browserContentArea && appColor) {
+					browserContentArea.style.setProperty('--app-color', appColor);
+					if (browserGlass) {
+						browserGlass.style.background = `linear-gradient(135deg, color-mix(in srgb, ${appColor} 8%, transparent), color-mix(in srgb, ${appColor} 2%, transparent))`;
+					}
+				}
+
+				// Toggle contents
+				contents.forEach(content => {
+					if (content.id === `content-${appId}`) {
+						content.classList.remove('hidden');
+						setTimeout(() => {
+							content.classList.add('opacity-100', 'translate-y-0');
+							content.classList.remove('opacity-0', 'translate-y-4');
+						}, 10);
+					} else {
+						content.classList.add('hidden', 'opacity-0', 'translate-y-4');
+						content.classList.remove('opacity-100', 'translate-y-0');
+					}
+				});
+			}
+
+			function startCycling() {
+				cycleInterval = setInterval(() => {
+					activeTabIndex = (activeTabIndex + 1) % tabs.length;
+					switchTab(tabs[activeTabIndex] as HTMLElement);
+				}, 3000);
+			}
+
+			function stopCycling() {
+				if (cycleInterval) {
+					clearInterval(cycleInterval);
+					cycleInterval = null;
+				}
+			}
+
+			tabs.forEach((tab, index) => {
 				tab.addEventListener('click', () => {
-					const appId = (tab as HTMLElement).dataset.appId;
-					const appUrl = (tab as HTMLElement).dataset.appUrl;
-					const appColor = (tab as HTMLElement).dataset.appColor;
-
-					// Update tabs
-					tabs.forEach(t => {
-						t.classList.remove('bg-white', 'text-zinc-900', 'border-x', 'border-t', 'border-zinc-200');
-						t.classList.add('text-zinc-400', 'hover:bg-zinc-200/50');
-					});
-					tab.classList.add('bg-white', 'text-zinc-900', 'border-x', 'border-t', 'border-zinc-200');
-					tab.classList.remove('text-zinc-400', 'hover:bg-zinc-200/50');
-
-					// Update URL bar
-					if (browserUrlBar && appUrl) {
-						browserUrlBar.href = appUrl;
-					}
-					if (browserUrlText && appUrl) {
-						browserUrlText.textContent = appUrl;
-					}
-
-					// Update Content Area
-					if (browserContentArea && appColor) {
-						browserContentArea.style.setProperty('--app-color', appColor);
-						if (browserGlass) {
-							browserGlass.style.background = `linear-gradient(135deg, color-mix(in srgb, ${appColor} 8%, transparent), color-mix(in srgb, ${appColor} 2%, transparent))`;
-						}
-					}
-
-					// Toggle contents
-					contents.forEach(content => {
-						if (content.id === `content-${appId}`) {
-							content.classList.remove('hidden');
-							setTimeout(() => {
-								content.classList.add('opacity-100', 'translate-y-0');
-								content.classList.remove('opacity-0', 'translate-y-4');
-							}, 10);
-						} else {
-							content.classList.add('hidden', 'opacity-0', 'translate-y-4');
-							content.classList.remove('opacity-100', 'translate-y-0');
-						}
-					});
+					stopCycling();
+					activeTabIndex = index;
+					switchTab(tab as HTMLElement);
 				});
 			});
+
+			// Stop cycling on any interaction with browser container
+			if (browserContainer) {
+				['mousedown', 'touchstart', 'mouseenter'].forEach(event => {
+					browserContainer.addEventListener(event, stopCycling, { once: true });
+				});
+			}
+
+			// Start cycling on load
+			startCycling();
 
 			// Spotlight effect
 			if (browserContentArea) {
