@@ -11,6 +11,9 @@ const sortedApps = allApps.sort((a, b) => a.data.order - b.data.order);
 
 const allPortraits = await getCollection('portraits');
 const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order);
+
+const allCareer = await getCollection('career');
+const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 ---
 
 <html lang="en">
@@ -48,6 +51,34 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 			</section>
 
 			<main class="mt-4 mb-20">
+				<section class="w-full mb-16">
+					<Header title="a software engineer" showAvatar={true} />
+
+					<div class="terminal-container bg-zinc-950 rounded-xl overflow-hidden border border-zinc-800 md:-mr-[200px] font-host text-[13px] leading-relaxed shadow-2xl">
+						<!-- Terminal Header -->
+						<div class="bg-zinc-900/50 border-b border-zinc-800 px-4 py-3 flex items-center gap-2">
+							<div class="flex gap-1.5">
+								<div class="w-3 h-3 rounded-full bg-[#ff5f57]"></div>
+								<div class="w-3 h-3 rounded-full bg-[#febc2e]"></div>
+								<div class="w-3 h-3 rounded-full bg-[#28c840]"></div>
+							</div>
+							<div class="flex-1 text-center text-zinc-500 text-[11px] font-medium mr-12 uppercase tracking-widest">zsh — 80x24</div>
+						</div>
+						<!-- Terminal Body -->
+						<div class="p-6 overflow-x-auto no-scrollbar min-h-[400px]" id="terminal-body">
+							<div class="flex gap-2">
+								<span class="text-[#5af78e]">sagar@work</span>
+								<span class="text-white">$ career ls</span>
+							</div>
+
+							<div id="terminal-content" class="mt-4 space-y-4">
+								<!-- Wizard will be injected here -->
+							</div>
+							<script id="career-data" type="application/json" is:inline set:html={JSON.stringify(sortedCareer)}></script>
+						</div>
+					</div>
+				</section>
+
 				<section class="w-full">
 					<Header title="a maker" showAvatar={true} />
 
@@ -214,11 +245,266 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 		</div>
 
 		<script>
+			// Terminal Wizard Logic
+			const terminalContent = document.getElementById('terminal-content');
+			const careerDataJson = document.getElementById('career-data')?.textContent;
+			const careerData = careerDataJson ? JSON.parse(careerDataJson) : [];
+			let selectedIndex = 0;
+			let isInteractive = true;
+			let wizardMode = 'selection';
+			const confirmationOptions = ['Yes', 'No'];
+
+			function renderWizard() {
+				if (!terminalContent) return;
+				wizardMode = 'selection';
+				selectedIndex = 0;
+
+				const wizardContainer = document.createElement('div');
+				wizardContainer.className = "space-y-2 wizard-menu";
+				wizardContainer.innerHTML = `
+					<div class="text-white">? Which role would you like to inspect? <span class="text-zinc-500">(Use arrow keys or click)</span></div>
+					<div class="flex flex-col gap-1">
+						${careerData.map((entry, index) => `
+							<div class="cursor-pointer flex items-start gap-2 role-option transition-colors duration-200 hover:text-[#61afef] ${index === selectedIndex ? 'text-[#61afef]' : 'text-zinc-400'}" data-index="${index}">
+								<span class="w-4">${index === selectedIndex ? '●' : ' '}</span>
+								<span>${entry.data.version}: ${entry.data.company} · ${entry.data.role}</span>
+							</div>
+						`).join('')}
+					</div>
+				`;
+
+				terminalContent.appendChild(wizardContainer);
+
+				// Add click listeners ONLY to the new options
+				const options = wizardContainer.querySelectorAll('.role-option');
+				options.forEach(opt => {
+					opt.addEventListener('click', () => {
+						if (!isInteractive || wizardMode !== 'selection') return;
+						selectedIndex = parseInt(opt.getAttribute('data-index') || '0');
+						handleSelection();
+					});
+				});
+			}
+
+			function renderConfirmation() {
+				if (!terminalContent) return;
+				wizardMode = 'confirmation';
+				selectedIndex = 0;
+
+				const confirmContainer = document.createElement('div');
+				confirmContainer.className = "space-y-2 confirm-menu";
+				confirmContainer.innerHTML = `
+					<div class="text-white">? Inspect another role? <span class="text-zinc-500">(Use arrow keys or click)</span></div>
+					<div class="flex flex-col gap-1">
+						${confirmationOptions.map((opt, index) => `
+							<div class="cursor-pointer flex items-start gap-2 confirm-option transition-colors duration-200 hover:text-[#61afef] ${index === selectedIndex ? 'text-[#61afef]' : 'text-zinc-400'}" data-index="${index}">
+								<span class="w-4">${index === selectedIndex ? '●' : ' '}</span>
+								<span>${opt}</span>
+							</div>
+						`).join('')}
+					</div>
+				`;
+				terminalContent.appendChild(confirmContainer);
+
+				const options = confirmContainer.querySelectorAll('.confirm-option');
+				options.forEach(opt => {
+					opt.addEventListener('click', () => {
+						if (!isInteractive || wizardMode !== 'confirmation') return;
+						selectedIndex = parseInt(opt.getAttribute('data-index') || '0');
+						handleConfirmation();
+					});
+				});
+				scrollToBottom();
+			}
+
+			async function typeText(element, text) {
+				for (let i = 0; i <= text.length; i++) {
+					element.textContent = text.slice(0, i);
+					scrollToBottom();
+					await new Promise(r => setTimeout(r, 10));
+				}
+			}
+
+			function scrollToBottom() {
+				const terminalBody = document.getElementById('terminal-body');
+				if (terminalBody) {
+					terminalBody.scrollTop = terminalBody.scrollHeight;
+				}
+			}
+
+			async function handleSelection() {
+				isInteractive = false;
+				const entry = careerData[selectedIndex];
+
+				// Remove the prompt guide from the previous menu
+				const promptGuides = terminalContent.querySelectorAll('.text-zinc-500');
+				promptGuides.forEach(g => g.remove());
+
+				// Highlight the final selection in the menu and remove other options
+				const menus = terminalContent.querySelectorAll('.space-y-2');
+				const lastMenu = menus[menus.length - 1];
+				const options = lastMenu.querySelectorAll('.role-option');
+				options.forEach((opt, idx) => {
+					if (idx !== selectedIndex) {
+						opt.remove();
+					} else {
+						opt.classList.remove('text-[#61afef]', 'hover:text-[#61afef]', 'text-zinc-400');
+						opt.classList.add('text-[#98c379]');
+						opt.querySelector('span:first-child').textContent = '✔';
+					}
+				});
+
+				// Create detail container
+				const detailContainer = document.createElement('div');
+				detailContainer.className = "mt-4 space-y-1 pl-4 border-l border-zinc-800 ml-2";
+				terminalContent.appendChild(detailContainer);
+
+				// Line 1: Version and Company
+				const headerLine = document.createElement('div');
+				headerLine.className = "flex flex-wrap gap-2";
+				detailContainer.appendChild(headerLine);
+
+				const versionSpan = document.createElement('span');
+				versionSpan.className = "text-[#61afef]";
+				headerLine.appendChild(versionSpan);
+				await typeText(versionSpan, `[${entry.data.version}]`);
+
+				const metaSpan = document.createElement('span');
+				metaSpan.className = "text-[#abb2bf]";
+				headerLine.appendChild(metaSpan);
+				await typeText(metaSpan, ` ${entry.data.date} • ${entry.data.company} (${entry.data.location})`);
+
+				// Line 2: Role
+				const roleLine = document.createElement('div');
+				roleLine.className = "text-white ml-4";
+				detailContainer.appendChild(roleLine);
+				await typeText(roleLine, `○ Role: ${entry.data.role}; ${entry.data.description}`);
+
+				// Line 3: Stack
+				const stackLine = document.createElement('div');
+				stackLine.className = "ml-4 flex flex-wrap gap-x-2";
+				detailContainer.appendChild(stackLine);
+
+				const stackPrefix = document.createElement('span');
+				stackPrefix.className = "text-[#e5c07b]";
+				stackLine.appendChild(stackPrefix);
+				await typeText(stackPrefix, `⚡ Stack:`);
+
+				const stackContent = document.createElement('span');
+				stackContent.className = "text-[#abb2bf]";
+				stackLine.appendChild(stackContent);
+				await typeText(stackContent, ` ${entry.data.stack.join(', ')}`);
+
+				// Wait with blinking dots
+				const loader = document.createElement('div');
+				loader.className = "mt-4 text-zinc-500 animate-pulse ml-2";
+				loader.textContent = "...";
+				terminalContent.appendChild(loader);
+				scrollToBottom();
+
+				await new Promise(r => setTimeout(r, 1500));
+				loader.remove();
+
+				// Render confirmation
+				isInteractive = true;
+				renderConfirmation();
+				scrollToBottom();
+			}
+
+			async function handleConfirmation() {
+				isInteractive = false;
+				const choice = confirmationOptions[selectedIndex];
+
+				// Cleanup
+				const lastMenu = terminalContent.querySelector('.confirm-menu:last-child');
+				if (lastMenu) {
+					const promptGuides = lastMenu.querySelectorAll('.text-zinc-500');
+					promptGuides.forEach(g => g.remove());
+
+					const options = lastMenu.querySelectorAll('.confirm-option');
+					options.forEach((opt, idx) => {
+						if (idx !== selectedIndex) {
+							opt.remove();
+						} else {
+							opt.classList.remove('text-[#61afef]', 'hover:text-[#61afef]', 'text-zinc-400');
+							opt.classList.add('text-[#98c379]');
+							opt.querySelector('span:first-child').textContent = '✔';
+						}
+					});
+				}
+
+				if (choice === 'Yes') {
+					isInteractive = true;
+					renderWizard();
+					scrollToBottom();
+				} else {
+					const thankYou = document.createElement('div');
+					thankYou.className = "mt-4 text-[#abb2bf] italic";
+					thankYou.textContent = "Thank you! Refresh the browser to inspect roles again.";
+					terminalContent.appendChild(thankYou);
+					scrollToBottom();
+					// Session ends
+				}
+			}
+
+			window.addEventListener('keydown', (e) => {
+				if (!isInteractive) return;
+
+				// Only handle keys if terminal is in viewport to avoid hijacking global scroll
+				const terminal = document.querySelector('.terminal-container');
+				if (terminal) {
+					const rect = terminal.getBoundingClientRect();
+					const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+					if (!isVisible) return;
+				}
+
+				const maxIndex = wizardMode === 'selection' ? careerData.length : confirmationOptions.length;
+
+				if (e.key === 'ArrowUp') {
+					e.preventDefault();
+					selectedIndex = (selectedIndex - 1 + maxIndex) % maxIndex;
+					updateWizardSelection();
+				} else if (e.key === 'ArrowDown') {
+					e.preventDefault();
+					selectedIndex = (selectedIndex + 1) % maxIndex;
+					updateWizardSelection();
+				} else if (e.key === 'Enter') {
+					e.preventDefault();
+					if (wizardMode === 'selection') {
+						handleSelection();
+					} else {
+						handleConfirmation();
+					}
+				}
+			});
+
+			function updateWizardSelection() {
+				const selector = wizardMode === 'selection' ? '.wizard-menu' : '.confirm-menu';
+				const menus = terminalContent.querySelectorAll(selector);
+				const lastMenu = menus[menus.length - 1];
+				if (!lastMenu) return;
+				const optionSelector = wizardMode === 'selection' ? '.role-option' : '.confirm-option';
+				const options = lastMenu.querySelectorAll(optionSelector);
+				options.forEach((opt, idx) => {
+					if (idx === selectedIndex) {
+						opt.classList.remove('text-zinc-400');
+						opt.classList.add('text-[#61afef]');
+						opt.querySelector('span:first-child').textContent = '●';
+					} else {
+						opt.classList.add('text-zinc-400');
+						opt.classList.remove('text-[#61afef]');
+						opt.querySelector('span:first-child').textContent = ' ';
+					}
+				});
+			}
+
+			renderWizard();
+
 			// Browser Logic
 			const browserContainer = document.getElementById('browser-container');
 			const browserContentArea = document.getElementById('browser-content-area');
 			const browserGlass = document.getElementById('browser-glass');
-			const browserUrlBar = document.getElementById('browser-url-bar') as HTMLAnchorElement;
+			const browserUrlBar = document.getElementById('browser-url-bar');
 			const browserUrlText = document.getElementById('browser-url-text');
 			const tabs = document.querySelectorAll('.browser-tab');
 			const contents = document.querySelectorAll('.app-content');
@@ -239,11 +525,17 @@ const sortedPortraits = allPortraits.sort((a, b) => a.data.order - b.data.order)
 				tab.classList.remove('text-zinc-400', 'hover:bg-zinc-200/50');
 
 				// Scroll tab into view (leftmost possible)
-				tab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+				const tabContainer = tab.closest('.overflow-x-auto');
+				if (tabContainer) {
+					tabContainer.scrollTo({
+						left: tab.offsetLeft,
+						behavior: 'smooth'
+					});
+				}
 
 				// Update URL bar
 				if (browserUrlBar && appUrl) {
-					browserUrlBar.href = appUrl;
+					(browserUrlBar as HTMLAnchorElement).href = appUrl;
 				}
 				if (browserUrlText && appUrl) {
 					browserUrlText.textContent = appUrl;

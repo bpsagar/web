@@ -27,7 +27,22 @@ const portraits = defineCollection({
   }),
 });
 
+const career = defineCollection({
+  type: 'content',
+  schema: z.object({
+    version: z.string(),
+    date: z.string(),
+    company: z.string(),
+    location: z.string(),
+    role: z.string(),
+    description: z.string(),
+    stack: z.array(z.string()),
+    order: z.number(),
+  }),
+});
+
 export const collections = {
   'apps': apps,
   'portraits': portraits,
+  'career': career,
 };
