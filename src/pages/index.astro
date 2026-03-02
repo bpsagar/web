@@ -214,29 +214,45 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 					</div>
 				</section>
 
-				<section class="w-full mt-12">
+				<section class="w-full mt-12 mb-32">
 					<Header title="a portrait artist" showAvatar={true} />
-					<div class="-mr-6 md:-mr-[calc(50vw-226px)]">
-						<div class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar pb-4 pr-6 md:pr-[calc(50vw-226px)]">
+					<div class="relative max-w-[320px] mx-auto" style="perspective: 1200px;">
+						<div id="portrait-stack" class="relative aspect-[3/4] w-full cursor-pointer group">
 							{sortedPortraits.map((portrait, index) => (
-								<div class="flex-none w-[280px] snap-start">
-									<div class={`aspect-[3/4] overflow-hidden border-y border-l border-zinc-200 bg-zinc-50 ${index === sortedPortraits.length - 1 ? 'border-r' : ''}`}>
+								<div
+									class="portrait-page absolute inset-0 transition-all duration-700 ease-in-out origin-left shadow-lg bg-[#fdfcf8] border border-zinc-200 p-3 rounded-sm overflow-hidden"
+									style={`z-index: ${sortedPortraits.length - index}; transform: rotate(${(index % 2 === 0 ? 1 : -1) * (index * 0.5)}deg) translate(${index * 0.5}px, ${index * 0.5}px);`}
+									data-index={index}
+								>
+									<!-- Spiral Binder holes -->
+									<div class="absolute left-1.5 top-0 bottom-0 w-4 flex flex-col justify-around py-4 z-20 pointer-events-none opacity-20">
+										{[...Array(15)].map(() => (
+											<div class="w-2 h-2 rounded-full bg-zinc-900 shadow-inner"></div>
+										))}
+									</div>
+
+									<div class="relative w-full h-full overflow-hidden bg-zinc-50 border border-zinc-100/50">
 										<Image
 											src={portrait.data.image}
 											alt={portrait.data.title}
 											width={560}
 											height={747}
 											quality="high"
-											class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+											class="w-full h-full object-cover mix-blend-multiply opacity-90"
 										/>
+										<!-- Texture overlay -->
+										<div class="absolute inset-0 pointer-events-none opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"></div>
 									</div>
-									<div class="mt-3 h-6 flex items-center px-4">
-										<div class="font-medium text-zinc-500">
-											{portrait.data.titleComment ? <span data-comment={portrait.data.titleComment}>{portrait.data.title}</span> : portrait.data.title}
-										</div>
+
+									<div class="absolute bottom-6 right-6 font-host text-[9px] font-bold uppercase tracking-widest text-zinc-400 z-20 transform rotate-[-2deg]">
+										{portrait.data.titleComment ? <span data-comment={portrait.data.titleComment}>{portrait.data.title}</span> : portrait.data.title}
 									</div>
 								</div>
 							))}
+						</div>
+						<!-- Instruction -->
+						<div class="text-center mt-12 font-host text-[10px] uppercase tracking-[0.3em] text-zinc-400 animate-pulse">
+							Click to flip page
 						</div>
 					</div>
 				</section>
@@ -244,6 +260,13 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 			</main>
 		</div>
 
+		<style is:global>
+			.portrait-page.flipped {
+				transform: rotateY(-180deg) translateX(-100%) !important;
+				opacity: 0;
+				z-index: 0 !important;
+			}
+		</style>
 		<script>
 			// Terminal Wizard Logic
 			const terminalContent = document.getElementById('terminal-content');
@@ -779,6 +802,36 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 					sideComment.show(trigger, trigger.dataset.comment || '');
 				}
 			});
+
+			// Portrait Stack Logic
+			const portraitStack = document.getElementById('portrait-stack');
+			const portraitPages = document.querySelectorAll('.portrait-page');
+			let currentPortraitIndex = 0;
+
+			if (portraitStack) {
+				portraitStack.addEventListener('click', () => {
+					const pages = Array.from(portraitPages);
+					const topPage = pages.find(p => (p as HTMLElement).style.zIndex === String(pages.length));
+
+					if (topPage) {
+						topPage.classList.add('flipped');
+
+						// After animation, reset and move to bottom
+						setTimeout(() => {
+							pages.forEach(p => {
+								const el = p as HTMLElement;
+								const currentZ = parseInt(el.style.zIndex);
+								if (el === topPage) {
+									el.style.zIndex = "1";
+									el.classList.remove('flipped');
+								} else {
+									el.style.zIndex = String(currentZ + 1);
+								}
+							});
+						}, 700);
+					}
+				});
+			}
 
 			const heroProfilePic = document.getElementById('hero-profile-pic');
 			const headerAvatars = document.querySelectorAll('.header-avatar');
