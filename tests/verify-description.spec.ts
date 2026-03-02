@@ -11,7 +11,8 @@ test('verify software engineer description', async ({ page }) => {
   const section = page.locator('section').filter({ has: page.locator('div.flex.items-center.font-host:has-text("a software engineer")') });
   const description = section.locator('div.font-plus.text-zinc-400.text-2xl');
 
-  await expect(description).toContainText('Deployed to production since 2014');
+  await expect(description).toContainText('A PRD to Tech Spec converter');
+  await expect(description).toContainText('deployed to production since 2014');
   await expect(description).toContainText('maintaining 99% uptime');
   await expect(description).toContainText('force pushing features');
 
