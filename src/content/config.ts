@@ -34,6 +34,7 @@ const career = defineCollection({
     date: z.string(),
     company: z.string(),
     location: z.string(),
+    period: z.string(),
     role: z.string(),
     description: z.string(),
     stack: z.array(z.string()),

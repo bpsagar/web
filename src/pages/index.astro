@@ -336,13 +336,29 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 				isInteractive = false;
 				const entry = careerData[selectedIndex];
 
+				// Fade out and scroll up previous content
+				const menus = terminalContent.querySelectorAll('.wizard-menu, .confirm-menu');
+				const currentMenu = menus[menus.length - 1];
+
+				Array.from(terminalContent.children).forEach(child => {
+					const element = child as HTMLElement;
+					element.classList.add('transition-all', 'duration-500', '-translate-y-2');
+					if (element === currentMenu) {
+						// Only fade the question, not the whole menu
+						const question = element.querySelector('.text-white');
+						if (question) question.classList.add('opacity-50');
+					} else {
+						element.classList.add('opacity-50');
+					}
+				});
+
 				// Remove the prompt guide from the previous menu
 				const promptGuides = terminalContent.querySelectorAll('.text-zinc-500');
 				promptGuides.forEach(g => g.remove());
 
 				// Highlight the final selection in the menu and remove other options
-				const menus = terminalContent.querySelectorAll('.space-y-2');
-				const lastMenu = menus[menus.length - 1];
+				const menuElements = terminalContent.querySelectorAll('.space-y-2');
+				const lastMenu = menuElements[menuElements.length - 1];
 				const options = lastMenu.querySelectorAll('.role-option');
 				options.forEach((opt, idx) => {
 					if (idx !== selectedIndex) {
@@ -356,33 +372,26 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 
 				// Create detail container
 				const detailContainer = document.createElement('div');
-				detailContainer.className = "mt-4 space-y-1 pl-4 border-l border-zinc-800 ml-2";
+				detailContainer.className = "mt-4 space-y-1";
 				terminalContent.appendChild(detailContainer);
 
-				// Line 1: Version and Company
-				const headerLine = document.createElement('div');
-				headerLine.className = "flex flex-wrap gap-2";
-				detailContainer.appendChild(headerLine);
+				// Line 1: Period and Location
+				const periodLine = document.createElement('div');
+				detailContainer.appendChild(periodLine);
+				const periodSpan = document.createElement('span');
+				periodSpan.className = "text-[#abb2bf] italic";
+				periodLine.appendChild(periodSpan);
+				await typeText(periodSpan, `${entry.data.period} • ${entry.data.location}`);
 
-				const versionSpan = document.createElement('span');
-				versionSpan.className = "text-[#61afef]";
-				headerLine.appendChild(versionSpan);
-				await typeText(versionSpan, `[${entry.data.version}]`);
-
-				const metaSpan = document.createElement('span');
-				metaSpan.className = "text-[#abb2bf]";
-				headerLine.appendChild(metaSpan);
-				await typeText(metaSpan, ` ${entry.data.date} • ${entry.data.company} (${entry.data.location})`);
-
-				// Line 2: Role
+				// Line 2: Role Description
 				const roleLine = document.createElement('div');
-				roleLine.className = "text-white ml-4";
+				roleLine.className = "text-white";
 				detailContainer.appendChild(roleLine);
-				await typeText(roleLine, `○ Role: ${entry.data.role}; ${entry.data.description}`);
+				await typeText(roleLine, `${entry.data.description}`);
 
 				// Line 3: Stack
 				const stackLine = document.createElement('div');
-				stackLine.className = "ml-4 flex flex-wrap gap-x-2";
+				stackLine.className = "flex flex-wrap gap-x-2";
 				detailContainer.appendChild(stackLine);
 
 				const stackPrefix = document.createElement('span');
@@ -397,7 +406,7 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 
 				// Wait with blinking dots
 				const loader = document.createElement('div');
-				loader.className = "mt-4 text-zinc-500 animate-pulse ml-2";
+				loader.className = "mt-4 text-zinc-500 animate-pulse";
 				loader.textContent = "...";
 				terminalContent.appendChild(loader);
 				scrollToBottom();
@@ -414,6 +423,22 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 			async function handleConfirmation() {
 				isInteractive = false;
 				const choice = confirmationOptions[selectedIndex];
+
+				// Fade out previous content
+				const menus = terminalContent.querySelectorAll('.wizard-menu, .confirm-menu');
+				const currentMenu = menus[menus.length - 1];
+
+				Array.from(terminalContent.children).forEach(child => {
+					const element = child as HTMLElement;
+					element.classList.add('transition-all', 'duration-500', '-translate-y-2');
+					if (element === currentMenu) {
+						// Only fade the question, not the whole menu
+						const question = element.querySelector('.text-white');
+						if (question) question.classList.add('opacity-50');
+					} else {
+						element.classList.add('opacity-50');
+					}
+				});
 
 				// Cleanup
 				const lastMenu = terminalContent.querySelector('.confirm-menu:last-child');
