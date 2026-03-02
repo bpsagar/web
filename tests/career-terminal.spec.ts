@@ -48,6 +48,17 @@ test('Career terminal interaction and formatting', async ({ page }) => {
 
   // Check for fade-out of previous content (the menu)
   const previousMenu = terminal.locator('.wizard-menu');
-  await expect(previousMenu).toHaveClass(/opacity-50/);
+  // Container itself should NOT have opacity-50 now
+  await expect(previousMenu).not.toHaveClass(/opacity-50/);
   await expect(previousMenu).toHaveClass(/-translate-y-2/);
+
+  // But the question inside should have it
+  const question = previousMenu.locator('.text-white');
+  await expect(question).toHaveClass(/opacity-50/);
+
+  // The selected option should NOT have opacity-50 inherited or directly
+  const selectedOption = previousMenu.locator('.role-option');
+  await expect(selectedOption).toBeVisible();
+  const opacity = await selectedOption.evaluate(el => window.getComputedStyle(el).opacity);
+  expect(parseFloat(opacity)).toBeGreaterThan(0.9);
 });

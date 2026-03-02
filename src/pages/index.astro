@@ -337,8 +337,19 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 				const entry = careerData[selectedIndex];
 
 				// Fade out and scroll up previous content
+				const menus = terminalContent.querySelectorAll('.wizard-menu, .confirm-menu');
+				const currentMenu = menus[menus.length - 1];
+
 				Array.from(terminalContent.children).forEach(child => {
-					(child as HTMLElement).classList.add('opacity-50', 'transition-all', 'duration-500', '-translate-y-2');
+					const element = child as HTMLElement;
+					element.classList.add('transition-all', 'duration-500', '-translate-y-2');
+					if (element === currentMenu) {
+						// Only fade the question, not the whole menu
+						const question = element.querySelector('.text-white');
+						if (question) question.classList.add('opacity-50');
+					} else {
+						element.classList.add('opacity-50');
+					}
 				});
 
 				// Remove the prompt guide from the previous menu
@@ -346,8 +357,8 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 				promptGuides.forEach(g => g.remove());
 
 				// Highlight the final selection in the menu and remove other options
-				const menus = terminalContent.querySelectorAll('.space-y-2');
-				const lastMenu = menus[menus.length - 1];
+				const menuElements = terminalContent.querySelectorAll('.space-y-2');
+				const lastMenu = menuElements[menuElements.length - 1];
 				const options = lastMenu.querySelectorAll('.role-option');
 				options.forEach((opt, idx) => {
 					if (idx !== selectedIndex) {
@@ -412,6 +423,22 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 			async function handleConfirmation() {
 				isInteractive = false;
 				const choice = confirmationOptions[selectedIndex];
+
+				// Fade out previous content
+				const menus = terminalContent.querySelectorAll('.wizard-menu, .confirm-menu');
+				const currentMenu = menus[menus.length - 1];
+
+				Array.from(terminalContent.children).forEach(child => {
+					const element = child as HTMLElement;
+					element.classList.add('transition-all', 'duration-500', '-translate-y-2');
+					if (element === currentMenu) {
+						// Only fade the question, not the whole menu
+						const question = element.querySelector('.text-white');
+						if (question) question.classList.add('opacity-50');
+					} else {
+						element.classList.add('opacity-50');
+					}
+				});
 
 				// Cleanup
 				const lastMenu = terminalContent.querySelector('.confirm-menu:last-child');
