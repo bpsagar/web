@@ -5,7 +5,7 @@ company: "Funding Societies"
 location: "Singapore"
 period: "January 2025 to Present"
 role: "Staff Software Engineer"
-description: "Driving engineering productivity via RAG-based AI agents and L1 automation."
-stack: ["Claude Code", "RAG Models", "GitHub CI", "Advanced Query Optimization"]
-order: 6
+description: "Focused on improving engineer productivity, led the automation of L1 tech support and integration of AI coding agents into the engineering workflow."
+stack: ["LLMs", "Vector DB", "ActivePieces", "Node.js", "Typescript", "Golang", "Serverless"]
+order: 5
 ---
