@@ -1,42 +1,63 @@
 import { test, expect } from '@playwright/test';
 
-test('Portrait sketchbook flipping interaction', async ({ page }) => {
+test('Moleskine sketchbook flipping interaction', async ({ page }) => {
   await page.goto('http://localhost:4321');
 
-  const portraitStack = page.locator('#portrait-stack');
-  await expect(portraitStack).toBeVisible();
+  const portraitSection = page.locator('section:has-text("a portrait artist")');
+  await portraitSection.scrollIntoViewIfNeeded();
 
-  // Get initial z-indices
-  const getZIndices = async () => {
-    const pages = page.locator('.portrait-page');
-    const count = await pages.count();
-    const zIndices = [];
-    for (let i = 0; i < count; i++) {
-      const zIndex = await pages.nth(i).evaluate(el => (el as HTMLElement).style.zIndex);
-      zIndices.push(parseInt(zIndex));
-    }
-    return zIndices;
-  };
+  const portraitSpread = page.locator('#portrait-spread');
+  const leftSide = page.locator('#portrait-left-page');
+  const rightSide = page.locator('#portrait-stack');
+  await expect(portraitSpread).toBeVisible();
 
-  const initialZIndices = await getZIndices();
-  const maxZ = Math.max(...initialZIndices);
-  const topPageIndex = initialZIndices.indexOf(maxZ);
+  const pages = page.locator('.portrait-page');
+  const count = await pages.count();
 
-  // Click the stack to flip
-  await portraitStack.click();
+  // Initially, no pages should have the 'flipped' class
+  for (let i = 0; i < count; i++) {
+    await expect(pages.nth(i)).not.toHaveClass(/flipped/);
+  }
 
-  // Wait for the flip animation and z-index update
-  await page.waitForTimeout(1000);
+  // 1. Flip forward first page
+  await rightSide.click({ force: true });
+  await expect(pages.nth(0)).toHaveClass(/flipped/, { timeout: 2000 });
 
-  const updatedZIndices = await getZIndices();
+  // Z-index of flipped page should be 51
+  let zIndex = await pages.nth(0).evaluate(el => (el as HTMLElement).style.zIndex);
+  expect(parseInt(zIndex)).toBe(51);
 
-  // The old top page should now have z-index 1
-  expect(updatedZIndices[topPageIndex]).toBe(1);
+  // 2. Flip back first page
+  await leftSide.click({ force: true });
+  await page.waitForTimeout(1100);
+  await expect(pages.nth(0)).not.toHaveClass(/flipped/);
 
-  // Other pages should have their z-index increased by 1
-  for (let i = 0; i < updatedZIndices.length; i++) {
-    if (i !== topPageIndex) {
-      expect(updatedZIndices[i]).toBe(initialZIndices[i] + 1);
-    }
+  // Z-index of restored page should be original (count-0 = 6 if 6 pages)
+  zIndex = await pages.nth(0).evaluate(el => (el as HTMLElement).style.zIndex);
+  expect(parseInt(zIndex)).toBe(count);
+
+  // 3. Flip all pages forward
+  for (let i = 0; i < count; i++) {
+    await rightSide.click({ force: true });
+    await expect(pages.nth(i)).toHaveClass(/flipped/, { timeout: 5000 });
+    await page.waitForTimeout(1100);
+  }
+
+  // All pages should be flipped
+  for (let i = 0; i < count; i++) {
+    await expect(pages.nth(i)).toHaveClass(/flipped/);
+  }
+
+  // Instruction should update correctly
+  const instruction = page.locator('#portrait-instruction');
+  await expect(instruction).toHaveText(/Click left to flip back or right to close/i);
+
+  // 4. Close book (reset)
+  await rightSide.click({ force: true });
+  await page.waitForTimeout(1500); // Wait for all pages to flip back
+
+  // All pages should be restored
+  for (let i = 0; i < count; i++) {
+    await expect(pages.nth(i)).not.toHaveClass(/flipped/);
   }
 });

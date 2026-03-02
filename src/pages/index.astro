@@ -216,43 +216,71 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 
 				<section class="w-full mt-12 mb-32">
 					<Header title="a portrait artist" showAvatar={true} />
-					<div class="relative max-w-[320px] mx-auto" style="perspective: 1200px;">
-						<div id="portrait-stack" class="relative aspect-[3/4] w-full cursor-pointer group">
-							{sortedPortraits.map((portrait, index) => (
-								<div
-									class="portrait-page absolute inset-0 transition-all duration-700 ease-in-out origin-left shadow-lg bg-[#fdfcf8] border border-zinc-200 p-3 rounded-sm overflow-hidden"
-									style={`z-index: ${sortedPortraits.length - index}; transform: rotate(${(index % 2 === 0 ? 1 : -1) * (index * 0.5)}deg) translate(${index * 0.5}px, ${index * 0.5}px);`}
-									data-index={index}
-								>
-									<!-- Spiral Binder holes -->
-									<div class="absolute left-1.5 top-0 bottom-0 w-4 flex flex-col justify-around py-4 z-20 pointer-events-none opacity-20">
-										{[...Array(15)].map(() => (
-											<div class="w-2 h-2 rounded-full bg-zinc-900 shadow-inner"></div>
-										))}
-									</div>
+					<div class="relative max-w-[640px] mx-auto" style="perspective: 2000px;">
+						<!-- Sketchbook Spread -->
+						<div id="portrait-spread" class="relative aspect-[3/2] w-full flex">
+							<!-- Black Cover Background -->
+							<div class="absolute inset-y-0 left-0 right-0 bg-[#1a1a1a] rounded-xl shadow-2xl -m-3 pointer-events-none overflow-hidden">
+								<!-- Gutter highlight on cover -->
+								<div class="absolute inset-y-0 left-1/2 -translate-x-1/2 w-1.5 bg-black/40"></div>
+							</div>
 
-									<div class="relative w-full h-full overflow-hidden bg-zinc-50 border border-zinc-100/50">
-										<Image
-											src={portrait.data.image}
-											alt={portrait.data.title}
-											width={560}
-											height={747}
-											quality="high"
-											class="w-full h-full object-cover mix-blend-multiply opacity-90"
-										/>
-										<!-- Texture overlay -->
-										<div class="absolute inset-0 pointer-events-none opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"></div>
-									</div>
+							<!-- Gutter / Central Crease -->
+							<div class="absolute inset-y-0 left-1/2 -translate-x-1/2 w-8 bg-gradient-to-r from-transparent via-black/15 to-transparent z-40 pointer-events-none"></div>
 
-									<div class="absolute bottom-6 right-6 font-host text-[9px] font-bold uppercase tracking-widest text-zinc-400 z-20 transform rotate-[-2deg]">
-										{portrait.data.titleComment ? <span data-comment={portrait.data.titleComment}>{portrait.data.title}</span> : portrait.data.title}
+							<!-- Left Side (Empty initially, fills as pages flip) -->
+							<div id="portrait-left-page" class="flex-1 relative bg-[#f4f1ea] rounded-l-lg border-r border-black/5 overflow-hidden cursor-pointer group/left">
+								<div class="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"></div>
+								<!-- Subtle inner shadow for depth -->
+								<div class="absolute inset-y-0 right-0 w-4 bg-gradient-to-l from-black/5 to-transparent"></div>
+							</div>
+
+							<!-- Right Side (Stack of pages) -->
+							<div id="portrait-stack" class="flex-1 relative bg-[#f4f1ea] rounded-r-lg cursor-pointer overflow-visible group/right">
+								<div class="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')] rounded-r-lg"></div>
+								<!-- Subtle inner shadow for depth -->
+								<div class="absolute inset-y-0 left-0 w-4 bg-gradient-to-r from-black/5 to-transparent"></div>
+
+								{sortedPortraits.map((portrait, index) => (
+									<div
+										class="portrait-page absolute inset-0 transition-all duration-1000 ease-[cubic-bezier(0.645,0.045,0.355,1)] origin-left shadow-md preserve-3d"
+										style={`z-index: ${sortedPortraits.length - index}; transform: rotateY(0deg);`}
+										data-index={index}
+									>
+										<!-- Front Face -->
+										<div class="absolute inset-0 bg-[#f4f1ea] p-4 rounded-r-lg backface-hidden">
+											<div class="relative w-full h-full overflow-hidden bg-zinc-50/50 border border-black/5 rounded-sm">
+												<Image
+													src={portrait.data.image}
+													alt={portrait.data.title}
+													width={560}
+													height={747}
+													quality="high"
+													class="w-full h-full object-cover mix-blend-multiply opacity-90"
+												/>
+												<!-- Texture overlay -->
+												<div class="absolute inset-0 pointer-events-none opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"></div>
+											</div>
+
+											<div class="absolute bottom-6 right-6 font-host text-[9px] font-bold uppercase tracking-widest text-zinc-400 z-20 transform rotate-[-1deg]">
+												{portrait.data.titleComment ? <span data-comment={portrait.data.titleComment}>{portrait.data.title}</span> : portrait.data.title}
+											</div>
+										</div>
+
+										<!-- Back Face -->
+										<div class="absolute inset-0 bg-[#ebe8e0] rounded-l-lg backface-hidden overflow-hidden" style="transform: rotateY(180deg);">
+											<div class="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]"></div>
+											<!-- Subtle inner shadow for depth -->
+											<div class="absolute inset-y-0 right-0 w-4 bg-gradient-to-l from-black/5 to-transparent"></div>
+										</div>
 									</div>
-								</div>
-							))}
+								))}
+							</div>
 						</div>
+
 						<!-- Instruction -->
-						<div class="text-center mt-12 font-host text-[10px] uppercase tracking-[0.3em] text-zinc-400 animate-pulse">
-							Click to flip page
+						<div id="portrait-instruction" class="text-center mt-12 font-host text-[10px] uppercase tracking-[0.3em] text-zinc-400 animate-pulse">
+							Click right page to flip
 						</div>
 					</div>
 				</section>
@@ -262,9 +290,15 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 
 		<style is:global>
 			.portrait-page.flipped {
-				transform: rotateY(-180deg) translateX(-100%) !important;
-				opacity: 0;
-				z-index: 0 !important;
+				transform: rotateY(-180deg) !important;
+			}
+			.backface-hidden {
+				backface-visibility: hidden;
+				-webkit-backface-visibility: hidden;
+			}
+			.preserve-3d {
+				transform-style: preserve-3d;
+				-webkit-transform-style: preserve-3d;
 			}
 		</style>
 		<script>
@@ -804,33 +838,91 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 			});
 
 			// Portrait Stack Logic
-			const portraitStack = document.getElementById('portrait-stack');
+			const portraitSpread = document.getElementById('portrait-spread');
 			const portraitPages = document.querySelectorAll('.portrait-page');
-			let currentPortraitIndex = 0;
+			const portraitInstruction = document.getElementById('portrait-instruction');
+			let leftSideStack: HTMLElement[] = [];
+			let rightSideStack = Array.from(portraitPages) as HTMLElement[];
 
-			if (portraitStack) {
-				portraitStack.addEventListener('click', () => {
-					const pages = Array.from(portraitPages);
-					const topPage = pages.find(p => (p as HTMLElement).style.zIndex === String(pages.length));
+			if (portraitSpread) {
+				portraitSpread.addEventListener('click', (e) => {
+					const target = e.target as HTMLElement;
+					const clickedPage = target.closest('.portrait-page') as HTMLElement;
 
-					if (topPage) {
-						topPage.classList.add('flipped');
-
-						// After animation, reset and move to bottom
-						setTimeout(() => {
-							pages.forEach(p => {
-								const el = p as HTMLElement;
-								const currentZ = parseInt(el.style.zIndex);
-								if (el === topPage) {
-									el.style.zIndex = "1";
-									el.classList.remove('flipped');
-								} else {
-									el.style.zIndex = String(currentZ + 1);
-								}
-							});
-						}, 700);
+					// If clicked a flipped page or the left area, flip back
+					if (clickedPage?.classList.contains('flipped') || target.closest('#portrait-left-page')) {
+						flipBack();
+					}
+					// If clicked a non-flipped page or the right area, flip forward
+					else if (clickedPage || target.closest('#portrait-stack')) {
+						flipForward();
 					}
 				});
+			}
+
+			function flipForward() {
+				if (rightSideStack.length === 0) {
+					resetBook();
+					return;
+				}
+
+				const pageToFlip = rightSideStack[0];
+				pageToFlip.classList.add('flipped');
+
+				// Move from right to left stack
+				rightSideStack.shift();
+				leftSideStack.push(pageToFlip);
+
+				// Update z-indices for the flipped page to stack correctly on the left
+				pageToFlip.style.zIndex = String(leftSideStack.length + 50);
+
+				updatePortraitInstructions();
+			}
+
+			function flipBack() {
+				if (leftSideStack.length === 0) return;
+
+				const pageToFlipBack = leftSideStack[leftSideStack.length - 1];
+				pageToFlipBack.classList.remove('flipped');
+
+				// Move from left to right stack
+				leftSideStack.pop();
+				rightSideStack.unshift(pageToFlipBack);
+
+				// Restore original right-side z-index
+				const originalIndex = Array.from(portraitPages).indexOf(pageToFlipBack);
+				pageToFlipBack.style.zIndex = String(portraitPages.length - originalIndex);
+
+				updatePortraitInstructions();
+			}
+
+			function updatePortraitInstructions() {
+				if (!portraitInstruction) return;
+
+				if (leftSideStack.length > 0 && rightSideStack.length > 0) {
+					portraitInstruction.textContent = "Click left/right to flip pages";
+				} else if (rightSideStack.length === 0) {
+					portraitInstruction.textContent = "Click left to flip back or right to close";
+				} else {
+					portraitInstruction.textContent = "Click right page to flip";
+				}
+			}
+
+			function resetBook() {
+				if (!portraitInstruction) return;
+				portraitInstruction.textContent = "Click right page to flip";
+
+				// Flip everything back to right side
+				leftSideStack.slice().reverse().forEach((page, index) => {
+					setTimeout(() => {
+						page.classList.remove('flipped');
+						const originalIndex = Array.from(portraitPages).indexOf(page);
+						page.style.zIndex = String(portraitPages.length - originalIndex);
+					}, index * 100);
+				});
+
+				rightSideStack = Array.from(portraitPages) as HTMLElement[];
+				leftSideStack = [];
 			}
 
 			const heroProfilePic = document.getElementById('hero-profile-pic');
