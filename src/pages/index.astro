@@ -249,7 +249,26 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 			const terminalContent = document.getElementById('terminal-content');
 			const careerDataJson = document.getElementById('career-data')?.textContent;
 			const careerData = careerDataJson ? JSON.parse(careerDataJson) : [];
+
+			// Group career data by company
+			const groupedCareerData = [];
+			careerData.forEach(entry => {
+				const existingGroup = groupedCareerData.find(g => g.company === entry.data.company);
+				if (existingGroup) {
+					existingGroup.roles.push(entry);
+					const majorVersion = entry.data.version.split('.')[0];
+					existingGroup.displayVersion = `${majorVersion}.x`;
+				} else {
+					groupedCareerData.push({
+						company: entry.data.company,
+						displayVersion: entry.data.version,
+						roles: [entry]
+					});
+				}
+			});
+
 			let selectedIndex = 0;
+			let selectedRoleIndex = 0;
 			let isInteractive = true;
 			let wizardMode = 'selection';
 			const confirmationOptions = ['Yes', 'No'];
@@ -264,10 +283,10 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 				wizardContainer.innerHTML = `
 					<div class="text-white">? Which role would you like to inspect? <span class="text-zinc-500">(Use arrow keys or click)</span></div>
 					<div class="flex flex-col gap-1">
-						${careerData.map((entry, index) => `
+						${groupedCareerData.map((group, index) => `
 							<div class="cursor-pointer flex items-start gap-2 role-option transition-colors duration-200 hover:text-[#61afef] ${index === selectedIndex ? 'text-[#61afef]' : 'text-zinc-400'}" data-index="${index}">
 								<span class="w-4">${index === selectedIndex ? '●' : ' '}</span>
-								<span>${entry.data.version}: ${entry.data.company} · ${entry.data.role}</span>
+								<span>${group.displayVersion}: ${group.company}</span>
 							</div>
 						`).join('')}
 					</div>
@@ -284,6 +303,75 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 						handleSelection();
 					});
 				});
+			}
+
+			function renderRoleSelection(groupIndex) {
+				if (!terminalContent) return;
+				wizardMode = 'role-selection';
+				selectedRoleIndex = 0;
+				const group = groupedCareerData[groupIndex];
+
+				const roleContainer = document.createElement('div');
+				roleContainer.className = "space-y-2 role-menu";
+				roleContainer.innerHTML = `
+					<div class="text-white">? Select a role at ${group.company}? <span class="text-zinc-500">(Use arrow keys or click)</span></div>
+					<div class="flex flex-col gap-1">
+						${group.roles.map((role, index) => `
+							<div class="cursor-pointer flex items-start gap-2 role-sub-option transition-colors duration-200 hover:text-[#61afef] ${index === selectedRoleIndex ? 'text-[#61afef]' : 'text-zinc-400'}" data-index="${index}">
+								<span class="w-4">${index === selectedRoleIndex ? '●' : ' '}</span>
+								<span>${role.data.version}: ${role.data.role}</span>
+							</div>
+						`).join('')}
+					</div>
+				`;
+				terminalContent.appendChild(roleContainer);
+
+				const options = roleContainer.querySelectorAll('.role-sub-option');
+				options.forEach(opt => {
+					opt.addEventListener('click', () => {
+						if (!isInteractive || wizardMode !== 'role-selection') return;
+						selectedRoleIndex = parseInt(opt.getAttribute('data-index') || '0');
+						handleRoleSelection();
+					});
+				});
+				scrollToBottom();
+			}
+
+			async function handleRoleSelection() {
+				isInteractive = false;
+				const group = groupedCareerData[selectedIndex];
+				const role = group.roles[selectedRoleIndex];
+
+				// Fade out and scroll up previous content
+				const menus = terminalContent.querySelectorAll('.role-menu');
+				const currentMenu = menus[menus.length - 1];
+
+				Array.from(terminalContent.children).forEach(child => {
+					const element = child as HTMLElement;
+					element.classList.add('transition-all', 'duration-500', '-translate-y-2');
+					if (element === currentMenu) {
+						const question = element.querySelector('.text-white');
+						if (question) question.classList.add('opacity-50');
+					} else {
+						element.classList.add('opacity-50');
+					}
+				});
+
+				const promptGuides = currentMenu.querySelectorAll('.text-zinc-500');
+				promptGuides.forEach(g => g.remove());
+
+				const options = currentMenu.querySelectorAll('.role-sub-option');
+				options.forEach((opt, idx) => {
+					if (idx !== selectedRoleIndex) {
+						opt.remove();
+					} else {
+						opt.classList.remove('text-[#61afef]', 'hover:text-[#61afef]', 'text-zinc-400');
+						opt.classList.add('text-[#98c379]');
+						opt.querySelector('span:first-child').textContent = '✔';
+					}
+				});
+
+				await displayRoleDetails(role);
 			}
 
 			function renderConfirmation() {
@@ -334,7 +422,7 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 
 			async function handleSelection() {
 				isInteractive = false;
-				const entry = careerData[selectedIndex];
+				const group = groupedCareerData[selectedIndex];
 
 				// Fade out and scroll up previous content
 				const menus = terminalContent.querySelectorAll('.wizard-menu, .confirm-menu');
@@ -370,10 +458,33 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 					}
 				});
 
+				if (group.roles.length > 1) {
+					renderRoleSelection(selectedIndex);
+					isInteractive = true;
+				} else {
+					await displayRoleDetails(group.roles[0]);
+				}
+			}
+
+			async function displayRoleDetails(entry) {
 				// Create detail container
 				const detailContainer = document.createElement('div');
 				detailContainer.className = "mt-4 space-y-1";
 				terminalContent.appendChild(detailContainer);
+
+				// Line 0: Version and Role Title
+				const titleLine = document.createElement('div');
+				titleLine.className = "text-white font-bold";
+				detailContainer.appendChild(titleLine);
+
+				const versionSpan = document.createElement('span');
+				versionSpan.className = "text-[#61afef]";
+				versionSpan.textContent = entry.data.version;
+				titleLine.appendChild(versionSpan);
+
+				const roleSpan = document.createElement('span');
+				titleLine.appendChild(roleSpan);
+				await typeText(roleSpan, ` ${entry.data.role}`);
 
 				// Line 1: Period and Location
 				const periodLine = document.createElement('div');
@@ -403,6 +514,12 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 				stackContent.className = "text-[#abb2bf]";
 				stackLine.appendChild(stackContent);
 				await typeText(stackContent, ` ${entry.data.stack.join(', ')}`);
+
+				// Horizontal Rule
+				const hr = document.createElement('div');
+				hr.className = "text-zinc-800 py-2";
+				detailContainer.appendChild(hr);
+				await typeText(hr, "--------------------------------------------------");
 
 				// Wait with blinking dots
 				const loader = document.createElement('div');
@@ -483,20 +600,30 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 					if (!isVisible) return;
 				}
 
-				const maxIndex = wizardMode === 'selection' ? careerData.length : confirmationOptions.length;
+				const maxIndex = wizardMode === 'selection' ? groupedCareerData.length : (wizardMode === 'role-selection' ? groupedCareerData[selectedIndex].roles.length : confirmationOptions.length);
 
 				if (e.key === 'ArrowUp') {
 					e.preventDefault();
-					selectedIndex = (selectedIndex - 1 + maxIndex) % maxIndex;
+					if (wizardMode === 'role-selection') {
+						selectedRoleIndex = (selectedRoleIndex - 1 + maxIndex) % maxIndex;
+					} else {
+						selectedIndex = (selectedIndex - 1 + maxIndex) % maxIndex;
+					}
 					updateWizardSelection();
 				} else if (e.key === 'ArrowDown') {
 					e.preventDefault();
-					selectedIndex = (selectedIndex + 1) % maxIndex;
+					if (wizardMode === 'role-selection') {
+						selectedRoleIndex = (selectedRoleIndex + 1) % maxIndex;
+					} else {
+						selectedIndex = (selectedIndex + 1) % maxIndex;
+					}
 					updateWizardSelection();
 				} else if (e.key === 'Enter') {
 					e.preventDefault();
 					if (wizardMode === 'selection') {
 						handleSelection();
+					} else if (wizardMode === 'role-selection') {
+						handleRoleSelection();
 					} else {
 						handleConfirmation();
 					}
@@ -504,14 +631,17 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 			});
 
 			function updateWizardSelection() {
-				const selector = wizardMode === 'selection' ? '.wizard-menu' : '.confirm-menu';
+				const selector = wizardMode === 'selection' ? '.wizard-menu' : (wizardMode === 'role-selection' ? '.role-menu' : '.confirm-menu');
 				const menus = terminalContent.querySelectorAll(selector);
 				const lastMenu = menus[menus.length - 1];
 				if (!lastMenu) return;
-				const optionSelector = wizardMode === 'selection' ? '.role-option' : '.confirm-option';
+
+				const optionSelector = wizardMode === 'selection' ? '.role-option' : (wizardMode === 'role-selection' ? '.role-sub-option' : '.confirm-option');
 				const options = lastMenu.querySelectorAll(optionSelector);
+				const currentIndex = wizardMode === 'role-selection' ? selectedRoleIndex : selectedIndex;
+
 				options.forEach((opt, idx) => {
-					if (idx === selectedIndex) {
+					if (idx === currentIndex) {
 						opt.classList.remove('text-zinc-400');
 						opt.classList.add('text-[#61afef]');
 						opt.querySelector('span:first-child').textContent = '●';
