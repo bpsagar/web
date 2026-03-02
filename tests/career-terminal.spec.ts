@@ -31,13 +31,19 @@ test('Career terminal interaction and formatting', async ({ page }) => {
   const detailContainer = terminal.locator('.mt-4.space-y-1').first();
   await expect(detailContainer).toBeVisible();
 
-  // Check the title line (Version: Role)
+  // Check the title line (Version Role)
   const titleLine = detailContainer.locator('div').nth(0);
   await expect(titleLine).toHaveClass(/text-white/);
   await expect(titleLine).toHaveClass(/font-bold/);
-  // Match whatever was in the first sub-role option (excluding the bullet)
-  const expectedTitle = subRoleText?.replace('●', '').trim();
+
+  // Version should be colored
+  const versionSpan = titleLine.locator('span').first();
+  await expect(versionSpan).toHaveClass(/text-\[#61afef\]/);
+
+  // Match whatever was in the first sub-role option (excluding the bullet and colon)
+  const expectedTitle = subRoleText?.replace('●', '').replace(':', '').trim();
   await expect(titleLine).toContainText(expectedTitle!, { timeout: 10000 });
+  await expect(titleLine).not.toContainText(':');
 
   // Check the first line (Period • Location)
   const periodLine = detailContainer.locator('div').nth(1);

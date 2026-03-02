@@ -476,7 +476,15 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 				const titleLine = document.createElement('div');
 				titleLine.className = "text-white font-bold";
 				detailContainer.appendChild(titleLine);
-				await typeText(titleLine, `${entry.data.version}: ${entry.data.role}`);
+
+				const versionSpan = document.createElement('span');
+				versionSpan.className = "text-[#61afef]";
+				versionSpan.textContent = entry.data.version;
+				titleLine.appendChild(versionSpan);
+
+				const roleSpan = document.createElement('span');
+				titleLine.appendChild(roleSpan);
+				await typeText(roleSpan, ` ${entry.data.role}`);
 
 				// Line 1: Period and Location
 				const periodLine = document.createElement('div');
