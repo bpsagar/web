@@ -870,17 +870,19 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 
 						// Only top 3-4 cards are visible/important
 						const isTop = relativeIdx === 0;
-						const offset = relativeIdx * 4;
-						const scale = 1 - (relativeIdx * 0.05);
+						const offset = relativeIdx * 16;
+						const xOffset = isTop ? 0 : (relativeIdx % 2 === 0 ? 6 : -6) * relativeIdx;
+						const scale = 1 - (relativeIdx * 0.04);
+						const rotation = isTop ? 0 : (relativeIdx % 2 === 0 ? 3 : -3) * relativeIdx;
 
-						card.style.opacity = relativeIdx < 3 ? '1' : '0';
+						card.style.opacity = relativeIdx < 4 ? '1' : '0';
 						card.style.zIndex = (count - relativeIdx).toString();
 
 						if (isTop && isSwiping) {
-							const rotation = (currentX - startX) / 20;
-							card.style.transform = `translateX(${currentX - startX}px) rotate(${rotation}deg) scale(1)`;
+							const swipeRotation = (currentX - startX) / 20;
+							card.style.transform = `translateX(${currentX - startX}px) rotate(${swipeRotation}deg) scale(1)`;
 						} else {
-							card.style.transform = `translateY(${offset}px) scale(${scale})`;
+							card.style.transform = `translateY(${offset}px) translateX(${xOffset}px) scale(${scale}) rotate(${rotation}deg)`;
 						}
 
 						card.style.pointerEvents = isTop ? 'auto' : 'none';
