@@ -38,235 +38,296 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 					transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1);
 				}
 			}
+
+			/* Section Backgrounds */
+			.section-engineer {
+				background-image: radial-gradient(lightgray 1px, transparent 1px);
+				background-size: 20px 20px;
+			}
+
+			.section-maker {
+				background-image: radial-gradient(circle at top right, #FFF5E1 0%, transparent 70%);
+			}
+
+			.section-artist {
+				background-color: #F2F2F2;
+				position: relative;
+			}
+
+			.section-artist::before {
+				content: "";
+				position: absolute;
+				inset: 0;
+				width: 100%;
+				height: 100%;
+				opacity: 0.05;
+				pointer-events: none;
+				background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+			}
 		</style>
 	</head>
 	<body class="bg-white text-zinc-900 min-h-screen overflow-x-hidden">
-		<div class="max-w-[500px] mx-auto px-6">
-			<Header showAvatar={true} />
-			<section class="relative pt-2 pb-8 overflow-hidden">
-				<!-- Profile Picture -->
-				<div id="hero-profile-pic" class="mb-6 w-24 h-24 rounded-full overflow-hidden border border-zinc-200">
-					<Image
-						src={profileImage}
-						alt="Sagar Chakravarthy"
-						width={192}
-						height={192}
-						class="w-full h-full object-cover"
-						loading="eager"
-					/>
+		<div class="w-full">
+			<!-- Hero Section -->
+			<div class="w-full pt-4 pb-20 bg-white">
+				<div class="max-w-[500px] mx-auto px-6">
+					<Header showAvatar={true} />
+					<section class="relative pt-2 pb-8 overflow-hidden">
+						<!-- Profile Picture -->
+						<div id="hero-profile-pic" class="mb-6 w-24 h-24 rounded-full overflow-hidden border border-zinc-200">
+							<Image
+								src={profileImage}
+								alt="Sagar Chakravarthy"
+								width={192}
+								height={192}
+								class="w-full h-full object-cover"
+								loading="eager"
+							/>
+						</div>
+						<!-- Heading -->
+						<h1 class="font-plus font-medium tracking-tight text-zinc-400 text-2xl">
+							A <span class="text-zinc-900">software engineer</span>, <span class="text-zinc-900">maker</span> and <span class="text-zinc-900">portrait artist</span>, based in Singapore.
+							<span class="block mt-4">On a lifelong pursuit of the perfect masala chai, which is a convenient excuse to drink it every day.</span>
+							<span class="block mt-4">Otherwise, you’ll find me at the gym or on a tennis court. Only places my brain hits 'quiet mode'.</span>
+						</h1>
+					</section>
 				</div>
-				<!-- Heading -->
-				<h1 class="font-plus font-medium tracking-tight text-zinc-400 text-2xl">
-					A <span class="text-zinc-900">software engineer</span>, <span class="text-zinc-900">maker</span> and <span class="text-zinc-900">portrait artist</span>, based in Singapore.
-					<span class="block mt-4">On a lifelong pursuit of the perfect masala chai, which is a convenient excuse to drink it every day.</span>
-					<span class="block mt-4">Otherwise, you’ll find me at the gym or on a tennis court. Only places my brain hits 'quiet mode'.</span>
-				</h1>
-			</section>
+			</div>
 
-			<main class="mt-4 mb-20">
-				<section class="w-full mb-16">
-					<Header title="a software engineer" showAvatar={true} />
+			<main>
+				<!-- Transition: Hero to Software Engineer -->
+				<div class="h-32 section-engineer relative">
+					<div class="absolute inset-0 bg-gradient-to-b from-white to-transparent"></div>
+				</div>
 
-					<div class="mb-8 font-plus font-medium tracking-tight text-zinc-400 text-2xl">
-						A <span class="text-zinc-900">PRD</span> to <span class="text-zinc-900">Tech Spec</span> converter, deployed to production since <span class="text-zinc-900">2014</span>, maintaining <span class="text-zinc-900">99% uptime</span> throughout while <span class="text-zinc-900">force pushing</span> features to maintain a clean commit history.
-						<hr class="mt-8 border-zinc-100" />
-					</div>
+				<!-- Software Engineer Section -->
+				<div class="w-full py-20 section-engineer">
+					<div class="max-w-[500px] mx-auto px-6">
+						<section class="w-full">
+							<Header title="a software engineer" showAvatar={true} />
 
-					<div class="terminal-container bg-zinc-950 rounded-xl overflow-hidden border border-zinc-800 md:-mr-[200px] font-host text-[13px] leading-relaxed shadow-2xl">
-						<!-- Terminal Header -->
-						<div class="bg-zinc-900/50 border-b border-zinc-800 px-4 py-3 flex items-center gap-2">
-							<div class="flex gap-1.5">
-								<div class="w-3 h-3 rounded-full bg-[#ff5f57]"></div>
-								<div class="w-3 h-3 rounded-full bg-[#febc2e]"></div>
-								<div class="w-3 h-3 rounded-full bg-[#28c840]"></div>
-							</div>
-							<div class="flex-1 text-center text-zinc-500 text-[11px] font-medium mr-12 uppercase tracking-widest">zsh — 80x24</div>
-						</div>
-						<!-- Terminal Body -->
-						<div class="p-6 overflow-x-auto no-scrollbar min-h-[400px]" id="terminal-body">
-							<div class="flex gap-2">
-								<span class="text-[#5af78e]">sagar@work</span>
-								<span class="text-white">$ career ls</span>
+							<div class="mb-8 font-plus font-medium tracking-tight text-zinc-400 text-2xl">
+								A <span class="text-zinc-900">PRD</span> to <span class="text-zinc-900">Tech Spec</span> converter, deployed to production since <span class="text-zinc-900">2014</span>, maintaining <span class="text-zinc-900">99% uptime</span> throughout while <span class="text-zinc-900">force pushing</span> features to maintain a clean commit history.
+								<hr class="mt-8 border-zinc-100" />
 							</div>
 
-							<div id="terminal-content" class="mt-4 space-y-4">
-								<!-- Wizard will be injected here -->
-							</div>
-							<script id="career-data" type="application/json" is:inline set:html={JSON.stringify(sortedCareer)}></script>
-						</div>
-					</div>
-				</section>
-
-				<section class="w-full">
-					<Header title="a maker" showAvatar={true} />
-
-					<div class="mb-8 font-plus font-medium tracking-tight text-zinc-400 text-2xl">
-						These are the results of my <span class="text-zinc-900">nights and weekends</span>.
-						<span class="block mt-4">
-							Some are for profit, some are for free; some have a crowd, and some just have me.
-						</span>
-						<span class="block mt-4">
-							It's crazy that strangers have paid, for the tools that <span data-comment="Kavya (my wife) and I worked on many of these projects together. She runs the marketing engine that brings them in front of people.">we</span> made.
-						</span>
-						<hr class="mt-8 border-zinc-100" />
-					</div>
-
-					<div class="browser-container border border-zinc-200 rounded-xl overflow-hidden bg-white group/browser md:-mr-[200px]" id="browser-container">
-						<!-- Browser Header -->
-						<div class="bg-zinc-100 border-b border-zinc-200 px-4 pt-3 flex items-end gap-2">
-							<!-- Traffic Lights -->
-							<div class="flex gap-1.5 mb-3.5 mr-2">
-								<div class="w-3 h-3 rounded-full bg-[#ff5f57]"></div>
-								<div class="w-3 h-3 rounded-full bg-[#febc2e]"></div>
-								<div class="w-3 h-3 rounded-full bg-[#28c840]"></div>
-							</div>
-							<!-- Tabs -->
-							<div class="relative flex-1 overflow-hidden">
-								<div class="flex overflow-x-auto no-scrollbar gap-1 pr-12">
-									{sortedApps.map((app, index) => (
-										<button
-											class={`browser-tab flex items-center gap-2 px-4 py-2 rounded-t-lg text-[11px] font-host font-bold uppercase tracking-wider transition-all duration-300 whitespace-nowrap cursor-pointer ${index === 0 ? 'bg-white text-zinc-900 border-x border-t border-zinc-200' : 'text-zinc-400 hover:bg-zinc-200/50'}`}
-										data-app-id={app.data.name.toLowerCase().replace(/\s+/g, '-')}
-										data-app-url={app.data.url}
-										data-app-color={app.data.color}
-									>
-										<div class="w-3.5 h-3.5">
-											<Image src={app.data.logo} alt={app.data.name} width={28} height={28} class="w-full h-full object-contain" />
-										</div>
-											{app.data.name}
-										</button>
-									))}
+							<div class="terminal-container bg-zinc-950 rounded-xl overflow-hidden border border-zinc-800 md:-mr-[200px] font-host text-[13px] leading-relaxed shadow-2xl">
+								<!-- Terminal Header -->
+								<div class="bg-zinc-900/50 border-b border-zinc-800 px-4 py-3 flex items-center gap-2">
+									<div class="flex gap-1.5">
+										<div class="w-3 h-3 rounded-full bg-[#ff5f57]"></div>
+										<div class="w-3 h-3 rounded-full bg-[#febc2e]"></div>
+										<div class="w-3 h-3 rounded-full bg-[#28c840]"></div>
+									</div>
+									<div class="flex-1 text-center text-zinc-500 text-[11px] font-medium mr-12 uppercase tracking-widest">zsh — 80x24</div>
 								</div>
-								<div class="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-zinc-100 to-transparent pointer-events-none"></div>
+								<!-- Terminal Body -->
+								<div class="p-6 overflow-x-auto no-scrollbar min-h-[400px]" id="terminal-body">
+									<div class="flex gap-2">
+										<span class="text-[#5af78e]">sagar@work</span>
+										<span class="text-white">$ career ls</span>
+									</div>
+
+									<div id="terminal-content" class="mt-4 space-y-4">
+										<!-- Wizard will be injected here -->
+									</div>
+									<script id="career-data" type="application/json" is:inline set:html={JSON.stringify(sortedCareer)}></script>
+								</div>
 							</div>
-						</div>
+						</section>
+					</div>
+				</div>
 
-						<!-- Browser Toolbar -->
-						<div class="flex items-center gap-4 px-4 py-2 border-b border-zinc-200 bg-white">
-							<div class="flex gap-3 text-zinc-300">
-								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-50"><polyline points="15 18 9 12 15 6"></polyline></svg>
-								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-50"><polyline points="9 18 15 12 9 6"></polyline></svg>
-								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-400"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path><polyline points="21 3 21 8 16 8"></polyline></svg>
+				<!-- Transition: Software Engineer to Maker -->
+				<div class="h-32 section-engineer relative">
+					<div class="absolute inset-0 bg-gradient-to-b from-transparent to-white"></div>
+				</div>
+
+				<!-- Maker Section -->
+				<div class="w-full py-20 section-maker bg-white">
+					<div class="max-w-[500px] mx-auto px-6">
+						<section class="w-full">
+							<Header title="a maker" showAvatar={true} />
+
+							<div class="mb-8 font-plus font-medium tracking-tight text-zinc-400 text-2xl">
+								These are the results of my <span class="text-zinc-900">nights and weekends</span>.
+								<span class="block mt-4">
+									Some are for profit, some are for free; some have a crowd, and some just have me.
+								</span>
+								<span class="block mt-4">
+									It's crazy that strangers have paid, for the tools that <span data-comment="Kavya (my wife) and I worked on many of these projects together. She runs the marketing engine that brings them in front of people.">we</span> made.
+								</span>
+								<hr class="mt-8 border-zinc-100" />
 							</div>
-							<a id="browser-url-bar" href={sortedApps[0].data.url} target="_blank" rel="noopener noreferrer" class="flex-1 bg-zinc-100 rounded-md px-3 py-1.5 text-[11px] font-host text-zinc-500 flex items-center gap-2 truncate hover:bg-zinc-200/70 transition-colors">
-								<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-400"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-								<span id="browser-url-text" class="truncate flex-1">{sortedApps[0].data.url}</span>
-								<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-300"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-							</a>
-						</div>
 
-						<!-- Browser Content Area -->
-						<div class="relative overflow-hidden bg-white min-h-[400px] transition-colors duration-500" id="browser-content-area" style={`--app-color: ${sortedApps[0].data.color};`}>
-							<!-- Spotlight Gradient -->
-							<div class="absolute inset-0 opacity-0 group-hover/browser:opacity-100 transition-opacity duration-500 pointer-events-none z-0 spotlight" id="browser-spotlight" style="background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), color-mix(in srgb, var(--app-color) 12%, transparent), transparent 40%);"></div>
-
-							<!-- Glassmorphism Background -->
-							<div id="browser-glass" class="absolute inset-0 transition-all duration-700 pointer-events-none z-0 backdrop-blur-2xl" style={`background: linear-gradient(135deg, color-mix(in srgb, ${sortedApps[0].data.color} 8%, transparent), color-mix(in srgb, ${sortedApps[0].data.color} 2%, transparent));`}></div>
-
-							<div class="relative z-10">
-								{sortedApps.map((app, index) => (
-									<div id={`content-${app.data.name.toLowerCase().replace(/\s+/g, '-')}`} class={`app-content transition-all duration-500 ${index === 0 ? 'block opacity-100 translate-y-0' : 'hidden opacity-0 translate-y-4'}`}>
-										<!-- Banner -->
-										<div class="px-5 py-2.5 border-b border-zinc-200/50 flex items-center gap-2 bg-white/40 backdrop-blur-md">
-											<span class="text-[8px] px-2 py-0.5 rounded-full border border-zinc-200 text-zinc-500 font-bold uppercase tracking-[0.1em] bg-white/50 whitespace-nowrap inline-block">
-												{app.data.tag}
-											</span>
-											<span class="text-[8px] px-2 py-0.5 rounded-full border border-zinc-200 text-zinc-500 font-bold uppercase tracking-[0.1em] bg-white/50 whitespace-nowrap inline-block">
-												Launched in {app.data.year}
-											</span>
+							<div class="browser-container border border-zinc-200 rounded-xl overflow-hidden bg-white group/browser md:-mr-[200px]" id="browser-container">
+								<!-- Browser Header -->
+								<div class="bg-zinc-100 border-b border-zinc-200 px-4 pt-3 flex items-end gap-2">
+									<!-- Traffic Lights -->
+									<div class="flex gap-1.5 mb-3.5 mr-2">
+										<div class="w-3 h-3 rounded-full bg-[#ff5f57]"></div>
+										<div class="w-3 h-3 rounded-full bg-[#febc2e]"></div>
+										<div class="w-3 h-3 rounded-full bg-[#28c840]"></div>
+									</div>
+									<!-- Tabs -->
+									<div class="relative flex-1 overflow-hidden">
+										<div class="flex overflow-x-auto no-scrollbar gap-1 pr-12">
+											{sortedApps.map((app, index) => (
+												<button
+													class={`browser-tab flex items-center gap-2 px-4 py-2 rounded-t-lg text-[11px] font-host font-bold uppercase tracking-wider transition-all duration-300 whitespace-nowrap cursor-pointer ${index === 0 ? 'bg-white text-zinc-900 border-x border-t border-zinc-200' : 'text-zinc-400 hover:bg-zinc-200/50'}`}
+												data-app-id={app.data.name.toLowerCase().replace(/\s+/g, '-')}
+												data-app-url={app.data.url}
+												data-app-color={app.data.color}
+											>
+												<div class="w-3.5 h-3.5">
+													<Image src={app.data.logo} alt={app.data.name} width={28} height={28} class="w-full h-full object-contain" />
+												</div>
+													{app.data.name}
+												</button>
+											))}
 										</div>
+										<div class="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-zinc-100 to-transparent pointer-events-none"></div>
+									</div>
+								</div>
 
-										<!-- Screenshot Wrapper -->
-										<div class="relative group/screenshot overflow-hidden max-h-[400px]">
-											<!-- Screenshot Content -->
-											<div class="w-full bg-zinc-50 flex items-center justify-center overflow-hidden transition-all duration-500 group-hover/screenshot:blur-sm">
-												{app.data.screenshot_desktop && (
-													<div class="hidden md:block w-full">
-														<Image
-															src={app.data.screenshot_desktop}
-															alt={`${app.data.name} desktop screenshot`}
-															width={1280}
-															height={800}
-															class="w-full h-auto block object-top"
-														/>
+								<!-- Browser Toolbar -->
+								<div class="flex items-center gap-4 px-4 py-2 border-b border-zinc-200 bg-white">
+									<div class="flex gap-3 text-zinc-300">
+										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-50"><polyline points="15 18 9 12 15 6"></polyline></svg>
+										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-50"><polyline points="9 18 15 12 9 6"></polyline></svg>
+										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-400"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path><polyline points="21 3 21 8 16 8"></polyline></svg>
+									</div>
+									<a id="browser-url-bar" href={sortedApps[0].data.url} target="_blank" rel="noopener noreferrer" class="flex-1 bg-zinc-100 rounded-md px-3 py-1.5 text-[11px] font-host text-zinc-500 flex items-center gap-2 truncate hover:bg-zinc-200/70 transition-colors">
+										<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-400"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+										<span id="browser-url-text" class="truncate flex-1">{sortedApps[0].data.url}</span>
+										<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-300"><line x1="7" y1="17" x2="17" x2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+									</a>
+								</div>
+
+								<!-- Browser Content Area -->
+								<div class="relative overflow-hidden bg-white min-h-[400px] transition-colors duration-500" id="browser-content-area" style={`--app-color: ${sortedApps[0].data.color};`}>
+									<!-- Spotlight Gradient -->
+									<div class="absolute inset-0 opacity-0 group-hover/browser:opacity-100 transition-opacity duration-500 pointer-events-none z-0 spotlight" id="browser-spotlight" style="background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), color-mix(in srgb, var(--app-color) 12%, transparent), transparent 40%);"></div>
+
+									<!-- Glassmorphism Background -->
+									<div id="browser-glass" class="absolute inset-0 transition-all duration-700 pointer-events-none z-0 backdrop-blur-2xl" style={`background: linear-gradient(135deg, color-mix(in srgb, ${sortedApps[0].data.color} 8%, transparent), color-mix(in srgb, ${sortedApps[0].data.color} 2%, transparent));`}></div>
+
+									<div class="relative z-10">
+										{sortedApps.map((app, index) => (
+											<div id={`content-${app.data.name.toLowerCase().replace(/\s+/g, '-')}`} class={`app-content transition-all duration-500 ${index === 0 ? 'block opacity-100 translate-y-0' : 'hidden opacity-0 translate-y-4'}`}>
+												<!-- Banner -->
+												<div class="px-5 py-2.5 border-b border-zinc-200/50 flex items-center gap-2 bg-white/40 backdrop-blur-md">
+													<span class="text-[8px] px-2 py-0.5 rounded-full border border-zinc-200 text-zinc-500 font-bold uppercase tracking-[0.1em] bg-white/50 whitespace-nowrap inline-block">
+														{app.data.tag}
+													</span>
+													<span class="text-[8px] px-2 py-0.5 rounded-full border border-zinc-200 text-zinc-500 font-bold uppercase tracking-[0.1em] bg-white/50 whitespace-nowrap inline-block">
+														Launched in {app.data.year}
+													</span>
+												</div>
+
+												<!-- Screenshot Wrapper -->
+												<div class="relative group/screenshot overflow-hidden max-h-[400px]">
+													<!-- Screenshot Content -->
+													<div class="w-full bg-zinc-50 flex items-center justify-center overflow-hidden transition-all duration-500 group-hover/screenshot:blur-sm">
+														{app.data.screenshot_desktop && (
+															<div class="hidden md:block w-full">
+																<Image
+																	src={app.data.screenshot_desktop}
+																	alt={`${app.data.name} desktop screenshot`}
+																	width={1280}
+																	height={800}
+																	class="w-full h-auto block object-top"
+																/>
+															</div>
+														)}
+														{app.data.screenshot_mobile && (
+															<div class="block md:hidden w-full">
+																<Image
+																	src={app.data.screenshot_mobile}
+																	alt={`${app.data.name} mobile screenshot`}
+																	width={780}
+																	height={1688}
+																	class="w-full h-auto block object-top"
+																/>
+															</div>
+														)}
 													</div>
-												)}
-												{app.data.screenshot_mobile && (
-													<div class="block md:hidden w-full">
-														<Image
-															src={app.data.screenshot_mobile}
-															alt={`${app.data.name} mobile screenshot`}
-															width={780}
-															height={1688}
-															class="w-full h-auto block object-top"
-														/>
+
+													<!-- Fade Out Overlay -->
+													<div class="absolute bottom-0 left-0 right-0 h-[20%] bg-gradient-to-t from-white to-transparent pointer-events-none z-10"></div>
+
+													<!-- CTA Button -->
+													<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover/screenshot:opacity-100 transition-opacity duration-300 z-20">
+														<a
+															href={app.data.url}
+															target="_blank"
+															rel="noopener noreferrer"
+															class="px-6 py-3 rounded-full font-host font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl"
+															style={`
+																background: color-mix(in srgb, ${app.data.color} 20%, rgba(255, 255, 255, 0.7));
+																border: 1px solid color-mix(in srgb, ${app.data.color} 40%, rgba(255, 255, 255, 0.8));
+																color: color-mix(in srgb, ${app.data.color} 80%, black);
+															`}
+														>
+															Check it out
+															<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+														</a>
 													</div>
-												)}
+												</div>
 											</div>
+										))}
+									</div>
+								</div>
+							</div>
+						</section>
+					</div>
+				</div>
+			</main>
 
-											<!-- Fade Out Overlay -->
-											<div class="absolute bottom-0 left-0 right-0 h-[20%] bg-gradient-to-t from-white to-transparent pointer-events-none z-10"></div>
+			<!-- Transition: Maker to Artist -->
+			<div class="h-32 section-artist relative">
+				<div class="absolute inset-0 bg-gradient-to-b from-white to-transparent"></div>
+			</div>
 
-											<!-- CTA Button -->
-											<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover/screenshot:opacity-100 transition-opacity duration-300 z-20">
-												<a
-													href={app.data.url}
-													target="_blank"
-													rel="noopener noreferrer"
-													class="px-6 py-3 rounded-full font-host font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl"
-													style={`
-														background: color-mix(in srgb, ${app.data.color} 20%, rgba(255, 255, 255, 0.7));
-														border: 1px solid color-mix(in srgb, ${app.data.color} 40%, rgba(255, 255, 255, 0.8));
-														color: color-mix(in srgb, ${app.data.color} 80%, black);
-													`}
-												>
-													Check it out
-													<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-												</a>
+			<!-- Portrait Artist Section -->
+			<div class="w-full py-20 section-artist">
+				<div class="max-w-[500px] mx-auto px-6">
+					<section id="portraits" class="w-full relative z-10">
+						<Header title="a portrait artist" showAvatar={true} />
+
+						<div id="portrait-interactive-container" class="relative mt-12 h-[500px] md:h-[650px] flex flex-col items-center select-none touch-none" data-portraits-count={sortedPortraits.length}>
+							<div id="portrait-cards-wrapper" class="relative mt-16 md:mt-24 w-[260px] h-[360px] md:w-[320px] md:h-[440px]">
+								{sortedPortraits.map((portrait, index) => (
+									<div
+										class="portrait-card absolute inset-0 cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] will-change-transform"
+										data-index={index}
+										data-title={portrait.data.title}
+										data-portrait-comment={portrait.data.titleComment || ""}
+										style="opacity: 0;"
+									>
+										<div class="portrait-card-inner relative w-full h-full shadow-2xl rounded-lg overflow-hidden border border-zinc-200 bg-white transform-gpu p-3">
+											<Image
+												src={portrait.data.image}
+												alt={portrait.data.title}
+												width={640}
+												height={853}
+												quality="high"
+												class="w-full aspect-[3/4] object-cover pointer-events-none rounded-sm"
+											/>
+											<div class="text-center">
+												<span class="font-host font-semibold text-sm uppercase text-zinc-800" data-comment={portrait.data.titleComment}>
+													{portrait.data.title}
+												</span>
 											</div>
 										</div>
 									</div>
 								))}
 							</div>
 						</div>
-					</div>
-				</section>
-
-				<section id="portraits" class="w-full mt-12 mb-20">
-					<Header title="a portrait artist" showAvatar={true} />
-
-					<div id="portrait-interactive-container" class="relative mt-12 h-[500px] md:h-[650px] flex flex-col items-center select-none touch-none" data-portraits-count={sortedPortraits.length}>
-						<div id="portrait-cards-wrapper" class="relative mt-16 md:mt-24 w-[260px] h-[360px] md:w-[320px] md:h-[440px]">
-							{sortedPortraits.map((portrait, index) => (
-								<div
-									class="portrait-card absolute inset-0 cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] will-change-transform"
-									data-index={index}
-									data-title={portrait.data.title}
-									data-portrait-comment={portrait.data.titleComment || ""}
-									style="opacity: 0;"
-								>
-									<div class="portrait-card-inner relative w-full h-full shadow-2xl rounded-lg overflow-hidden border border-zinc-200 bg-white transform-gpu p-3">
-										<Image
-											src={portrait.data.image}
-											alt={portrait.data.title}
-											width={640}
-											height={853}
-											quality="high"
-											class="w-full aspect-[3/4] object-cover pointer-events-none rounded-sm"
-										/>
-										<div class="text-center">
-											<span class="font-host font-semibold text-sm uppercase text-zinc-800" data-comment={portrait.data.titleComment}>
-												{portrait.data.title}
-											</span>
-										</div>
-									</div>
-								</div>
-							))}
-						</div>
-					</div>
-				</section>
-				<Comment />
-			</main>
+					</section>
+					<Comment />
+				</div>
+			</div>
 		</div>
 
 		<script>
