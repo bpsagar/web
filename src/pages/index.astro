@@ -26,6 +26,18 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
 		<title>Sagar Chakravarthy</title>
+		<style>
+			@media (min-width: 768px) {
+				#portrait-interactive-container:not(.is-focused) .portrait-card:hover .portrait-card-inner {
+					transform: scale(1.04) rotate(-2deg) translateY(-24px);
+					box-shadow: 0 30px 60px -12px rgba(0,0,0,0.3);
+					transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+				}
+				.portrait-card-inner {
+					transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+				}
+			}
+		</style>
 	</head>
 	<body class="bg-white text-zinc-900 min-h-screen overflow-x-hidden">
 		<div class="max-w-[500px] mx-auto px-6">
@@ -843,6 +855,12 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 			function updateLayout() {
 				isMobile = window.innerWidth < 768;
 				const count = cards.length;
+
+				if (focusedIndex !== -1) {
+					portraitContainer?.classList.add('is-focused');
+				} else {
+					portraitContainer?.classList.remove('is-focused');
+				}
 
 				if (isMobile) {
 					// Mobile Stack Logic (Reference 3)
