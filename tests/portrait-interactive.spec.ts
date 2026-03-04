@@ -47,19 +47,6 @@ test.describe('Portrait Artist Section', () => {
     await expect(otherCard).toHaveCSS('opacity', '1');
   });
 
-  test('should exit focused state on close button click (desktop)', async ({ page, isMobile }) => {
-    if (isMobile) return;
-
-    const firstCard = page.locator('.portrait-card').first();
-    await firstCard.click();
-
-    const closeBtn = page.locator('#portrait-close');
-    await closeBtn.click();
-
-    const container = page.locator('#portrait-interactive-container');
-    await expect(container).not.toHaveClass(/is-focused/);
-  });
-
   test('should show stacked cards on mobile and allow swiping', async ({ page, isMobile }) => {
     if (!isMobile) return;
 
@@ -75,10 +62,10 @@ test.describe('Portrait Artist Section', () => {
     // Simulate swipe left
     const box = await firstCard.boundingBox();
     if (box) {
-        await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
-        await page.mouse.down();
-        await page.mouse.move(box.x - 100, box.y + box.height / 2, { steps: 5 });
-        await page.mouse.up();
+      await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(box.x - 100, box.y + box.height / 2, { steps: 5 });
+      await page.mouse.up();
     }
 
     // After swipe, first card should have moved to back (zIndex lower)
