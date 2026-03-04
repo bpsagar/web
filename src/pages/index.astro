@@ -29,9 +29,10 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 		<style>
 			@media (min-width: 768px) {
 				#portrait-interactive-container:not(.is-focused) .portrait-card:hover .portrait-card-inner {
-					transform: scale(1.04) rotate(-2deg) translateY(-24px);
-					box-shadow: 0 30px 60px -12px rgba(0,0,0,0.3);
+					transform: scale(1.08) rotate(-4deg) translateY(-32px);
+					box-shadow: 0 40px 80px -12px rgba(0,0,0,0.3);
 					transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+					z-index: 50;
 				}
 				.portrait-card-inner {
 					transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1);
@@ -235,7 +236,7 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 					<Header title="a portrait artist" showAvatar={true} />
 
 					<div id="portrait-interactive-container" class="relative mt-12 h-[500px] md:h-[650px] flex flex-col items-center select-none touch-none" data-portraits-count={sortedPortraits.length}>
-						<div id="portrait-cards-wrapper" class="relative mt-16 md:mt-24 w-[260px] h-[347px] md:w-[320px] md:h-[427px]">
+						<div id="portrait-cards-wrapper" class="relative mt-16 md:mt-24 w-[260px] h-[360px] md:w-[320px] md:h-[440px]">
 							{sortedPortraits.map((portrait, index) => (
 								<div
 									class="portrait-card absolute inset-0 cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] will-change-transform"
@@ -244,28 +245,27 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 									data-portrait-comment={portrait.data.titleComment || ""}
 									style="opacity: 0;"
 								>
-									<div class="portrait-card-inner relative w-full h-full shadow-2xl rounded-2xl overflow-hidden border border-zinc-200 bg-white transform-gpu">
+									<div class="portrait-card-inner relative w-full h-full shadow-2xl rounded-lg overflow-hidden border border-zinc-200 bg-white transform-gpu p-3 pb-10 md:p-4 md:pb-12">
 										<Image
 											src={portrait.data.image}
 											alt={portrait.data.title}
 											width={640}
 											height={853}
 											quality="high"
-											class="w-full h-full object-cover pointer-events-none"
+											class="w-full aspect-[3/4] object-cover pointer-events-none rounded-sm"
 										/>
+										<div class="mt-4 text-center">
+											<span class="font-host font-bold text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-zinc-800" data-comment={portrait.data.titleComment}>
+												{portrait.data.title}
+											</span>
+										</div>
 									</div>
 								</div>
 							))}
 						</div>
 
-						<!-- Details for focused state -->
-						<div id="portrait-details" class="absolute bottom-0 left-0 right-0 text-center opacity-0 translate-y-8 transition-all duration-500 pointer-events-none">
-							<h3 id="portrait-focus-title" class="font-host font-bold text-[10px] md:text-xs uppercase tracking-[0.2em] text-zinc-900 mb-2 md:mb-3"></h3>
-							<p id="portrait-focus-comment" class="max-w-[450px] mx-auto text-zinc-400 text-[11px] md:text-[13px] leading-relaxed px-10 cursor-pointer pointer-events-auto underline decoration-dotted decoration-zinc-300 underline-offset-4 hover:text-zinc-600 transition-colors"></p>
-						</div>
-
 						<!-- Close button for focused state -->
-						<button id="portrait-close" class="absolute top-0 right-4 md:right-10 p-2 text-zinc-400 hover:text-zinc-900 opacity-0 pointer-events-none transition-opacity duration-300 cursor-pointer">
+						<button id="portrait-close" class="absolute top-0 right-4 md:right-10 p-2 text-zinc-400 hover:text-zinc-900 opacity-0 pointer-events-none transition-opacity duration-300 cursor-pointer z-[110]">
 							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="18" x2="18" y2="6"></line></svg>
 						</button>
 					</div>
@@ -839,9 +839,6 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 			const cardWrapper = document.getElementById('portrait-cards-wrapper');
 			const cards = Array.from(document.querySelectorAll('.portrait-card')) as HTMLElement[];
 			const closeBtn = document.getElementById('portrait-close');
-			const details = document.getElementById('portrait-details');
-			const focusTitle = document.getElementById('portrait-focus-title');
-			const focusComment = document.getElementById('portrait-focus-comment');
 
 			let focusedIndex = -1;
 			let activeCardIndex = 0; // Top of the stack for mobile
@@ -889,24 +886,12 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 					});
 
 					if (closeBtn) closeBtn.style.opacity = '0';
-					if (details) {
-						const activeCard = cards[activeCardIndex];
-						if (focusTitle) focusTitle.textContent = activeCard.dataset.title || "";
-						if (focusComment) {
-							const commentText = activeCard.dataset.portraitComment || "";
-							focusComment.textContent = commentText;
-							focusComment.dataset.comment = commentText;
-							focusComment.style.display = commentText ? 'block' : 'none';
-						}
-						details.classList.remove('opacity-0', 'translate-y-8');
-						details.classList.add('opacity-100', 'translate-y-0');
-					}
 				} else {
 					// Desktop Logic
 					if (focusedIndex === -1) {
 						// Initial Spread (Reference 1)
 						cards.forEach((card, i) => {
-							const x = (i - (count - 1) / 2) * 200;
+							const x = (i - (count - 1) / 2) * 180;
 							const y = Math.abs(i - (count - 1) / 2) * 20;
 							const rotate = (i - (count - 1) / 2) * 8;
 
@@ -920,10 +905,6 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 							closeBtn.style.opacity = '0';
 							closeBtn.style.pointerEvents = 'none';
 						}
-						if (details) {
-							details.classList.add('opacity-0', 'translate-y-8');
-							details.classList.remove('opacity-100', 'translate-y-0');
-						}
 					} else {
 						// Focused State (Reference 2)
 						cards.forEach((card, i) => {
@@ -931,23 +912,16 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 								card.style.transform = `translateY(-120px) scale(1.1) rotate(0deg)`;
 								card.style.zIndex = '100';
 								card.style.opacity = '1';
-								card.style.pointerEvents = 'none';
-
-								if (focusTitle) focusTitle.textContent = card.dataset.title || "";
-								if (focusComment) {
-									const commentText = card.dataset.portraitComment || "";
-									focusComment.textContent = commentText;
-									focusComment.dataset.comment = commentText;
-									focusComment.style.display = commentText ? 'block' : 'none';
-								}
+								card.style.pointerEvents = 'auto';
 							} else {
 								const idxInOthers = i < focusedIndex ? i : i - 1;
 								const othersCount = count - 1;
-								const x = (idxInOthers - (othersCount - 1) / 2) * 80;
+								const x = (idxInOthers - (othersCount - 1) / 2) * 60;
+								const rotate = (idxInOthers - (othersCount - 1) / 2) * 5;
 
-								card.style.transform = `translateY(240px) translateX(${x}px) scale(0.3) rotate(0deg)`;
+								card.style.transform = `translateY(240px) translateX(${x}px) scale(0.4) rotate(${rotate}deg)`;
 								card.style.zIndex = '10';
-								card.style.opacity = '0.4';
+								card.style.opacity = '1';
 								card.style.pointerEvents = 'auto';
 							}
 						});
@@ -955,10 +929,6 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 						if (closeBtn) {
 							closeBtn.style.opacity = '1';
 							closeBtn.style.pointerEvents = 'auto';
-						}
-						if (details) {
-							details.classList.remove('opacity-0', 'translate-y-8');
-							details.classList.add('opacity-100', 'translate-y-0');
 						}
 					}
 				}

@@ -36,14 +36,15 @@ test.describe('Portrait Artist Section', () => {
     const container = page.locator('#portrait-interactive-container');
     await expect(container).toHaveClass(/is-focused/);
 
-    // Details should be visible
-    const details = page.locator('#portrait-details');
-    await expect(details).toHaveCSS('opacity', '1');
-
-    // Title should be updated
-    const title = page.locator('#portrait-focus-title');
-    const titleText = await title.textContent();
+    // Title inside the card should be visible
+    const cardTitle = firstCard.locator('span');
+    await expect(cardTitle).toBeVisible();
+    const titleText = await cardTitle.textContent();
     expect(titleText?.length).toBeGreaterThan(0);
+
+    // Other cards should be visible (opacity 1)
+    const otherCard = page.locator('.portrait-card').nth(1);
+    await expect(otherCard).toHaveCSS('opacity', '1');
   });
 
   test('should exit focused state on close button click (desktop)', async ({ page, isMobile }) => {
