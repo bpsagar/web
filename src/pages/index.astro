@@ -64,6 +64,45 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 				pointer-events: none;
 				background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 			}
+
+			/* Terminal Modal Animations */
+			#terminal-modal {
+				opacity: 0;
+				pointer-events: none;
+				visibility: hidden;
+				transition: opacity 0.4s ease, visibility 0.4s ease;
+			}
+
+			#terminal-modal.open {
+				opacity: 1;
+				pointer-events: auto;
+				visibility: visible;
+			}
+
+			#terminal-modal .terminal-container {
+				transform: scale(0.1) translateY(100px);
+				opacity: 0;
+				transform-origin: bottom center;
+				transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
+			}
+
+			#terminal-modal.open .terminal-container {
+				transform: scale(1) translateY(0);
+				opacity: 1;
+			}
+
+			/* Dock Animation & Styles */
+			@keyframes mac-bounce {
+				0%, 100% {
+					transform: translateY(0);
+				}
+				50% {
+					transform: translateY(-12px);
+				}
+			}
+			.animate-mac-bounce {
+				animation: mac-bounce 1.5s infinite ease-in-out;
+			}
 		</style>
 	</head>
 	<body class="bg-white text-zinc-900 min-h-screen overflow-x-hidden">
@@ -101,7 +140,7 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 				</div>
 
 				<!-- Software Engineer Section -->
-				<div class="w-full py-20 section-engineer">
+				<div class="w-full py-20 section-engineer" id="software-engineer-section">
 					<div class="max-w-[500px] mx-auto px-6">
 						<section class="w-full">
 							<Header title="a software engineer" showAvatar={true} />
@@ -111,27 +150,38 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 								<hr class="mt-8 border-zinc-100" />
 							</div>
 
-							<div class="terminal-container bg-zinc-950 rounded-xl overflow-hidden border border-zinc-800 md:-mr-[200px] font-host text-[13px] leading-relaxed shadow-2xl">
-								<!-- Terminal Header -->
-								<div class="bg-zinc-900/50 border-b border-zinc-800 px-4 py-3 flex items-center gap-2">
-									<div class="flex gap-1.5">
-										<div class="w-3 h-3 rounded-full bg-[#ff5f57]"></div>
-										<div class="w-3 h-3 rounded-full bg-[#febc2e]"></div>
-										<div class="w-3 h-3 rounded-full bg-[#28c840]"></div>
-									</div>
-									<div class="flex-1 text-center text-zinc-500 text-[11px] font-medium mr-12 uppercase tracking-widest">zsh — 80x24</div>
-								</div>
-								<!-- Terminal Body -->
-								<div class="p-6 overflow-x-auto no-scrollbar min-h-[400px]" id="terminal-body">
-									<div class="flex gap-2">
-										<span class="text-[#5af78e]">sagar@work</span>
-										<span class="text-white">$ career ls</span>
-									</div>
+							<!-- Terminal Modal Wrapper -->
+							<div id="terminal-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 opacity-0 pointer-events-none invisible transition-all duration-500 bg-black/40 backdrop-blur-xs">
+								<!-- Modal Backdrop for clicking outside -->
+								<div id="terminal-modal-backdrop" class="absolute inset-0 cursor-default"></div>
 
-									<div id="terminal-content" class="mt-4 space-y-4">
-										<!-- Wizard will be injected here -->
+								<!-- Terminal Window -->
+								<div class="terminal-container relative w-full max-w-[700px] bg-zinc-950 rounded-xl overflow-hidden border border-zinc-800 font-host text-[13px] leading-relaxed shadow-2xl">
+									<!-- Terminal Header -->
+									<div class="bg-zinc-900/50 border-b border-zinc-800 px-4 py-3 flex items-center gap-2 select-none">
+										<div class="flex gap-1.5">
+											<button id="terminal-close-btn" class="w-3 h-3 rounded-full bg-[#ff5f57] cursor-pointer hover:brightness-75 transition-all focus:outline-none" aria-label="Close"></button>
+											<button id="terminal-minimize-btn" class="w-3 h-3 rounded-full bg-[#febc2e] cursor-pointer hover:brightness-75 transition-all focus:outline-none" aria-label="Minimize"></button>
+											<div class="w-3 h-3 rounded-full bg-[#28c840]"></div>
+										</div>
+										<div class="flex-1 text-center text-zinc-500 text-[11px] font-medium mr-12 uppercase tracking-widest">zsh — 80x24</div>
 									</div>
-									<script id="career-data" type="application/json" is:inline set:html={JSON.stringify(sortedCareer)}></script>
+									<!-- Terminal Body -->
+									<div class="p-6 overflow-y-auto no-scrollbar min-h-[400px] max-h-[60vh]" id="terminal-body">
+										<div class="flex gap-2 items-center">
+											<span class="text-[#5af78e]">sagar@work</span>
+											<span class="text-white flex items-center gap-1 font-host">
+												<span>$ </span>
+												<span id="terminal-command-line"></span>
+												<span id="terminal-cursor" class="inline-block w-1.5 h-3.5 bg-white animate-pulse"></span>
+											</span>
+										</div>
+
+										<div id="terminal-content" class="mt-4 space-y-4">
+											<!-- Wizard will be injected here -->
+										</div>
+										<script id="career-data" type="application/json" is:inline set:html={JSON.stringify(sortedCareer)}></script>
+									</div>
 								</div>
 							</div>
 						</section>
@@ -330,6 +380,54 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 			</div>
 		</div>
 
+		<!-- macOS Style Dock -->
+		<div id="mac-dock-container" class="fixed bottom-0 left-0 right-0 z-40 flex justify-center pb-4 pointer-events-none transition-all duration-500 translate-y-24 opacity-0 select-none">
+			<div class="mac-dock flex items-end gap-3.5 px-4 py-2.5 bg-zinc-950/40 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_24px_50px_-12px_rgba(0,0,0,0.5)] pointer-events-auto">
+
+				<!-- Terminal Icon (Interactive) -->
+				<button id="dock-terminal-btn" class="dock-item relative group flex flex-col items-center cursor-pointer focus:outline-none" aria-label="Terminal">
+					<!-- Hover tooltip -->
+					<span class="absolute -top-10 scale-0 group-hover:scale-100 transition-all duration-200 bg-zinc-900 text-white text-[10px] font-host font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border border-zinc-800 shadow-md whitespace-nowrap pointer-events-none">Terminal</span>
+
+					<!-- App Icon Wrapper (with bounce) -->
+					<div class="dock-icon-wrapper w-12 h-12 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110 active:scale-95 animate-mac-bounce">
+						<span class="text-[#5af78e] font-host font-bold text-lg select-none">&gt;_</span>
+					</div>
+
+					<!-- Active Indicator Dot -->
+					<div id="terminal-active-dot" class="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-white opacity-0 transition-opacity duration-300"></div>
+				</button>
+
+				<!-- Vertical Divider -->
+				<div class="w-[1px] h-10 bg-white/10 self-center my-1"></div>
+
+				<!-- Finder (Mock) -->
+				<div class="dock-item relative group flex flex-col items-center cursor-not-allowed opacity-60" aria-label="Finder">
+					<span class="absolute -top-10 scale-0 group-hover:scale-100 transition-all duration-200 bg-zinc-900 text-white text-[10px] font-host font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border border-zinc-800 shadow-md whitespace-nowrap pointer-events-none">Finder</span>
+					<div class="dock-icon-wrapper w-12 h-12 rounded-xl bg-gradient-to-tr from-[#3a8bf6] to-[#7bbbfb] border border-white/10 flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110">
+						<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg>
+					</div>
+				</div>
+
+				<!-- Safari (Mock) -->
+				<div class="dock-item relative group flex flex-col items-center cursor-not-allowed opacity-60" aria-label="Safari">
+					<span class="absolute -top-10 scale-0 group-hover:scale-100 transition-all duration-200 bg-zinc-900 text-white text-[10px] font-host font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border border-zinc-800 shadow-md whitespace-nowrap pointer-events-none">Safari</span>
+					<div class="dock-icon-wrapper w-12 h-12 rounded-xl bg-gradient-to-tr from-[#1b5df7] to-[#1fd7ff] border border-white/10 flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110">
+						<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M14.12 9.88l-3.54 3.54m0 0l-3.54 3.54m3.54-3.54l3.54 3.54m-3.54-3.54l-3.54-3.54" /></svg>
+					</div>
+				</div>
+
+				<!-- Notes (Mock) -->
+				<div class="dock-item relative group flex flex-col items-center cursor-not-allowed opacity-60" aria-label="Notes">
+					<span class="absolute -top-10 scale-0 group-hover:scale-100 transition-all duration-200 bg-zinc-900 text-white text-[10px] font-host font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border border-zinc-800 shadow-md whitespace-nowrap pointer-events-none">Notes</span>
+					<div class="dock-icon-wrapper w-12 h-12 rounded-xl bg-gradient-to-tr from-[#f5af19] to-[#f12711] border border-white/10 flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110">
+						<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
 		<script>
 			// Terminal Wizard Logic
 			const terminalContent = document.getElementById('terminal-content');
@@ -355,7 +453,7 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 
 			let selectedIndex = 0;
 			let selectedRoleIndex = 0;
-			let isInteractive = true;
+			let isInteractive = false; // Start as false, enabled after typing "career ls"
 			let wizardMode = 'selection';
 			const confirmationOptions = ['Yes', 'No'];
 
@@ -739,7 +837,103 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 				});
 			}
 
-			renderWizard();
+			// Terminal Modal and Dock Logic
+			const terminalModal = document.getElementById('terminal-modal');
+			const dockTerminalBtn = document.getElementById('dock-terminal-btn');
+			const terminalCloseBtn = document.getElementById('terminal-close-btn');
+			const terminalMinimizeBtn = document.getElementById('terminal-minimize-btn');
+			const terminalModalBackdrop = document.getElementById('terminal-modal-backdrop');
+			const terminalCommandLine = document.getElementById('terminal-command-line');
+			const terminalActiveDot = document.getElementById('terminal-active-dot');
+			const terminalIconWrapper = dockTerminalBtn?.querySelector('.dock-icon-wrapper');
+
+			let isTyping = false;
+
+			function openTerminal() {
+				if (!terminalModal) return;
+
+				// Reset terminal state
+				isInteractive = false;
+				if (terminalContent) terminalContent.innerHTML = '';
+				if (terminalCommandLine) terminalCommandLine.textContent = '';
+
+				// Add open class
+				terminalModal.classList.add('open');
+				terminalActiveDot?.classList.remove('opacity-0');
+				terminalActiveDot?.classList.add('opacity-100');
+				terminalIconWrapper?.classList.remove('animate-mac-bounce');
+
+				// Start typing career ls
+				isTyping = true;
+				const commandText = "career ls";
+				let charIdx = 0;
+
+				function typeCommandLine() {
+					if (!isTyping) return;
+					if (charIdx < commandText.length) {
+						if (terminalCommandLine) {
+							terminalCommandLine.textContent += commandText.charAt(charIdx);
+						}
+						charIdx++;
+						setTimeout(typeCommandLine, 120);
+					} else {
+						isTyping = false;
+						setTimeout(() => {
+							isInteractive = true;
+							renderWizard();
+						}, 300);
+					}
+				}
+
+				// Delay typing slightly to allow the modal expansion transition
+				setTimeout(typeCommandLine, 600);
+			}
+
+			function closeTerminal() {
+				if (!terminalModal) return;
+				isTyping = false;
+				isInteractive = false;
+				terminalModal.classList.remove('open');
+				terminalActiveDot?.classList.remove('opacity-100');
+				terminalActiveDot?.classList.add('opacity-0');
+				terminalIconWrapper?.classList.add('animate-mac-bounce');
+			}
+
+			if (dockTerminalBtn) {
+				dockTerminalBtn.addEventListener('click', () => {
+					if (!terminalModal?.classList.contains('open')) {
+						openTerminal();
+					} else {
+						closeTerminal();
+					}
+				});
+			}
+
+			if (terminalCloseBtn) terminalCloseBtn.addEventListener('click', closeTerminal);
+			if (terminalMinimizeBtn) terminalMinimizeBtn.addEventListener('click', closeTerminal);
+			if (terminalModalBackdrop) terminalModalBackdrop.addEventListener('click', closeTerminal);
+
+			// Dock IntersectionObserver
+			const softwareEngineerSection = document.getElementById('software-engineer-section');
+			const macDockContainer = document.getElementById('mac-dock-container');
+
+			if (softwareEngineerSection && macDockContainer) {
+				const dockObserver = new IntersectionObserver((entries) => {
+					entries.forEach(entry => {
+						if (entry.isIntersecting) {
+							macDockContainer.classList.remove('translate-y-24', 'opacity-0');
+							macDockContainer.classList.add('translate-y-0', 'opacity-100');
+						} else {
+							macDockContainer.classList.add('translate-y-24', 'opacity-0');
+							macDockContainer.classList.remove('translate-y-0', 'opacity-100');
+							closeTerminal(); // Auto-close modal if scrolled out of work section
+						}
+					});
+				}, {
+					threshold: 0.05
+				});
+				dockObserver.observe(softwareEngineerSection);
+			}
 
 			// Browser Logic
 			const browserContainer = document.getElementById('browser-container');

@@ -3,13 +3,23 @@ import { test, expect } from '@playwright/test';
 test('Career terminal interaction and formatting', async ({ page }) => {
   await page.goto('http://localhost:4321/');
 
-  // Wait for terminal to be visible
+  // Scroll to the work section to trigger dock entry
+  const workSection = page.locator('#software-engineer-section');
+  await workSection.scrollIntoViewIfNeeded();
+
+  // Click on the terminal dock icon
+  const dockTerminalBtn = page.locator('#dock-terminal-btn');
+  await expect(dockTerminalBtn).toBeVisible();
+  await dockTerminalBtn.click();
+
+  // Wait for terminal to be visible inside the open modal
   const terminal = page.locator('.terminal-container');
   await expect(terminal).toBeVisible();
 
   // Find the Funding Societies company option (v3.x: Funding Societies)
+  // This also acts as a wait for the typing animation of 'career ls' to complete
   const fundingSocietiesRole = page.locator('.role-option').filter({ hasText: 'v3.x: Funding Societies' });
-  await expect(fundingSocietiesRole).toBeVisible();
+  await expect(fundingSocietiesRole).toBeVisible({ timeout: 10000 });
 
   // Click the Funding Societies company
   await fundingSocietiesRole.click();
