@@ -91,6 +91,32 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 				opacity: 1;
 			}
 
+			/* Browser Modal Animations */
+			#browser-modal {
+				opacity: 0;
+				pointer-events: none;
+				visibility: hidden;
+				transition: opacity 0.4s ease, visibility 0.4s ease;
+			}
+
+			#browser-modal.open {
+				opacity: 1;
+				pointer-events: auto;
+				visibility: visible;
+			}
+
+			#browser-modal .browser-container {
+				transform: scale(0.1) translateY(100px);
+				opacity: 0;
+				transform-origin: bottom center;
+				transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
+			}
+
+			#browser-modal.open .browser-container {
+				transform: scale(1) translateY(0);
+				opacity: 1;
+			}
+
 			/* Dock Animation & Styles */
 			@keyframes mac-bounce {
 				0%, 100% {
@@ -184,6 +210,7 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 									</div>
 								</div>
 							</div>
+							</div> <!-- Closes browser-modal -->
 						</section>
 					</div>
 				</div>
@@ -194,7 +221,7 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 				</div>
 
 				<!-- Maker Section -->
-				<div class="w-full py-20 section-maker bg-white">
+				<div class="w-full py-20 section-maker bg-white" id="maker-section">
 					<div class="max-w-[500px] mx-auto px-6">
 						<section class="w-full">
 							<Header title="a maker" showAvatar={true} />
@@ -210,15 +237,21 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 								<hr class="mt-8 border-zinc-100" />
 							</div>
 
-							<div class="browser-container border border-zinc-200 rounded-xl overflow-hidden bg-white group/browser md:-mr-[200px]" id="browser-container">
-								<!-- Browser Header -->
-								<div class="bg-zinc-100 border-b border-zinc-200 px-4 pt-3 flex items-end gap-2">
-									<!-- Traffic Lights -->
-									<div class="flex gap-1.5 mb-3.5 mr-2">
-										<div class="w-3 h-3 rounded-full bg-[#ff5f57]"></div>
-										<div class="w-3 h-3 rounded-full bg-[#febc2e]"></div>
-										<div class="w-3 h-3 rounded-full bg-[#28c840]"></div>
-									</div>
+							<!-- Browser Modal Wrapper -->
+							<div id="browser-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 opacity-0 pointer-events-none invisible transition-all duration-500 bg-black/40 backdrop-blur-xs">
+								<!-- Modal Backdrop for clicking outside -->
+								<div id="browser-modal-backdrop" class="absolute inset-0 cursor-default"></div>
+
+								<!-- Browser Window -->
+								<div class="browser-container relative w-full max-w-[800px] border border-zinc-200 rounded-xl overflow-hidden bg-white group/browser shadow-2xl" id="browser-container">
+									<!-- Browser Header -->
+									<div class="bg-zinc-100 border-b border-zinc-200 px-4 pt-3 flex items-end gap-2">
+										<!-- Traffic Lights -->
+										<div class="flex gap-1.5 mb-3.5 mr-2 select-none">
+											<button id="browser-close-btn" class="w-3 h-3 rounded-full bg-[#ff5f57] cursor-pointer hover:brightness-75 transition-all focus:outline-none" aria-label="Close"></button>
+											<button id="browser-minimize-btn" class="w-3 h-3 rounded-full bg-[#febc2e] cursor-pointer hover:brightness-75 transition-all focus:outline-none" aria-label="Minimize"></button>
+											<div class="w-3 h-3 rounded-full bg-[#28c840]"></div>
+										</div>
 									<!-- Tabs -->
 									<div class="relative flex-1 overflow-hidden">
 										<div class="flex overflow-x-auto no-scrollbar gap-1 pr-12">
@@ -390,12 +423,64 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 					<span class="absolute -top-10 scale-0 group-hover:scale-100 transition-all duration-200 bg-zinc-900 text-white text-[10px] font-host font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border border-zinc-800 shadow-md whitespace-nowrap pointer-events-none">Terminal</span>
 
 					<!-- App Icon Wrapper (with bounce) -->
-					<div class="dock-icon-wrapper w-12 h-12 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110 active:scale-95 animate-mac-bounce">
-						<span class="text-[#5af78e] font-host font-bold text-lg select-none">&gt;_</span>
+					<div class="dock-icon-wrapper w-12 h-12 rounded-xl transition-all duration-300 group-hover:scale-110 active:scale-95 animate-mac-bounce flex items-center justify-center">
+						<svg class="w-12 h-12" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<defs>
+								<linearGradient id="termBg" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+									<stop offset="0%" stop-color="#2d3748"/>
+									<stop offset="100%" stop-color="#1a202c"/>
+								</linearGradient>
+							</defs>
+							<rect width="64" height="64" rx="14" fill="url(#termBg)" stroke="#4a5568" stroke-width="1.5" />
+							<path d="M0 14H64" stroke="#4a5568" stroke-width="1.5" />
+							<circle cx="8" cy="7" r="1.5" fill="#ff5f56" />
+							<circle cx="13" cy="7" r="1.5" fill="#ffbd2e" />
+							<circle cx="18" cy="7" r="1.5" fill="#27c93f" />
+							<path d="M12 24L24 32L12 40" stroke="#5af78e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+							<line x1="28" y1="40" x2="44" y2="40" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" />
+						</svg>
 					</div>
 
 					<!-- Active Indicator Dot -->
 					<div id="terminal-active-dot" class="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-white opacity-0 transition-opacity duration-300"></div>
+				</button>
+
+				<!-- Browser/Safari Icon (Interactive!) -->
+				<button id="dock-browser-btn" class="dock-item relative group flex flex-col items-center cursor-pointer focus:outline-none" aria-label="Browser">
+					<!-- Hover tooltip -->
+					<span class="absolute -top-10 scale-0 group-hover:scale-100 transition-all duration-200 bg-zinc-900 text-white text-[10px] font-host font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border border-zinc-800 shadow-md whitespace-nowrap pointer-events-none">Browser</span>
+
+					<!-- App Icon Wrapper (with bounce) -->
+					<div class="dock-icon-wrapper w-12 h-12 rounded-xl transition-all duration-300 group-hover:scale-110 active:scale-95 animate-mac-bounce flex items-center justify-center">
+						<svg class="w-12 h-12" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<defs>
+								<linearGradient id="safariBg" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+									<stop offset="0%" stop-color="#19bdff"/>
+									<stop offset="100%" stop-color="#005af3"/>
+								</linearGradient>
+								<linearGradient id="needleRed" x1="32" y1="32" x2="48" y2="16" gradientUnits="userSpaceOnUse">
+									<stop offset="0%" stop-color="#ff6b6b"/>
+									<stop offset="100%" stop-color="#e60000"/>
+								</linearGradient>
+								<linearGradient id="needleWhite" x1="32" y1="32" x2="16" y2="48" gradientUnits="userSpaceOnUse">
+									<stop offset="0%" stop-color="#ffffff"/>
+									<stop offset="100%" stop-color="#cccccc"/>
+								</linearGradient>
+							</defs>
+							<rect width="64" height="64" rx="14" fill="#ffffff" />
+							<circle cx="32" cy="32" r="24" fill="url(#safariBg)" stroke="#f0f0f0" stroke-width="1.5" />
+							<line x1="32" y1="12" x2="32" y2="16" stroke="#ffffff" stroke-width="2" stroke-linecap="round" />
+							<line x1="32" y1="48" x2="32" y2="52" stroke="#ffffff" stroke-width="2" stroke-linecap="round" />
+							<line x1="12" y1="32" x2="16" y2="32" stroke="#ffffff" stroke-width="2" stroke-linecap="round" />
+							<line x1="48" y1="32" x2="52" y2="32" stroke="#ffffff" stroke-width="2" stroke-linecap="round" />
+							<path d="M32 32L44 20L36 36L32 32Z" fill="url(#needleRed)" />
+							<path d="M32 32L20 44L28 28L32 32Z" fill="url(#needleWhite)" />
+							<circle cx="32" cy="32" r="2.5" fill="#ffffff" />
+						</svg>
+					</div>
+
+					<!-- Active Indicator Dot -->
+					<div id="browser-active-dot" class="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-white opacity-0 transition-opacity duration-300"></div>
 				</button>
 
 				<!-- Vertical Divider -->
@@ -404,24 +489,49 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 				<!-- Finder (Mock) -->
 				<div class="dock-item relative group flex flex-col items-center cursor-not-allowed opacity-60" aria-label="Finder">
 					<span class="absolute -top-10 scale-0 group-hover:scale-100 transition-all duration-200 bg-zinc-900 text-white text-[10px] font-host font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border border-zinc-800 shadow-md whitespace-nowrap pointer-events-none">Finder</span>
-					<div class="dock-icon-wrapper w-12 h-12 rounded-xl bg-gradient-to-tr from-[#3a8bf6] to-[#7bbbfb] border border-white/10 flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110">
-						<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg>
-					</div>
-				</div>
-
-				<!-- Safari (Mock) -->
-				<div class="dock-item relative group flex flex-col items-center cursor-not-allowed opacity-60" aria-label="Safari">
-					<span class="absolute -top-10 scale-0 group-hover:scale-100 transition-all duration-200 bg-zinc-900 text-white text-[10px] font-host font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border border-zinc-800 shadow-md whitespace-nowrap pointer-events-none">Safari</span>
-					<div class="dock-icon-wrapper w-12 h-12 rounded-xl bg-gradient-to-tr from-[#1b5df7] to-[#1fd7ff] border border-white/10 flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110">
-						<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M14.12 9.88l-3.54 3.54m0 0l-3.54 3.54m3.54-3.54l3.54 3.54m-3.54-3.54l-3.54-3.54" /></svg>
+					<div class="dock-icon-wrapper w-12 h-12 rounded-xl transition-all duration-300 group-hover:scale-110 flex items-center justify-center">
+						<svg class="w-12 h-12" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<defs>
+								<linearGradient id="finderGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+									<stop offset="0%" stop-color="#4ea2fc"/>
+									<stop offset="100%" stop-color="#1466dc"/>
+								</linearGradient>
+								<linearGradient id="finderFaceGrad" x1="0" y1="0" x2="32" y2="64" gradientUnits="userSpaceOnUse">
+									<stop offset="0%" stop-color="#99caff"/>
+									<stop offset="100%" stop-color="#3d82f4"/>
+								</linearGradient>
+							</defs>
+							<rect width="64" height="64" rx="14" fill="url(#finderGrad)" />
+							<path d="M32 0V64H14C6.268 64 0 57.732 0 50V14C0 6.268 6.268 0 14 0H32Z" fill="url(#finderFaceGrad)" />
+							<path d="M32 18V36H39.5" stroke="#002b66" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+							<path d="M23 36H32" stroke="#002b66" stroke-width="4" stroke-linecap="round"/>
+							<path d="M16 42C16 48.5 23.5 52 32 52C40.5 52 48 48.5 48 42" stroke="#002b66" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+							<circle cx="21" cy="24" r="3.5" fill="#002b66" />
+							<circle cx="43" cy="24" r="3.5" fill="#002b66" />
+						</svg>
 					</div>
 				</div>
 
 				<!-- Notes (Mock) -->
 				<div class="dock-item relative group flex flex-col items-center cursor-not-allowed opacity-60" aria-label="Notes">
 					<span class="absolute -top-10 scale-0 group-hover:scale-100 transition-all duration-200 bg-zinc-900 text-white text-[10px] font-host font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border border-zinc-800 shadow-md whitespace-nowrap pointer-events-none">Notes</span>
-					<div class="dock-icon-wrapper w-12 h-12 rounded-xl bg-gradient-to-tr from-[#f5af19] to-[#f12711] border border-white/10 flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110">
-						<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+					<div class="dock-icon-wrapper w-12 h-12 rounded-xl transition-all duration-300 group-hover:scale-110 flex items-center justify-center">
+						<svg class="w-12 h-12" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<defs>
+								<linearGradient id="notesBg" x1="0" y1="0" x2="0" y2="64" gradientUnits="userSpaceOnUse">
+									<stop offset="0%" stop-color="#fff5cc"/>
+									<stop offset="100%" stop-color="#ffeb99"/>
+								</linearGradient>
+							</defs>
+							<rect width="64" height="64" rx="14" fill="url(#notesBg)" stroke="#e6c229" stroke-width="1.5" />
+							<path d="M0 0C0 6.268 6.268 12 14 12H50C57.732 12 64 6.268 64 0H0Z" fill="#ff9900" />
+							<line x1="10" y1="22" x2="54" y2="22" stroke="#d4af37" stroke-width="1.5" stroke-dasharray="1 1" />
+							<line x1="10" y1="30" x2="54" y2="30" stroke="#e6cc80" stroke-width="1" />
+							<line x1="10" y1="38" x2="54" y2="38" stroke="#e6cc80" stroke-width="1" />
+							<line x1="10" y1="46" x2="54" y2="46" stroke="#e6cc80" stroke-width="1" />
+							<line x1="10" y1="54" x2="54" y2="54" stroke="#e6cc80" stroke-width="1" />
+							<path d="M12 46C20 40 32 50 48 42" stroke="#4a5568" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.6" />
+						</svg>
 					</div>
 				</div>
 
@@ -913,26 +1023,86 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 			if (terminalMinimizeBtn) terminalMinimizeBtn.addEventListener('click', closeTerminal);
 			if (terminalModalBackdrop) terminalModalBackdrop.addEventListener('click', closeTerminal);
 
+			// Browser Modal and Dock Logic
+			const browserModal = document.getElementById('browser-modal');
+			const dockBrowserBtn = document.getElementById('dock-browser-btn');
+			const browserCloseBtn = document.getElementById('browser-close-btn');
+			const browserMinimizeBtn = document.getElementById('browser-minimize-btn');
+			const browserModalBackdrop = document.getElementById('browser-modal-backdrop');
+			const browserActiveDot = document.getElementById('browser-active-dot');
+			const browserIconWrapper = dockBrowserBtn?.querySelector('.dock-icon-wrapper');
+
+			function openBrowser() {
+				if (!browserModal) return;
+
+				// Open browser modal
+				browserModal.classList.add('open');
+				browserActiveDot?.classList.remove('opacity-0');
+				browserActiveDot?.classList.add('opacity-100');
+				browserIconWrapper?.classList.remove('animate-mac-bounce');
+
+				// Start the tab cycling
+				startCycling();
+			}
+
+			function closeBrowser() {
+				if (!browserModal) return;
+
+				// Close browser modal
+				browserModal.classList.remove('open');
+				browserActiveDot?.classList.remove('opacity-100');
+				browserActiveDot?.classList.add('opacity-0');
+				browserIconWrapper?.classList.add('animate-mac-bounce');
+
+				// Stop the tab cycling
+				stopCycling();
+			}
+
+			if (dockBrowserBtn) {
+				dockBrowserBtn.addEventListener('click', () => {
+					if (!browserModal?.classList.contains('open')) {
+						openBrowser();
+					} else {
+						closeBrowser();
+					}
+				});
+			}
+
+			if (browserCloseBtn) browserCloseBtn.addEventListener('click', closeBrowser);
+			if (browserMinimizeBtn) browserMinimizeBtn.addEventListener('click', closeBrowser);
+			if (browserModalBackdrop) browserModalBackdrop.addEventListener('click', closeBrowser);
+
 			// Dock IntersectionObserver
 			const softwareEngineerSection = document.getElementById('software-engineer-section');
+			const makerSection = document.getElementById('maker-section');
 			const macDockContainer = document.getElementById('mac-dock-container');
 
-			if (softwareEngineerSection && macDockContainer) {
+			if (macDockContainer) {
+				const visibleSections = new Set();
 				const dockObserver = new IntersectionObserver((entries) => {
 					entries.forEach(entry => {
 						if (entry.isIntersecting) {
-							macDockContainer.classList.remove('translate-y-24', 'opacity-0');
-							macDockContainer.classList.add('translate-y-0', 'opacity-100');
+							visibleSections.add(entry.target.id);
 						} else {
-							macDockContainer.classList.add('translate-y-24', 'opacity-0');
-							macDockContainer.classList.remove('translate-y-0', 'opacity-100');
-							closeTerminal(); // Auto-close modal if scrolled out of work section
+							visibleSections.delete(entry.target.id);
 						}
 					});
+
+					if (visibleSections.size > 0) {
+						macDockContainer.classList.remove('translate-y-24', 'opacity-0');
+						macDockContainer.classList.add('translate-y-0', 'opacity-100');
+					} else {
+						macDockContainer.classList.add('translate-y-24', 'opacity-0');
+						macDockContainer.classList.remove('translate-y-0', 'opacity-100');
+						closeTerminal(); // Auto-close modal if scrolled out of work section
+						closeBrowser();  // Auto-close modal if scrolled out of maker section
+					}
 				}, {
 					threshold: 0.05
 				});
-				dockObserver.observe(softwareEngineerSection);
+
+				if (softwareEngineerSection) dockObserver.observe(softwareEngineerSection);
+				if (makerSection) dockObserver.observe(makerSection);
 			}
 
 			// Browser Logic
@@ -1027,9 +1197,6 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 					browserContainer.addEventListener(event, stopCycling, { once: true });
 				});
 			}
-
-			// Start cycling on load
-			startCycling();
 
 			// Spotlight effect
 			if (browserContentArea) {

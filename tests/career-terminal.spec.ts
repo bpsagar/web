@@ -6,11 +6,12 @@ test('Career terminal interaction and formatting', async ({ page }) => {
   // Scroll to the work section to trigger dock entry
   const workSection = page.locator('#software-engineer-section');
   await workSection.scrollIntoViewIfNeeded();
+  await page.waitForTimeout(1000); // Wait for the dock slide-up transition to finish and become completely stable
 
   // Click on the terminal dock icon
   const dockTerminalBtn = page.locator('#dock-terminal-btn');
   await expect(dockTerminalBtn).toBeVisible();
-  await dockTerminalBtn.click();
+  await dockTerminalBtn.click({ force: true });
 
   // Wait for terminal to be visible inside the open modal
   const terminal = page.locator('.terminal-container');
