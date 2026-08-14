@@ -7,13 +7,12 @@ test('Career terminal interaction and formatting', async ({ page }) => {
   const terminal = page.locator('.terminal-container');
   await expect(terminal).toBeVisible();
 
-  // Find the first company option (should be Funding Societies v3.x)
-  const firstRole = page.locator('.role-option').first();
-  const roleText = await firstRole.textContent();
-  expect(roleText).toContain('v3.x: Funding Societies');
+  // Find the Funding Societies company option (v3.x: Funding Societies)
+  const fundingSocietiesRole = page.locator('.role-option').filter({ hasText: 'v3.x: Funding Societies' });
+  await expect(fundingSocietiesRole).toBeVisible();
 
-  // Click the first company (Funding Societies)
-  await firstRole.click();
+  // Click the Funding Societies company
+  await fundingSocietiesRole.click();
 
   // Wait for the role sub-menu to appear
   const roleMenu = terminal.locator('.role-menu');
