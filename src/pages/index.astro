@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 import Header from '../components/Header.astro';
 import Comment from '../components/Comment.astro';
+import ThreeDeck from '../components/ThreeDeck.astro';
 import '../styles/global.css';
 import profileImage from '../assets/profile.png';
 
@@ -90,6 +91,9 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 							<span class="block mt-4">On a lifelong pursuit of the perfect masala chai, which is a convenient excuse to drink it every day.</span>
 							<span class="block mt-4">Otherwise, you’ll find me at the gym or on a tennis court. Only places my brain hits 'quiet mode'.</span>
 						</h1>
+
+						<!-- 3D Held Deck Navigation -->
+						<ThreeDeck />
 					</section>
 				</div>
 			</div>
@@ -101,7 +105,7 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 				</div>
 
 				<!-- Software Engineer Section -->
-				<div class="w-full py-20 section-engineer">
+				<div id="software-engineer-section" class="w-full py-20 section-engineer">
 					<div class="max-w-[500px] mx-auto px-6">
 						<section class="w-full">
 							<Header title="a software engineer" showAvatar={true} />
@@ -144,7 +148,7 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 				</div>
 
 				<!-- Maker Section -->
-				<div class="w-full py-20 section-maker bg-white">
+				<div id="maker-section" class="w-full py-20 section-maker bg-white">
 					<div class="max-w-[500px] mx-auto px-6">
 						<section class="w-full">
 							<Header title="a maker" showAvatar={true} />
@@ -290,7 +294,7 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 			</div>
 
 			<!-- Portrait Artist Section -->
-			<div class="w-full py-20 section-artist">
+			<div id="artist-section" class="w-full py-20 section-artist">
 				<div class="max-w-[500px] mx-auto px-6">
 					<section id="portraits" class="w-full relative z-10">
 						<Header title="a portrait artist" showAvatar={true} />
