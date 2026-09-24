@@ -1,0 +1,489 @@
+---
+---
+
+<div id="three-deck-container" class="relative w-full max-w-[500px] mx-auto h-[210px] md:h-[280px] my-2 select-none cursor-pointer overflow-visible">
+	<!-- Canvas for 3D Deck -->
+	<canvas id="three-deck-canvas" class="w-full h-full block focus:outline-none"></canvas>
+
+	<!-- Floating Label & Arrow Overlay -->
+	<div id="deck-tooltip" class="absolute pointer-events-none opacity-0 transition-opacity duration-300 z-50 flex flex-col items-center transform -translate-x-1/2 -translate-y-full">
+		<div class="bg-zinc-900/95 text-white font-plus font-semibold text-xs px-3.5 py-1.5 rounded-full shadow-xl backdrop-blur-md border border-zinc-700/60 whitespace-nowrap tracking-wide flex items-center gap-1.5">
+			<span id="deck-tooltip-text">Software engineer</span>
+			<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-400"><line x1="7" y1="17" x2="17" x2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+		</div>
+		<!-- Hand-drawn SVG Arrow pointing down to the object -->
+		<svg id="deck-arrow-svg" width="32" height="28" viewBox="0 0 36 32" fill="none" class="mt-0.5 text-zinc-900 overflow-visible">
+			<path id="deck-arrow-path" d="M 18,2 C 18,12 24,18 18,28 M 12,22 C 15,25 18,28 18,28 C 18,28 21,25 24,22" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="arrow-path"></path>
+		</svg>
+	</div>
+</div>
+
+<style>
+	.arrow-path {
+		stroke-dasharray: 60;
+		stroke-dashoffset: 60;
+		transition: stroke-dashoffset 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+	#deck-tooltip.active .arrow-path {
+		stroke-dashoffset: 0;
+	}
+</style>
+
+<script>
+	import * as THREE from 'three';
+
+	const container = document.getElementById('three-deck-container');
+	const canvas = document.getElementById('three-deck-canvas') as HTMLCanvasElement;
+	const tooltip = document.getElementById('deck-tooltip');
+	const tooltipText = document.getElementById('deck-tooltip-text');
+
+	if (container && canvas) {
+		// Scene, Camera, Renderer
+		const scene = new THREE.Scene();
+
+		const width = container.clientWidth;
+		const height = container.clientHeight;
+
+		const camera = new THREE.PerspectiveCamera(36, width / height, 0.1, 100);
+		camera.position.set(0, 2.2, 5.6);
+		camera.lookAt(0, 0.1, 0);
+
+		const renderer = new THREE.WebGLRenderer({
+			canvas,
+			alpha: true,
+			antialias: true,
+			powerPreference: 'high-performance'
+		});
+		renderer.setSize(width, height);
+		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+		renderer.shadowMap.enabled = true;
+		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+		// Lighting
+		const ambientLight = new THREE.AmbientLight(0xffffff, 1.4);
+		scene.add(ambientLight);
+
+		const dirLight = new THREE.DirectionalLight(0xffffff, 2.2);
+		dirLight.position.set(3.5, 7, 4.5);
+		dirLight.castShadow = true;
+		dirLight.shadow.mapSize.width = 1024;
+		dirLight.shadow.mapSize.height = 1024;
+		dirLight.shadow.camera.near = 0.5;
+		dirLight.shadow.camera.far = 15;
+		dirLight.shadow.bias = -0.0008;
+		scene.add(dirLight);
+
+		const fillLight = new THREE.DirectionalLight(0xf0f4ff, 0.9);
+		fillLight.position.set(-3.5, 3, -1.5);
+		scene.add(fillLight);
+
+		// Contact Shadow Plane
+		const shadowPlaneGeo = new THREE.PlaneGeometry(7.5, 3.5);
+		const shadowCanvas = document.createElement('canvas');
+		shadowCanvas.width = 256;
+		shadowCanvas.height = 128;
+		const ctx = shadowCanvas.getContext('2d');
+		if (ctx) {
+			const grad = ctx.createRadialGradient(128, 64, 8, 128, 64, 105);
+			grad.addColorStop(0, 'rgba(0, 0, 0, 0.25)');
+			grad.addColorStop(0.5, 'rgba(0, 0, 0, 0.10)');
+			grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+			ctx.fillStyle = grad;
+			ctx.fillRect(0, 0, 256, 128);
+		}
+		const shadowTexture = new THREE.CanvasTexture(shadowCanvas);
+		const shadowMat = new THREE.MeshBasicMaterial({
+			map: shadowTexture,
+			transparent: true,
+			opacity: 0.8,
+			depthWrite: false
+		});
+		const shadowPlane = new THREE.Mesh(shadowPlaneGeo, shadowMat);
+		shadowPlane.rotation.x = -Math.PI / 2;
+		shadowPlane.position.set(0, -0.45, 0);
+		scene.add(shadowPlane);
+
+		// Helper function to create rounded box geometry
+		function createMacBookGroup(isRoseGold: boolean) {
+			const group = new THREE.Group();
+
+			// Colors
+			const baseColor = isRoseGold ? 0xda9889 : 0xd1d5db; // Rose gold vs crisp silver
+			const darkMetalColor = isRoseGold ? 0xb57365 : 0x9ca3af;
+
+			// Base chassis
+			const baseGeo = new THREE.BoxGeometry(2.1, 0.08, 1.45);
+			const macMat = new THREE.MeshStandardMaterial({
+				color: baseColor,
+				metalness: 0.85,
+				roughness: 0.2,
+			});
+			const base = new THREE.Mesh(baseGeo, macMat);
+			base.castShadow = true;
+			base.receiveShadow = true;
+			base.position.y = 0.04;
+			group.add(base);
+
+			// Bottom groove / lip
+			const notchGeo = new THREE.BoxGeometry(0.35, 0.03, 0.04);
+			const notchMat = new THREE.MeshStandardMaterial({
+				color: darkMetalColor,
+				metalness: 0.5,
+				roughness: 0.4
+			});
+			const notch = new THREE.Mesh(notchGeo, notchMat);
+			notch.position.set(0, 0.065, 0.72);
+			group.add(notch);
+
+			// Rubber feet on bottom
+			const footGeo = new THREE.CylinderGeometry(0.06, 0.06, 0.01, 16);
+			const footMat = new THREE.MeshBasicMaterial({ color: 0x1a1a1a });
+			[[-0.8, -0.55], [0.8, -0.55], [-0.8, 0.55], [0.8, 0.55]].forEach(([fx, fz]) => {
+				const foot = new THREE.Mesh(footGeo, footMat);
+				foot.position.set(fx, 0, fz);
+				group.add(foot);
+			});
+
+			// Lid chassis
+			const lidGeo = new THREE.BoxGeometry(2.1, 0.07, 1.45);
+			const lid = new THREE.Mesh(lidGeo, macMat);
+			lid.castShadow = true;
+			lid.receiveShadow = true;
+			lid.position.y = 0.115;
+			group.add(lid);
+
+			// Apple Logo (Subtle glossy circle)
+			const logoGeo = new THREE.CylinderGeometry(0.12, 0.12, 0.005, 32);
+			const logoMat = new THREE.MeshStandardMaterial({
+				color: isRoseGold ? 0xf4c2b7 : 0xf3f4f6,
+				metalness: 0.95,
+				roughness: 0.08,
+			});
+			const logo = new THREE.Mesh(logoGeo, logoMat);
+			logo.position.set(0, 0.151, 0);
+			group.add(logo);
+
+			// Hinge back strip
+			const hingeGeo = new THREE.BoxGeometry(1.8, 0.06, 0.05);
+			const hingeMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.6 });
+			const hinge = new THREE.Mesh(hingeGeo, hingeMat);
+			hinge.position.set(0, 0.08, -0.71);
+			group.add(hinge);
+
+			return group;
+		}
+
+		function createSketchbookGroup() {
+			const group = new THREE.Group();
+
+			// Hardcover spine/cover color (dark charcoal/navy leather)
+			const coverMat = new THREE.MeshStandardMaterial({
+				color: 0x1e293b,
+				roughness: 0.6,
+				metalness: 0.1
+			});
+
+			// Paper edges color
+			const paperMat = new THREE.MeshStandardMaterial({
+				color: 0xfaf5eb,
+				roughness: 0.9,
+				metalness: 0.0
+			});
+
+			// Bottom cover
+			const bottomCoverGeo = new THREE.BoxGeometry(1.8, 0.05, 2.3);
+			const bottomCover = new THREE.Mesh(bottomCoverGeo, coverMat);
+			bottomCover.position.y = 0.025;
+			bottomCover.castShadow = true;
+			bottomCover.receiveShadow = true;
+			group.add(bottomCover);
+
+			// Pages block
+			const pagesGeo = new THREE.BoxGeometry(1.72, 0.22, 2.22);
+			const pages = new THREE.Mesh(pagesGeo, paperMat);
+			pages.position.set(0.02, 0.16, 0);
+			pages.castShadow = true;
+			pages.receiveShadow = true;
+			group.add(pages);
+
+			// Top cover
+			const topCoverGeo = new THREE.BoxGeometry(1.8, 0.05, 2.3);
+			const topCover = new THREE.Mesh(topCoverGeo, coverMat);
+			topCover.position.y = 0.295;
+			topCover.castShadow = true;
+			topCover.receiveShadow = true;
+			group.add(topCover);
+
+			// Book band / Bookmark detail
+			const bandGeo = new THREE.BoxGeometry(0.12, 0.28, 2.32);
+			const bandMat = new THREE.MeshStandardMaterial({
+				color: 0xe11d48, // Rose/red elastic closure band
+				roughness: 0.4,
+				metalness: 0.1
+			});
+			const band = new THREE.Mesh(bandGeo, bandMat);
+			band.position.set(0.4, 0.16, 0);
+			group.add(band);
+
+			// Spiral Binding on left edge (-X)
+			const spiralCount = 14;
+			const ringGeo = new THREE.TorusGeometry(0.14, 0.02, 8, 24, Math.PI * 1.6);
+			const ringMat = new THREE.MeshStandardMaterial({
+				color: 0x94a3b8,
+				metalness: 0.85,
+				roughness: 0.25
+			});
+
+			for (let i = 0; i < spiralCount; i++) {
+				const ring = new THREE.Mesh(ringGeo, ringMat);
+				const zPos = -0.95 + (i * (1.9 / (spiralCount - 1)));
+				ring.rotation.y = Math.PI / 2;
+				ring.rotation.x = Math.PI / 6;
+				ring.position.set(-0.9, 0.16, zPos);
+				group.add(ring);
+			}
+
+			return group;
+		}
+
+		// Create objects
+		const objectConfigs = [
+			{
+				name: 'Software engineer',
+				targetId: 'software-engineer-section',
+				create: () => createMacBookGroup(false), // Silver MacBook
+				basePos: new THREE.Vector3(-1.65, 0.05, 0.1),
+				baseRot: new THREE.Euler(0.35, 0.42, -0.20),
+			},
+			{
+				name: 'Maker',
+				targetId: 'maker-section',
+				create: () => createMacBookGroup(true), // Rose Gold MacBook
+				basePos: new THREE.Vector3(0, 0.18, 0.4),
+				baseRot: new THREE.Euler(0.38, 0.05, -0.04),
+			},
+			{
+				name: 'Portrait artist',
+				targetId: 'artist-section',
+				create: () => createSketchbookGroup(), // Sketchbook
+				basePos: new THREE.Vector3(1.65, 0.08, 0.7),
+				baseRot: new THREE.Euler(0.35, -0.36, 0.16),
+			}
+		];
+
+		const objectMeshes: {
+			group: THREE.Group;
+			config: typeof objectConfigs[0];
+			currentPos: THREE.Vector3;
+			targetPos: THREE.Vector3;
+			currentRot: THREE.Euler;
+			targetRot: THREE.Euler;
+			isHovered: boolean;
+		}[] = [];
+
+		const deckGroup = new THREE.Group();
+		scene.add(deckGroup);
+
+		objectConfigs.forEach((config, idx) => {
+			const meshGroup = config.create();
+			meshGroup.position.copy(config.basePos);
+			meshGroup.rotation.copy(config.baseRot);
+
+			meshGroup.userData = { index: idx, config };
+			meshGroup.traverse(child => {
+				child.userData = { index: idx, config };
+			});
+
+			deckGroup.add(meshGroup);
+
+			objectMeshes.push({
+				group: meshGroup,
+				config,
+				currentPos: config.basePos.clone(),
+				targetPos: config.basePos.clone(),
+				currentRot: config.baseRot.clone(),
+				targetRot: config.baseRot.clone(),
+				isHovered: false
+			});
+		});
+
+		// Raycasting setup
+		const raycaster = new THREE.Raycaster();
+		const mouse = new THREE.Vector2(-999, -999);
+		let hoveredIndex = -1;
+
+		function getCanvasRelativeMouse(e: MouseEvent | Touch) {
+			const rect = canvas.getBoundingClientRect();
+			return {
+				x: ((e.clientX - rect.left) / rect.width) * 2 - 1,
+				y: -((e.clientY - rect.top) / rect.height) * 2 + 1,
+			};
+		}
+
+		function onPointerMove(e: MouseEvent) {
+			const coords = getCanvasRelativeMouse(e);
+			mouse.x = coords.x;
+			mouse.y = coords.y;
+		}
+
+		function onPointerLeave() {
+			mouse.x = -999;
+			mouse.y = -999;
+		}
+
+		function onClick(e: MouseEvent) {
+			const coords = getCanvasRelativeMouse(e);
+			raycaster.setFromCamera(new THREE.Vector2(coords.x, coords.y), camera);
+			const intersects = raycaster.intersectObjects(deckGroup.children, true);
+
+			if (intersects.length > 0) {
+				const hitIndex = intersects[0].object.userData.index;
+				if (hitIndex !== undefined) {
+					const targetSectionId = objectConfigs[hitIndex].targetId;
+					const targetEl = document.getElementById(targetSectionId);
+					if (targetEl) {
+						targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+					}
+				}
+			}
+		}
+
+		canvas.addEventListener('mousemove', onPointerMove);
+		canvas.addEventListener('mouseleave', onPointerLeave);
+		canvas.addEventListener('click', onClick);
+
+		// Touch handling for mobile
+		canvas.addEventListener('touchstart', (e) => {
+			if (e.touches.length > 0) {
+				const coords = getCanvasRelativeMouse(e.touches[0]);
+				mouse.x = coords.x;
+				mouse.y = coords.y;
+			}
+		}, { passive: true });
+
+		// Responsive layout scaling
+		function updateScale() {
+			const currentWidth = container.clientWidth;
+			renderer.setSize(currentWidth, container.clientHeight);
+			camera.aspect = currentWidth / container.clientHeight;
+
+			if (currentWidth < 480) {
+				deckGroup.scale.set(0.68, 0.68, 0.68);
+				deckGroup.position.set(0, 0.1, 0);
+			} else if (currentWidth < 640) {
+				deckGroup.scale.set(0.85, 0.85, 0.85);
+				deckGroup.position.set(0, 0, 0);
+			} else {
+				deckGroup.scale.set(1.0, 1.0, 1.0);
+				deckGroup.position.set(0, 0, 0);
+			}
+
+			camera.updateProjectionMatrix();
+		}
+
+		window.addEventListener('resize', updateScale);
+		updateScale();
+
+		// Animation Loop
+		let clock = new THREE.Clock();
+
+		function updateTooltipPosition() {
+			if (hoveredIndex === -1 || !tooltip || !tooltipText) {
+				if (tooltip) tooltip.classList.remove('opacity-100', 'active');
+				return;
+			}
+
+			const activeObj = objectMeshes[hoveredIndex];
+			if (!activeObj) return;
+
+			// Get 3D position of hovered object top in world coordinates
+			const worldPos = new THREE.Vector3();
+			activeObj.group.getWorldPosition(worldPos);
+			worldPos.y += 0.55; // positioned nicely above object top
+
+			// Project to 2D screen coordinates
+			worldPos.project(camera);
+
+			const rect = canvas.getBoundingClientRect();
+			const x = (worldPos.x * 0.5 + 0.5) * rect.width;
+			const y = (-(worldPos.y * 0.5) + 0.5) * rect.height;
+
+			tooltip.style.left = `${x}px`;
+			tooltip.style.top = `${y - 12}px`;
+			tooltipText.textContent = activeObj.config.name;
+			tooltip.classList.add('opacity-100', 'active');
+		}
+
+		function animate() {
+			requestAnimationFrame(animate);
+
+			const elapsedTime = clock.getElapsedTime();
+
+			// Raycast check
+			raycaster.setFromCamera(mouse, camera);
+			const intersects = raycaster.intersectObjects(deckGroup.children, true);
+
+			let newHoveredIndex = -1;
+			if (intersects.length > 0) {
+				const idx = intersects[0].object.userData.index;
+				if (idx !== undefined) {
+					newHoveredIndex = idx;
+				}
+			}
+
+			if (newHoveredIndex !== hoveredIndex) {
+				hoveredIndex = newHoveredIndex;
+				canvas.style.cursor = hoveredIndex !== -1 ? 'pointer' : 'default';
+			}
+
+			// Update mesh positions and rotations
+			objectMeshes.forEach((item, idx) => {
+				const isHovered = (idx === hoveredIndex);
+				item.isHovered = isHovered;
+
+				// Idle bobbing
+				const bobOffset = Math.sin(elapsedTime * 1.8 + idx * 1.2) * 0.035;
+				const rotBob = Math.cos(elapsedTime * 1.5 + idx * 0.8) * 0.018;
+
+				if (isHovered) {
+					// Pop up & elevate
+					item.targetPos.set(
+						item.config.basePos.x,
+						item.config.basePos.y + 0.50,
+						item.config.basePos.z + 0.45
+					);
+					item.targetRot.set(
+						item.config.baseRot.x + 0.12,
+						item.config.baseRot.y,
+						item.config.baseRot.z
+					);
+					item.group.renderOrder = 100;
+				} else {
+					item.targetPos.set(
+						item.config.basePos.x,
+						item.config.basePos.y + bobOffset,
+						item.config.basePos.z
+					);
+					item.targetRot.set(
+						item.config.baseRot.x,
+						item.config.baseRot.y + rotBob,
+						item.config.baseRot.z
+					);
+					item.group.renderOrder = idx;
+				}
+
+				// Smooth interpolation
+				item.group.position.lerp(item.targetPos, 0.12);
+				item.group.rotation.x += (item.targetRot.x - item.group.rotation.x) * 0.12;
+				item.group.rotation.y += (item.targetRot.y - item.group.rotation.y) * 0.12;
+				item.group.rotation.z += (item.targetRot.z - item.group.rotation.z) * 0.12;
+			});
+
+			updateTooltipPosition();
+
+			renderer.render(scene, camera);
+		}
+
+		animate();
+	}
+</script>
