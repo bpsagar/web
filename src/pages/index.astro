@@ -26,15 +26,15 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
 		<title>Sagar Chakravarthy</title>
-		<noscript><style>#hero-profile-pic { transform: none !important; }</style></noscript>
+		<noscript><style>#hero-profile-pic img { transform: none !important; }</style></noscript>
 		<style>
-			/* Photo waits below its clip box until the header animation starts (Header.astro adds .peeped) */
+			/* The circle stays put like a window; the photo waits below it until Header.astro adds .peeped */
 			@media (prefers-reduced-motion: no-preference) {
-				#hero-profile-pic {
-					transform: translateY(105%);
-					transition: transform 1.1s cubic-bezier(0.2, 0.9, 0.3, 1.12);
+				#hero-profile-pic img {
+					transform: translateY(100%);
+					transition: transform 1.1s cubic-bezier(0.2, 0.8, 0.2, 1);
 				}
-				#hero-profile-pic.peeped {
+				#hero-profile-pic.peeped img {
 					transform: translateY(0);
 				}
 			}
@@ -84,18 +84,16 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 				<div class="max-w-[500px] mx-auto px-6">
 					<Header showAvatar={true} />
 					<section class="relative pt-2 pb-8 overflow-hidden">
-						<!-- Profile Picture (the wrapper clips it while it peeps in from below) -->
-						<div id="hero-profile-wrap" class="mb-6 h-24 overflow-hidden">
-							<div id="hero-profile-pic" class="w-24 h-24 rounded-full overflow-hidden border border-zinc-200">
-								<Image
-									src={profileImage}
-									alt="Sagar Chakravarthy"
-									width={192}
-									height={192}
-									class="w-full h-full object-cover"
-									loading="eager"
-								/>
-							</div>
+						<!-- Profile Picture (a circular window; the photo peeps up into it) -->
+						<div id="hero-profile-pic" class="mb-6 w-24 h-24 rounded-full overflow-hidden border border-zinc-200">
+							<Image
+								src={profileImage}
+								alt="Sagar Chakravarthy"
+								width={192}
+								height={192}
+								class="w-full h-full object-cover"
+								loading="eager"
+							/>
 						</div>
 						<!-- Heading -->
 						<h1 class="font-plus font-medium tracking-tight text-zinc-400 text-2xl">
@@ -880,7 +878,7 @@ const sortedCareer = allCareer.sort((a, b) => b.data.order - a.data.order);
 				}
 			});
 
-			const heroProfilePic = document.getElementById('hero-profile-wrap');
+			const heroProfilePic = document.getElementById('hero-profile-pic');
 			const headerAvatars = document.querySelectorAll('.header-avatar');
 
 			if (heroProfilePic && headerAvatars.length > 0) {
