@@ -8,6 +8,8 @@ interface Props {
 }
 
 const { title, showAvatar = false } = Astro.props;
+// The standalone header (no section title) carries the full name.
+const brand = title ? "I'm Sagar" : "I'm Sagar Chakravarthy";
 ---
 
 <div
@@ -28,7 +30,7 @@ const { title, showAvatar = false } = Astro.props;
 			</div>
 		)
 	}
-	<span class="text-zinc-400 whitespace-pre" data-brand-typing>I'm Sagar</span>
+	<span class="text-zinc-400 whitespace-pre" data-brand-typing>{brand}</span>
 	{
 		title && (
 			<>
@@ -41,7 +43,8 @@ const { title, showAvatar = false } = Astro.props;
 
 <script>
 	// Replays "visited sagar.im" as a text-editor edit: select "im", cut,
-	// jump to start, paste, add the apostrophe, drop the dot => "I'm Sagar".
+	// jump to start, paste, add the apostrophe, drop the dot => "I'm Sagar",
+	// then type out the last name while the hero photo peeps in from below.
 	const el = document.querySelector<HTMLElement>("[data-brand-typing]");
 	const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -124,6 +127,15 @@ const { title, showAvatar = false } = Astro.props;
 				text = text.slice(0, -1);
 				cur = text.length;
 			});
+			// type the rest of the name (if any) as the hero photo peeps in
+			const rest = final.slice(text.length);
+			document.getElementById("hero-profile-pic")?.classList.add("peeped");
+			for (const ch of rest) {
+				await step(75, () => {
+					text += ch;
+					cur = text.length;
+				});
+			}
 			// blink twice, then hide the cursor
 			for (let i = 0; i < 2; i++) {
 				await step(350, () => (showCursor = false));
